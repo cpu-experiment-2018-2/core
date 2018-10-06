@@ -90,14 +90,20 @@ module cpu (
 	(* mark_debug = "true" *) reg		cnt2;
 	(* mark_debug = "true" *) reg [1:0]	cnt4;
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
-	(* mark_deubg = "true" *) wire [31:0]	inst;
+	(* mark_debug = "true" *) wire [31:0]	inst;
+	(* mark_debug = "true" *) reg [4:0]	rt;
+	(* mark_debug = "true" *) reg [4:0]	ra;
+	(* mark_debug = "true" *) reg [4:0]	rb;
+	(* mark_debug = "true" *) reg [25:0]	li;
+
 	assign		inst = inst_doutb;
 	typedef enum logic [1:0] {
-		FETCH_ST, EXEC_ST
+		FETCH_ST, DECODE_ST, EXEC_ST
 	} cpu_state_type;
 
 	(* mark_debug = "true" *) cpu_state_type cpu_state;
-	(* mark_debug = "true" *) reg [31:0]	gpr [0:31];
+	(* mark_debug = "true" *) reg signed [31:0]	gpr [0:31];
+	assign 		gpr[0] = 0;
 
 	(* mark_debug = "true" *) reg [31:0]	out_data;
 	typedef enum logic {
@@ -174,20 +180,81 @@ module cpu (
 					end else if (fetch_wait == 2'b11) begin
 						fetch_wait <= 0;
 						inst_enb <= 0;
-						cpu_state <= EXEC_ST;
+						cpu_state <= DECODE_ST;
 					end
+				end else if (cpu_state == DECODE_ST) begin
+					cpu_state <= EXEC_ST;
+
+					case (inst[31:29])
+						3'b000:		rt <= inst[25:21];
+						3'b001:		rt <= inst[25:21];
+						3'b010:		rt <= inst[25:21];
+						3'b011:		rt <= inst[25:21];
+						3'b110:		rt <= inst[25:21];
+						default:	rt <= 5'b0;
+					endcase
+
+					case (inst[31:29])
+						3'b000:		ra <= inst[20:16];
+						3'b001:		ra <= inst[20:16];
+						3'b010:		ra <= inst[20:16];
+						default:	ra <= 5'b0;
+					endcase
+
+					case (inst[31:29])
+						3'b001:		rb <= inst[15:11];
+						3'b010:		rb <= inst[15:11];
+						3'b101:		rb <= inst[20:16];
+						default:	rb <= 5'b0;
+					endcase
 				end else if (cpu_state == EXEC_ST) begin
-					if (inst[31:29] == 3'b011) begin
+					if (inst[31:29] == 3'b000) begin
+						if (inst[28:26] == 3'b000) begin		// Addi
+							gpr[rt] <= gpr[ra] + $signed({16'b0, inst[15:0]});
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b001) begin	// Subi
+							gpr[rt] <= gpr[ra] - $signed({16'b0, inst[15:0]});
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b010) begin	// Muli
+							gpr[rt] <= gpr[ra] * $signed({16'b0, inst[15:0]});
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b011) begin	// Divi
+							gpr[rt] <= gpr[ra] / $signed({16'b0, inst[15:0]});
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end
+					end else if (inst[31:29] == 3'b001) begin
+						if (inst[28:26] == 3'b000) begin		// Add
+							gpr[rt] <= gpr[ra] + gpr[rb];
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b001) begin	// Sub
+							gpr[rt] <= gpr[ra] - gpr[rb];
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b010) begin	// Mul
+							gpr[rt] <= gpr[ra] * gpr[rb];
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b011) begin	// Div
+							gpr[rt] <= gpr[ra] / gpr[rb];
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end
+					end else if (inst[31:29] == 3'b011) begin
 						// Li
 						if (inst[28:26] == 3'b010) begin
-							gpr[inst[25:21]] <= {9'b0, inst[20:0]};
+							gpr[rt] <= {9'b0, inst[20:0]};
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end
 					end else if (inst[31:29] == 3'b110) begin
 						// Out
 						if (inst[28:26] == 3'b001) begin
-							out_data <= gpr[inst[25:21]];
+							out_data <= gpr[rt];
 
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
