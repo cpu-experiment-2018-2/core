@@ -60,25 +60,22 @@ module cpu (
 	(* mark_debug = "true" *) reg		uart_wen;
 	(* mark_debug = "true" *) wire		uart_wbusy;
 	(* mark_debug = "true" *) wire		uart_wdone;
-
-	(* mark_debug = "true" *) reg [7:0]	data;
 	
 	uart_rx rx(.*, .addr(uart_raddr), .en(uart_ren), .clk(clk), .rstn(rstn), .data(uart_rdata), .busy(uart_rbusy), .done(uart_rdone));
 	uart_tx tx(.*, .data(uart_wdata), .addr(uart_waddr), .en(uart_wen), .clk(clk), .rstn(rstn), .busy(uart_wbusy), .done(uart_wdone)); 
 
 
+	(* mark_debug = "true" *) reg [7:0]	data;
 	(* mark_debug = "true" *) reg		bl_en;
 
 	bootloader bl(.*, .data(data), .en(bl_en), .clk(clk), .rstn(rstn));
 
 	(* mark_debug = "true" *) reg [29:0]	pc;
-	(* mark_debug = "true" *) assign		inst_addrb[1:0] = 2'b0;
-	(* mark_debug = "true" *) assign		inst_addrb[31:2] = pc;
-	(* mark_debug = "true" *) reg		cnt2;
-	(* mark_debug = "true" *) reg [1:0]	cnt4;
+	assign		inst_addrb[1:0] = 2'b0;
+	assign		inst_addrb[31:2] = pc;
 
 	typedef enum logic [2:0] {
-		WAIT_ST, LOAD_ST, DUMP_ST
+		WAIT_ST, LOAD_ST, RUN_ST, OUT_ST
 	} state_type;
 
 	(* mark_debug = "true" *) state_type state;
@@ -89,12 +86,25 @@ module cpu (
 
 	load_state_type load_state;
 
-	typedef enum logic [1:0] {
-		FETCH_ST, CHECK_TX_ST, WRITE_ST
-	} dump_state_type;
 
-	(* mark_debug = "true" *) dump_state_type dump_state;
-	
+	(* mark_debug = "true" *) reg		cnt2;
+	(* mark_debug = "true" *) reg [1:0]	cnt4;
+	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
+	(* mark_deubg = "true" *) wire [31:0]	inst;
+	assign		inst = inst_doutb;
+	typedef enum logic [1:0] {
+		FETCH_ST, EXEC_ST
+	} cpu_state_type;
+
+	(* mark_debug = "true" *) cpu_state_type cpu_state;
+	(* mark_debug = "true" *) reg [31:0]	gpr [0:31];
+
+	(* mark_debug = "true" *) reg [31:0]	out_data;
+	typedef enum logic {
+		CHECK_TX_ST, WRITE_ST
+	} out_state_type;
+	out_state_type out_state;
+
 	always@(posedge clk) begin
 		if (~rstn) begin     
 			uart_raddr <= STAT_REG;
@@ -104,15 +114,19 @@ module cpu (
 			uart_waddr <= TX_FIFO;
 			uart_wen <= 0;
 
-			pc <= 30'b0;
 			data <= 8'b0;
 			inst_enb <= 0;
 			bl_en <= 0;
+
+			pc <= 30'b0;
+			cnt2 <= 0;
 			cnt4 <= 0;
+			fetch_wait <= 0;
 
 			state <= WAIT_ST;
 			load_state <= CHECK_RX_ST;
-			dump_state <= CHECK_TX_ST;
+			cpu_state <= FETCH_ST;
+			out_state <= CHECK_TX_ST;
 		end else begin
 			if (state == WAIT_ST) begin
 				led[7:2] <= 6'b100000;
@@ -128,11 +142,8 @@ module cpu (
 				if (btn[1]) begin
 					bl_en <= 0;
 
-					pc <= 30'b0;
-					cnt2 <= 0;
-					cnt4 <= 2'b00;
-					dump_state <= FETCH_ST;
-					state <= DUMP_ST;
+					if (uart_ren) uart_ren <= 0;
+					state <= RUN_ST;
 				end else
 				if (load_state == CHECK_RX_ST) begin
 					bl_en <= 0;
@@ -154,44 +165,63 @@ module cpu (
 						load_state <= CHECK_RX_ST;
 					end else uart_ren <= 0;
 				end
-			end else if (state == DUMP_ST) begin
+			end else if (state == RUN_ST) begin
 				led[7:2] <= 6'b001000;
-				if (dump_state == FETCH_ST) begin
-					if (uart_rbusy == 0) begin
-						cnt2 <= cnt2 + 1;
-						if (cnt2 == 0) begin
-							inst_enb <= 1;
-						end else begin
+				if (cpu_state == FETCH_ST) begin
+					fetch_wait <= fetch_wait + 1;
+					if (fetch_wait == 0) begin
+						inst_enb <= 1;
+					end else if (fetch_wait == 2'b11) begin
+						fetch_wait <= 0;
+						inst_enb <= 0;
+						cpu_state <= EXEC_ST;
+					end
+				end else if (cpu_state == EXEC_ST) begin
+					if (inst[31:29] == 3'b011) begin
+						// Li
+						if (inst[28:26] == 3'b010) begin
+							gpr[inst[25:21]] <= {9'b0, inst[20:0]};
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end
+					end else if (inst[31:29] == 3'b110) begin
+						// Out
+						if (inst[28:26] == 3'b001) begin
+							out_data <= gpr[inst[25:21]];
+
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+
 							uart_raddr <= STAT_REG;
 							uart_ren <= 1;
-							dump_state <= CHECK_TX_ST;
+							out_state <= CHECK_TX_ST;
+							if (uart_rbusy == 0) state <= OUT_ST;
 						end
 					end
-				end else if (dump_state == CHECK_TX_ST) begin
-					inst_enb <= 0;
+				end
+			end else if (state == OUT_ST) begin
+				if (out_state == CHECK_TX_ST) begin
 					if (uart_rdone) begin
 						// Tx FIFO Full flag
 						if (uart_rdata[3] == 0) begin
-							if (cnt4 == 2'b00) uart_wdata <= inst_doutb[7:0];
-							else if (cnt4 == 2'b01) uart_wdata <= inst_doutb[15:8];
-							else if (cnt4 == 2'b10) uart_wdata <= inst_doutb[23:16];
-							else if (cnt4 == 2'b11) uart_wdata <= inst_doutb[31:24];
+							if (cnt4 == 2'b00) uart_wdata <= out_data[7:0];
+							else if (cnt4 == 2'b01) uart_wdata <= out_data[15:8];
+							else if (cnt4 == 2'b10) uart_wdata <= out_data[23:16];
+							else if (cnt4 == 2'b11) uart_wdata <= out_data[31:24];
 							uart_wen <= 1;
-							dump_state <= WRITE_ST;
+							out_state <= WRITE_ST;
 						end else uart_ren <= 1;
 					end else uart_ren <= 0;
-				end else if (dump_state == WRITE_ST) begin
+				end else if (out_state == WRITE_ST) begin
 					uart_wen <= 0;
 
 					if (uart_wdone) begin
 						cnt4 <= cnt4 + 1;
 						if (cnt4 == 2'b11) begin
-							pc <= pc + 1;
-							dump_state <= FETCH_ST;
+							state <= RUN_ST;
 						end else begin
-							uart_raddr <= STAT_REG;
 							uart_ren <= 1;
-							dump_state <= CHECK_TX_ST;
+							out_state <= CHECK_TX_ST;
 						end
 					end
 				end
