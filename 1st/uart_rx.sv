@@ -15,6 +15,7 @@ module uart_rx(
 	input wire		clk,
 	input wire		rstn,
 	output reg [7:0]	data,
+	output reg		busy,
 	output reg		done);
 
 	assign data = uart_axi_rdata[7:0];
@@ -31,6 +32,7 @@ module uart_rx(
 		if (~rstn) begin
 			uart_axi_arvalid <= 0;
 			uart_axi_rready <= 0;
+			busy <= 0;
 			done <= 0;
 			state <= WAIT_ST;
 		end else begin
@@ -39,6 +41,7 @@ module uart_rx(
 				done <= 0;
 				if (en) begin
 					uart_axi_arvalid <= 1;
+					busy <= 1;
 					state <= ADDR_ST;
 				end
 			end else if (state == ADDR_ST) begin
@@ -49,6 +52,7 @@ module uart_rx(
 			end else if (state == READ_ST) begin
 				if (uart_axi_rvalid) begin
 					uart_axi_rready <= 1;
+					busy <= 0;
 					done <= 1;
 					state <= WAIT_ST;
 				end

@@ -39,4 +39,3 @@ set_property IOSTANDARD LVCMOS18 [get_ports {btn[3]}]
 set_property PACKAGE_PIN AF9 [get_ports {btn[4]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {btn[4]}]
 
-

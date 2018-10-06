@@ -19,6 +19,7 @@ module uart_tx(
 	input wire		en,
 	input wire 		clk,
 	input wire 		rstn,
+	output reg		busy,
 	output reg		done);
 
 	assign uart_axi_wdata[7:0] = data;
@@ -39,6 +40,7 @@ module uart_tx(
 			uart_axi_bready <= 0;
 			uart_axi_wvalid <= 0;
 			uart_axi_awvalid <= 0;
+			busy <= 0;
 			done <= 0;
 			state <= WAIT_ST;
 		end else begin
@@ -48,6 +50,7 @@ module uart_tx(
 				if (en) begin
 					uart_axi_wvalid <= 1;
 					uart_axi_awvalid <= 1;
+					busy <= 1;
 					state <= WRITE_ST;
 				end
 			end else if (state == WRITE_ST) begin
@@ -57,6 +60,7 @@ module uart_tx(
 			end else if (state == END_ST) begin
 				if (uart_axi_bvalid) begin
 					uart_axi_bready <= 1;
+					busy <= 0;
 					done <= 1;
 					state <= WAIT_ST;
 				end
