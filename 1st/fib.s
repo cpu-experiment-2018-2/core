@@ -16,13 +16,10 @@ loop:
 failed:
 	li %r0, 2626
 	out %r0
-	cmpd %r1, %r1
-	beq end
+	jump end
 ok:
 	li %r0, 2625
 	out %r0
-	cmpd %r1, %r1
-	beq end
+	jump end
 end:
-	cmpd %r1, %r1
-	beq end
+	blr

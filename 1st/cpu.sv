@@ -245,6 +245,15 @@ module cpu (
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end
+					end else if (inst[31:29] == 3'b100) begin
+						// Jump
+						if (inst[28:26] == 3'b000) begin
+							gpr[5'b11111] <= pc + 1;
+							pc <= li;
+						end else if (inst[28:26] == 3'b001) begin // Blr
+							pc <= gpr[5'b11111];
+						end
+						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b101) begin
 						// Beq
 						if (inst[28:26] == 3'b000) pc <= eq ? li : (pc + 1);
