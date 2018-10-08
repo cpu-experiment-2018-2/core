@@ -92,8 +92,9 @@ module cpu (
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
 	(* mark_debug = "true" *) reg [4:0]	rt;
-	(* mark_debug = "true" *) reg [4:0]	ra;
-	(* mark_debug = "true" *) reg [4:0]	rb;
+	(* mark_debug = "true" *) reg signed [31:0]	srca;
+	(* mark_debug = "true" *) reg signed [31:0]	srcb;
+	(* mark_debug = "true" *) reg [15:0]	si;
 	(* mark_debug = "true" *) reg [25:0]	li;
 
 	assign		inst = inst_doutb;
@@ -103,7 +104,8 @@ module cpu (
 
 	(* mark_debug = "true" *) cpu_state_type cpu_state;
 	(* mark_debug = "true" *) reg signed [31:0]	gpr [0:31];
-	assign 		gpr[0] = 0;
+	(* mark_debug = "true" *) reg	eq;
+	(* mark_debug = "true" *) reg	le;
 
 	(* mark_debug = "true" *) reg [31:0]	out_data;
 	typedef enum logic {
@@ -195,55 +197,47 @@ module cpu (
 					endcase
 
 					case (inst[31:29])
-						3'b000:		ra <= inst[20:16];
-						3'b001:		ra <= inst[20:16];
-						3'b010:		ra <= inst[20:16];
-						default:	ra <= 5'b0;
+						3'b000:		srca <= gpr[inst[20:16]];
+						3'b001:		srca <= gpr[inst[20:16]];
+						3'b010:		srca <= gpr[inst[20:16]];
+						3'b101:		srca <= gpr[inst[25:21]];
+						default:	srca <= 31'b0;
 					endcase
 
 					case (inst[31:29])
-						3'b001:		rb <= inst[15:11];
-						3'b010:		rb <= inst[15:11];
-						3'b101:		rb <= inst[20:16];
-						default:	rb <= 5'b0;
+						3'b001:		srcb <= gpr[inst[15:11]];
+						3'b010:		srcb <= gpr[inst[15:11]];
+						3'b101:		srcb <= gpr[inst[20:16]];
+						default:	srcb <= 32'b0;
+					endcase
+
+					if (inst[31:29] == 3'b000) si <= inst[15:0];
+					else si <= 16'b0;
+
+					case (inst[31:29])
+						3'b100:		li <= inst[25:0];
+						3'b101:		li <= inst[25:0];
+						default:	li <= 26'b0;
 					endcase
 				end else if (cpu_state == EXEC_ST) begin
 					if (inst[31:29] == 3'b000) begin
-						if (inst[28:26] == 3'b000) begin		// Addi
-							gpr[rt] <= gpr[ra] + $signed({16'b0, inst[15:0]});
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b001) begin	// Subi
-							gpr[rt] <= gpr[ra] - $signed({16'b0, inst[15:0]});
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b010) begin	// Muli
-							gpr[rt] <= gpr[ra] * $signed({16'b0, inst[15:0]});
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b011) begin	// Divi
-							gpr[rt] <= gpr[ra] / $signed({16'b0, inst[15:0]});
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end
+						case (inst[28:26])
+							3'b000:		gpr[rt] <= srca + $signed({16'b0, si}); // Addi
+							3'b001:		gpr[rt] <= srca - $signed({16'b0, si}); // Subi
+							3'b010:		gpr[rt] <= srca * $signed({16'b0, si}); // Muli
+							default:	gpr[rt] <= srca / $signed({16'b0, si}); // Divi
+						endcase
+						cpu_state <= FETCH_ST;
+						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b001) begin
-						if (inst[28:26] == 3'b000) begin		// Add
-							gpr[rt] <= gpr[ra] + gpr[rb];
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b001) begin	// Sub
-							gpr[rt] <= gpr[ra] - gpr[rb];
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b010) begin	// Mul
-							gpr[rt] <= gpr[ra] * gpr[rb];
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end else if (inst[28:26] == 3'b011) begin	// Div
-							gpr[rt] <= gpr[ra] / gpr[rb];
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
-						end
+						case (inst[28:26])
+							3'b000:		gpr[rt] <= srca + srcb; // Add
+							3'b001:		gpr[rt] <= srca - srcb; // Sub
+							3'b010:		gpr[rt] <= srca * srcb; // Mul
+							default:	gpr[rt] <= srca / srcb; // Div
+						endcase
+						cpu_state <= FETCH_ST;
+						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b011) begin
 						// Li
 						if (inst[28:26] == 3'b010) begin
@@ -251,6 +245,16 @@ module cpu (
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end
+					end else if (inst[31:29] == 3'b101) begin
+						// Beq
+						if (inst[28:26] == 3'b000) pc <= eq ? li : (pc + 1);
+						else if (inst[28:26] == 3'b001) pc <= le ? li : (pc + 1); // Ble
+						else if (inst[28:26] == 3'b010) begin // Cmpd
+							eq <= (srca == srcb);
+							le <= (srca <= srcb);
+							pc <= pc + 1;
+						end
+						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b110) begin
 						// Out
 						if (inst[28:26] == 3'b001) begin
