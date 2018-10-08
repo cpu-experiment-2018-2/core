@@ -25,14 +25,14 @@ module cpu (
 
 	// instruction BRAM
 	// Port A:WRITE
-	(* mark_debug = "true" *) output wire [31:0]		inst_addra,	// WRADDR
-	(* mark_debug = "true" *) output wire [31:0]		inst_dina,	// data to be written
-	(* mark_debug = "true" *) output wire [3:0]		inst_wea,	// WEN
+	output wire [31:0]		inst_addra,	// WRADDR
+	output wire [31:0]		inst_dina,	// data to be written
+	output wire [3:0]		inst_wea,	// WEN
 
 	// Port B:READ
-	(* mark_debug = "true" *) output reg [31:0]		inst_addrb,	// RDADDR
-	(* mark_debug = "true" *) input wire [31:0]		inst_doutb,	// data from READ operation
-	(* mark_debug = "true" *) output reg			inst_enb,	// REN
+	output reg [31:0]		inst_addrb,	// RDADDR
+	input wire [31:0]		inst_doutb,	// data from READ operation
+	output reg			inst_enb,	// REN
 	
 	output reg [7:0]		led,
 	input wire [4:0]		btn,
@@ -49,24 +49,24 @@ module cpu (
 		CTRL_REG = 4'hC
 	} waddr_type;
 
-	(* mark_debug = "true" *) raddr_type	uart_raddr;
-	(* mark_debug = "true" *) reg 		uart_ren;
-	(* mark_debug = "true" *) wire [7:0]	uart_rdata;
-	(* mark_debug = "true" *) wire		uart_rbusy;
-	(* mark_debug = "true" *) wire		uart_rdone;
+	raddr_type	uart_raddr;
+	reg 		uart_ren;
+	wire [7:0]	uart_rdata;
+	wire		uart_rbusy;
+	wire		uart_rdone;
 	
-	(* mark_debug = "true" *) reg [7:0]	uart_wdata;
-	(* mark_debug = "true" *) waddr_type	uart_waddr;
-	(* mark_debug = "true" *) reg		uart_wen;
-	(* mark_debug = "true" *) wire		uart_wbusy;
-	(* mark_debug = "true" *) wire		uart_wdone;
+	reg [7:0]	uart_wdata;
+	waddr_type	uart_waddr;
+	reg		uart_wen;
+	wire		uart_wbusy;
+	wire		uart_wdone;
 	
 	uart_rx rx(.*, .addr(uart_raddr), .en(uart_ren), .clk(clk), .rstn(rstn), .data(uart_rdata), .busy(uart_rbusy), .done(uart_rdone));
 	uart_tx tx(.*, .data(uart_wdata), .addr(uart_waddr), .en(uart_wen), .clk(clk), .rstn(rstn), .busy(uart_wbusy), .done(uart_wdone)); 
 
 
-	(* mark_debug = "true" *) reg [7:0]	data;
-	(* mark_debug = "true" *) reg		bl_en;
+	reg [7:0]	data;
+	reg		bl_en;
 
 	bootloader bl(.*, .data(data), .en(bl_en), .clk(clk), .rstn(rstn));
 
@@ -87,8 +87,8 @@ module cpu (
 	load_state_type load_state;
 
 
-	(* mark_debug = "true" *) reg		cnt2;
-	(* mark_debug = "true" *) reg [1:0]	cnt4;
+	reg		cnt2;
+	reg [1:0]	cnt4;
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
 	(* mark_debug = "true" *) reg [4:0]	rt;
@@ -107,7 +107,7 @@ module cpu (
 	(* mark_debug = "true" *) reg	eq;
 	(* mark_debug = "true" *) reg	le;
 
-	(* mark_debug = "true" *) reg [31:0]	out_data;
+	reg [31:0]	out_data;
 	typedef enum logic {
 		CHECK_TX_ST, WRITE_ST
 	} out_state_type;
