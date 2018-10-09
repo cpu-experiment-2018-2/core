@@ -34,6 +34,17 @@ module cpu (
 	input wire [31:0]		inst_doutb,	// data from READ operation
 	output reg			inst_enb,	// REN
 	
+	// data BRAM
+	// Port A:WRITE
+	(* mark_debug = "true" *)output reg [31:0]		data_addra,	// WRADDR
+	(* mark_debug = "true" *)output reg [31:0]		data_dina,	// data to be written
+	(* mark_debug = "true" *)output reg [3:0]		data_wea,	// WEN
+
+	// Port B:READ
+	(* mark_debug = "true" *)output reg [31:0]		data_addrb,	// RDADDR
+	input wire [31:0]		data_doutb,	// data from READ operation
+	(* mark_debug = "true" *)output reg			data_enb,	// REN
+
 	output reg [7:0]		led,
 	input wire [4:0]		btn,
 	input wire			clk,
@@ -90,10 +101,12 @@ module cpu (
 	reg		cnt2;
 	reg [1:0]	cnt4;
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
+	(* mark_debug = "true" *) reg [1:0]	memory_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
 	(* mark_debug = "true" *) reg [4:0]	rt;
 	(* mark_debug = "true" *) reg signed [31:0]	srca;
 	(* mark_debug = "true" *) reg signed [31:0]	srcb;
+	(* mark_debug = "true" *) reg signed [31:0]	srcs;
 	(* mark_debug = "true" *) reg [15:0]	si;
 	(* mark_debug = "true" *) reg [25:0]	li;
 
@@ -130,6 +143,7 @@ module cpu (
 			cnt2 <= 0;
 			cnt4 <= 0;
 			fetch_wait <= 0;
+			memory_wait <= 0;
 
 			state <= WAIT_ST;
 			load_state <= CHECK_RX_ST;
@@ -200,6 +214,7 @@ module cpu (
 						3'b000:		srca <= gpr[inst[20:16]];
 						3'b001:		srca <= gpr[inst[20:16]];
 						3'b010:		srca <= gpr[inst[20:16]];
+						3'b011:		srca <= gpr[inst[20:16]];
 						3'b101:		srca <= gpr[inst[25:21]];
 						default:	srca <= 31'b0;
 					endcase
@@ -211,8 +226,14 @@ module cpu (
 						default:	srcb <= 32'b0;
 					endcase
 
-					if (inst[31:29] == 3'b000) si <= inst[15:0];
-					else si <= 16'b0;
+					if (inst[31:29] == 3'b011) srcs <= gpr[inst[25:21]];
+					else srcs <= 32'b0;
+
+					case (inst[31:29])
+						3'b000:		si <= inst[15:0];
+						3'b011:		si <= inst[15:0];
+						default:	si <= 16'b0;
+					endcase
 
 					case (inst[31:29])
 						3'b100:		li <= inst[25:0];
@@ -239,8 +260,32 @@ module cpu (
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b011) begin
-						// Li
-						if (inst[28:26] == 3'b010) begin
+						// Load
+						if (inst[28:26] == 3'b000) begin
+							memory_wait <= memory_wait + 1;
+							if (memory_wait == 2'b00) begin
+								data_addrb <= $unsigned(srca) + {16'b0, si};
+								data_enb <= 1;
+							end else if (memory_wait == 2'b11) begin
+								data_enb <= 0;
+								gpr[rt] <= data_doutb;
+
+								cpu_state <= FETCH_ST;
+								pc <= pc + 1;
+							end
+						end else if (inst[28:26] == 3'b001) begin // Store
+							memory_wait <= memory_wait + 1;
+							if (memory_wait == 2'b00) begin
+								data_addra <= $unsigned(srca) + {16'b0, si};
+								data_dina <= srcs;
+								data_wea <= 4'b1111;
+							end else if (memory_wait == 2'b11) begin
+								data_wea <= 4'b0;
+
+								cpu_state <= FETCH_ST;
+								pc <= pc + 1;
+							end
+						end else if (inst[28:26] == 3'b010) begin // Li
 							gpr[rt] <= {9'b0, inst[20:0]};
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
