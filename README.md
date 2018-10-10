@@ -7,10 +7,10 @@
 
 |     |[31:29]|[28:26]|[25:21]|[21:16]|[15:11]|[10:0]|              |
 |:----|:-----:|:-----:|:-----:|:-----:|:-----:|:----:|:-------------|
-|Addi |000    |000    |RT     |RA     |SI     |SI    |RT <- (RA)+SI
-|Subi |000    |001    |RT     |RA     |SI     |SI    |RT <- (RA)-SI
-|Muli |000    |010    |RT     |RA     |SI     |SI    |RT <- (RA)*SI
-|Divi |000    |011    |RT     |RA     |SI     |SI    |RT <- (RA)/SI
+|Addi |000    |000    |RT     |RA     |SI     |SI    |RT <- (RA)+SI (符号拡張)
+|Subi |000    |001    |RT     |RA     |SI     |SI    |RT <- (RA)-SI (符号拡張)
+|Muli |000    |010    |RT     |RA     |SI     |SI    |RT <- (RA)*SI (符号拡張)
+|Divi |000    |011    |RT     |RA     |SI     |SI    |RT <- (RA)/SI (符号拡張)
 || 
 |Add  |001    |000    |RT     |RA     |RB     |      |RT <- (RA)+(RB)
 |Sub  |001    |001    |RT     |RA     |RB     |      |RT <- (RA)-(RB)
@@ -22,15 +22,24 @@
 ||
 |Load |011    |000    |RT     |RA     |D      |D     |RT <- MEM((RA)+D)
 |Store|011    |001    |RS     |RA     |D      |D     |MEM((RA)+D) <- (RS)
-|Li   |011    |010    |RT     |SI     |SI     |SI    |RT <- SI
+|Li   |011    |010    |RT     |SI     |SI     |SI    |RT <- SI (符号拡張)
+|Lis  |011    |011    |RT     |SI     |SI     |SI    |RT <- SI << 16
 ||
-|Jump |100    |000    |LI     |LI     |LI     |LI    |GPR31<-PC+1, PC <- LI
+|Jump |100    |000    |LI     |LI     |LI     |LI    |PC <- LI
 |Blr  |100    |001    |       |       |       |      |PC <- GPR31
+|Bl   |100    |010    |       |       |       |      |GPR31 <- PC + 1
 ||
 |Beq  |101    |000    |LI     |LI     |LI     |LI    |if eq then PC <- LI
 |Ble  |101    |001    |LI     |LI     |LI     |LI    |if le then PC <- LI
 |Cmpd |101    |010    |RA     |RB     |       |      |if (RA) == (RB) then eq <- 1, if (RA) <= (RB) then le <- 1
 ||
-|In   |110    |000    |RA     |       |       |      |
-|Out  |110    |001    |RA     |       |       |      |
-|End  |110    |010    |       |       |       |      |     
+|Inll |110    |000    |RT     |       |       |      | RT[7:0] <- input
+|Inlh |110    |001    |RT     |       |       |      | RT[15:8] <- input
+|Inul |110    |010    |RT     |       |       |      | RT[23:16] <- input
+|Inuh |110    |011    |RT     |       |       |      | RT[31:24] <- input
+|Outll|110    |100    |RA     |       |       |      | output RA[7:0]
+|Outlh|110    |101    |RA     |       |       |      | output RA[15:8]
+|Outul|110    |110    |RA     |       |       |      | output RA[23:16]
+|Outuh|110    |111    |RA     |       |       |      | output RA[31:24]
+||
+|End  |111    |       |       |       |       |      |     
