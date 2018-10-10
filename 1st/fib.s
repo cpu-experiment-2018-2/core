@@ -22,4 +22,4 @@ ok:
 	out %r0
 	jump end
 end:
-	blr
+	jump end
