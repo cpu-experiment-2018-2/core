@@ -8,9 +8,7 @@ main:
 failed:
 	li %r3, 2626
 	out %r3
-	jump end
+	end
 ok:
 	out %r0
-	jump end
-end:
-	jump end
+	end

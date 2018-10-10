@@ -86,7 +86,7 @@ module cpu (
 	assign		inst_addrb[31:2] = pc;
 
 	typedef enum logic [2:0] {
-		WAIT_ST, LOAD_ST, RUN_ST, OUT_ST
+		WAIT_ST, LOAD_ST, RUN_ST, OUT_ST, END_ST
 	} state_type;
 
 	(* mark_debug = "true" *) state_type state;
@@ -352,6 +352,8 @@ module cpu (
 						end
 					end
 				end
+			end else if (state == END_ST) begin
+				led[7:2] <= 6'b000100;
 			end
 		end
 	end
