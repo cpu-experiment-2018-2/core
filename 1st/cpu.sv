@@ -222,6 +222,7 @@ module cpu (
 					case (inst[31:29])
 						3'b001:		srcb <= gpr[inst[15:11]];
 						3'b010:		srcb <= gpr[inst[15:11]];
+						3'b011:		srcb <= gpr[inst[25:21]];
 						3'b101:		srcb <= gpr[inst[20:16]];
 						default:	srcb <= 32'b0;
 					endcase
@@ -243,10 +244,10 @@ module cpu (
 				end else if (cpu_state == EXEC_ST) begin
 					if (inst[31:29] == 3'b000) begin
 						case (inst[28:26])
-							3'b000:		gpr[rt] <= srca + $signed({16{si[15]}}, si}); // Addi
-							3'b001:		gpr[rt] <= srca - $signed({16{si[15]}}, si}); // Subi
-							3'b010:		gpr[rt] <= srca * $signed({16{si[15]}}, si}); // Muli
-							default:	gpr[rt] <= srca / $signed({16{si[15]}}, si}); // Divi
+							3'b000:		gpr[rt] <= srca + $signed({{16{si[15]}}, si}); // Addi
+							3'b001:		gpr[rt] <= srca - $signed({{16{si[15]}}, si}); // Subi
+							3'b010:		gpr[rt] <= srca * $signed({{16{si[15]}}, si}); // Muli
+							default:	gpr[rt] <= srca / $signed({{16{si[15]}}, si}); // Divi
 						endcase
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
@@ -264,7 +265,7 @@ module cpu (
 						if (inst[28:26] == 3'b000) begin
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addrb <= $unsigned(srca) + {16{si[15]}}, si};
+								data_addrb <= $unsigned(srca) + {{16{si[15]}}, si};
 								data_enb <= 1;
 							end else if (memory_wait == 2'b11) begin
 								data_enb <= 0;
@@ -276,7 +277,7 @@ module cpu (
 						end else if (inst[28:26] == 3'b001) begin // Store
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addra <= $unsigned(srca) + {16{si[15]}}, si};
+								data_addra <= $unsigned(srca) + {{16{si[15]}}, si};
 								data_dina <= srcs;
 								data_wea <= 4'b1111;
 							end else if (memory_wait == 2'b11) begin
@@ -287,6 +288,10 @@ module cpu (
 							end
 						end else if (inst[28:26] == 3'b010) begin // Li
 							gpr[rt] <= {{16{si[15]}}, si};
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b011) begin // Lis
+							gpr[rt] <= {si, srcb[15:0]};
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end
