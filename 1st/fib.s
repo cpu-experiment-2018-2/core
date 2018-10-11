@@ -15,9 +15,11 @@ loop:
 	beq ok
 failed:
 	li %r0, 2626
-	out %r0
+	outll %r0
+	outlh %r0
 	end
 ok:
 	li %r0, 2625
-	out %r0
+	outll %r0
+	outlh %r0
 	end

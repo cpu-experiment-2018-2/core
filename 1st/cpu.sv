@@ -98,8 +98,6 @@ module cpu (
 	load_state_type load_state;
 
 
-	reg		cnt2;
-	reg [1:0]	cnt4;
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
 	(* mark_debug = "true" *) reg [1:0]	memory_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
@@ -120,7 +118,6 @@ module cpu (
 	(* mark_debug = "true" *) reg	eq;
 	(* mark_debug = "true" *) reg	le;
 
-	reg [31:0]	out_data;
 	typedef enum logic {
 		CHECK_TX_ST, WRITE_ST
 	} out_state_type;
@@ -140,8 +137,6 @@ module cpu (
 			bl_en <= 0;
 
 			pc <= 30'b0;
-			cnt2 <= 0;
-			cnt4 <= 0;
 			fetch_wait <= 0;
 			memory_wait <= 0;
 
@@ -317,9 +312,14 @@ module cpu (
 						end
 						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b110) begin
-						// Out
-						if (inst[28:26] == 3'b001) begin
-							out_data <= gpr[rt];
+						// Outll
+						if (inst[28] == 1) begin
+							case (inst[27:26])
+								3'b000:	uart_wdata <= gpr[rt][7:0]; // Outll
+								3'b001:	uart_wdata <= gpr[rt][15:8]; // Outlh
+								3'b010:	uart_wdata <= gpr[rt][23:16]; // Outul
+								3'b011:	uart_wdata <= gpr[rt][31:24]; // Outuh
+							endcase
 
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
@@ -336,10 +336,6 @@ module cpu (
 					if (uart_rdone) begin
 						// Tx FIFO Full flag
 						if (uart_rdata[3] == 0) begin
-							if (cnt4 == 2'b00) uart_wdata <= out_data[7:0];
-							else if (cnt4 == 2'b01) uart_wdata <= out_data[15:8];
-							else if (cnt4 == 2'b10) uart_wdata <= out_data[23:16];
-							else if (cnt4 == 2'b11) uart_wdata <= out_data[31:24];
 							uart_wen <= 1;
 							out_state <= WRITE_ST;
 						end else uart_ren <= 1;
@@ -347,15 +343,7 @@ module cpu (
 				end else if (out_state == WRITE_ST) begin
 					uart_wen <= 0;
 
-					if (uart_wdone) begin
-						cnt4 <= cnt4 + 1;
-						if (cnt4 == 2'b11) begin
-							state <= RUN_ST;
-						end else begin
-							uart_ren <= 1;
-							out_state <= CHECK_TX_ST;
-						end
-					end
+					if (uart_wdone) state <= RUN_ST;
 				end
 			end else if (state == END_ST) begin
 				led[7:2] <= 6'b000100;
