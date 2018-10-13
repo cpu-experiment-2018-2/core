@@ -36,14 +36,26 @@ module cpu (
 	
 	// data BRAM
 	// Port A:WRITE
-	(* mark_debug = "true" *)output reg [31:0]		data_addra,	// WRADDR
-	(* mark_debug = "true" *)output reg [31:0]		data_dina,	// data to be written
-	(* mark_debug = "true" *)output reg [3:0]		data_wea,	// WEN
+	(* mark_debug = "true" *) output reg [31:0]		data_addra,	// WRADDR
+	(* mark_debug = "true" *) output reg [31:0]		data_dina,	// data to be written
+	(* mark_debug = "true" *) output reg [3:0]		data_wea,	// WEN
 
 	// Port B:READ
-	(* mark_debug = "true" *)output reg [31:0]		data_addrb,	// RDADDR
+	(* mark_debug = "true" *) output reg [31:0]		data_addrb,	// RDADDR
 	input wire [31:0]		data_doutb,	// data from READ operation
-	(* mark_debug = "true" *)output reg			data_enb,	// REN
+	(* mark_debug = "true" *) output reg			data_enb,	// REN
+
+	(* mark_debug = "true" *) output wire [31:0]		fadd_axis_a_tdata,
+	(* mark_debug = "true" *) input wire			fadd_axis_a_tready,
+	(* mark_debug = "true" *) output wire			fadd_axis_a_tvalid,
+
+	(* mark_debug = "true" *) output wire [31:0]		fadd_axis_b_tdata,
+	(* mark_debug = "true" *) input wire			fadd_axis_b_tready,
+	(* mark_debug = "true" *) output wire			fadd_axis_b_tvalid,
+
+	(* mark_debug = "true" *) input wire [31:0]		fadd_axis_result_tdata,
+	(* mark_debug = "true" *) output wire			fadd_axis_result_tready,
+	(* mark_debug = "true" *) input wire			fadd_axis_result_tvalid,
 
 	output reg [7:0]		led,
 	input wire [4:0]		btn,
@@ -86,7 +98,7 @@ module cpu (
 	assign		inst_addrb[31:2] = pc;
 
 	typedef enum logic [2:0] {
-		WAIT_ST, LOAD_ST, RUN_ST, OUT_ST, END_ST
+		WAIT_ST, LOAD_ST, RUN_ST, FPU_ST, IN_ST, OUT_ST, END_ST
 	} state_type;
 
 	(* mark_debug = "true" *) state_type state;
@@ -96,7 +108,6 @@ module cpu (
 	} load_state_type;
 
 	load_state_type load_state;
-
 
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
 	(* mark_debug = "true" *) reg [1:0]	memory_wait;
@@ -118,6 +129,12 @@ module cpu (
 	(* mark_debug = "true" *) reg	eq;
 	(* mark_debug = "true" *) reg	le;
 
+	(* mark_debug = "true" *) reg		fadd_en;
+	(* mark_debug = "true" *) wire [31:0]	fadd_result;
+	(* mark_debug = "true" *) wire		fadd_done;
+	(* mark_debug = "true" *) wire		fadd_busy;
+	fadd fa(.*, .en(fadd_en), .adata(srca), .bdata(srcb), .result(fadd_result), .done(fadd_done), .busy(fadd_busy), .clk(clk), .rstn(rstn));
+	
 	typedef enum logic {
 		CHECK_TX_ST, WRITE_ST
 	} out_state_type;
@@ -247,14 +264,26 @@ module cpu (
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b001) begin
-						case (inst[28:26])
-							3'b000:		gpr[rt] <= srca + srcb; // Add
-							3'b001:		gpr[rt] <= srca - srcb; // Sub
-							3'b010:		gpr[rt] <= srca * srcb; // Mul
-							default:	gpr[rt] <= srca / srcb; // Div
-						endcase
-						cpu_state <= FETCH_ST;
-						pc <= pc + 1;
+						if (inst[28] == 0) begin
+							case (inst[27:26])
+								2'b00:	gpr[rt] <= srca + srcb; // Add
+								2'b01:	gpr[rt] <= srca - srcb; // Sub
+								2'b10:	gpr[rt] <= srca * srcb; // Mul
+								2'b11:	gpr[rt] <= srca / srcb; // Div
+							endcase
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else begin
+							// Fadd
+							if (inst[27:26] == 2'b00) begin
+								fadd_en <= 1;
+								if (fadd_busy == 0) begin
+									state <= FPU_ST;
+									cpu_state <= FETCH_ST;
+									pc <= pc + 1;
+								end
+							end
+						end
 					end else if (inst[31:29] == 3'b011) begin
 						// Load
 						if (inst[28:26] == 3'b000) begin
@@ -321,15 +350,23 @@ module cpu (
 								3'b011:	uart_wdata <= gpr[rt][31:24]; // Outuh
 							endcase
 
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
 
 							uart_raddr <= STAT_REG;
 							uart_ren <= 1;
 							out_state <= CHECK_TX_ST;
-							if (uart_rbusy == 0) state <= OUT_ST;
+							if (uart_rbusy == 0) begin
+								state <= OUT_ST;
+								cpu_state <= FETCH_ST;
+								pc <= pc + 1;
+							end
 						end
 					end
+				end
+			end else if (state == FPU_ST) begin
+				fadd_en <= 0;
+				if (fadd_done) begin
+					gpr[rt] <= fadd_result;
+					state <= RUN_ST;
 				end
 			end else if (state == OUT_ST) begin
 				if (out_state == CHECK_TX_ST) begin
