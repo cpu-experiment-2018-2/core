@@ -51,6 +51,58 @@ module top (
 	output wire			data_enb,	// REN
 	output wire			data_rstb,
 
+	// fadd
+	output wire [31:0]		fadd_axis_a_tdata,
+	input wire			fadd_axis_a_tready,
+	output wire			fadd_axis_a_tvalid,
+
+	output wire [31:0]		fadd_axis_b_tdata,
+	input wire			fadd_axis_b_tready,
+	output wire			fadd_axis_b_tvalid,
+
+	input wire [31:0]		fadd_axis_result_tdata,
+	output wire			fadd_axis_result_tready,
+	input wire			fadd_axis_result_tvalid,
+
+	// fsub
+	output wire [31:0]		fsub_axis_a_tdata,
+	input wire			fsub_axis_a_tready,
+	output wire			fsub_axis_a_tvalid,
+
+	output wire [31:0]		fsub_axis_b_tdata,
+	input wire			fsub_axis_b_tready,
+	output wire			fsub_axis_b_tvalid,
+
+	input wire [31:0]		fsub_axis_result_tdata,
+	output wire			fsub_axis_result_tready,
+	input wire			fsub_axis_result_tvalid,
+
+	// fmul
+	output wire [31:0]		fmul_axis_a_tdata,
+	input wire			fmul_axis_a_tready,
+	output wire			fmul_axis_a_tvalid,
+
+	output wire [31:0]		fmul_axis_b_tdata,
+	input wire			fmul_axis_b_tready,
+	output wire			fmul_axis_b_tvalid,
+
+	input wire [31:0]		fmul_axis_result_tdata,
+	output wire			fmul_axis_result_tready,
+	input wire			fmul_axis_result_tvalid,
+
+	// fdiv
+	output wire [31:0]		fdiv_axis_a_tdata,
+	input wire			fdiv_axis_a_tready,
+	output wire			fdiv_axis_a_tvalid,
+
+	output wire [31:0]		fdiv_axis_b_tdata,
+	input wire			fdiv_axis_b_tready,
+	output wire			fdiv_axis_b_tvalid,
+
+	input wire [31:0]		fdiv_axis_result_tdata,
+	output wire			fdiv_axis_result_tready,
+	input wire			fdiv_axis_result_tvalid,
+	
 	output wire [7:0]		led,
 	input wire [4:0]		btn,
 	input wire			clk,
@@ -73,6 +125,18 @@ module top (
 	      inst_addrb, inst_doutb, inst_enb,
 	      data_addra, data_dina, data_wea,
 	      data_addrb, data_doutb, data_enb,
+	      fadd_axis_a_tdata, fadd_axis_a_tready, fadd_axis_a_tvalid,
+	      fadd_axis_b_tdata, fadd_axis_b_tready, fadd_axis_b_tvalid,
+	      fadd_axis_result_tdata, fadd_axis_result_tready, fadd_axis_result_tvalid,
+	      fsub_axis_a_tdata, fsub_axis_a_tready, fsub_axis_a_tvalid,
+	      fsub_axis_b_tdata, fsub_axis_b_tready, fsub_axis_b_tvalid,
+	      fsub_axis_result_tdata, fsub_axis_result_tready, fsub_axis_result_tvalid,
+	      fmul_axis_a_tdata, fmul_axis_a_tready, fmul_axis_a_tvalid,
+	      fmul_axis_b_tdata, fmul_axis_b_tready, fmul_axis_b_tvalid,
+	      fmul_axis_result_tdata, fmul_axis_result_tready, fmul_axis_result_tvalid,
+	      fdiv_axis_a_tdata, fdiv_axis_a_tready, fdiv_axis_a_tvalid,
+	      fdiv_axis_b_tdata, fdiv_axis_b_tready, fdiv_axis_b_tvalid,
+	      fdiv_axis_result_tdata, fdiv_axis_result_tready, fdiv_axis_result_tvalid,
 	      led, btn, clk, rstn);
 
 endmodule

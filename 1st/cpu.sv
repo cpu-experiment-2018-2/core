@@ -36,26 +36,66 @@ module cpu (
 	
 	// data BRAM
 	// Port A:WRITE
-	(* mark_debug = "true" *) output reg [31:0]		data_addra,	// WRADDR
-	(* mark_debug = "true" *) output reg [31:0]		data_dina,	// data to be written
-	(* mark_debug = "true" *) output reg [3:0]		data_wea,	// WEN
+	output reg [31:0]		data_addra,	// WRADDR
+	output reg [31:0]		data_dina,	// data to be written
+	output reg [3:0]		data_wea,	// WEN
 
 	// Port B:READ
-	(* mark_debug = "true" *) output reg [31:0]		data_addrb,	// RDADDR
+	output reg [31:0]		data_addrb,	// RDADDR
 	input wire [31:0]		data_doutb,	// data from READ operation
-	(* mark_debug = "true" *) output reg			data_enb,	// REN
+	output reg			data_enb,	// REN
 
-	(* mark_debug = "true" *) output wire [31:0]		fadd_axis_a_tdata,
-	(* mark_debug = "true" *) input wire			fadd_axis_a_tready,
-	(* mark_debug = "true" *) output wire			fadd_axis_a_tvalid,
+	// fadd
+	output wire [31:0]		fadd_axis_a_tdata,
+	input wire			fadd_axis_a_tready,
+	output wire			fadd_axis_a_tvalid,
 
-	(* mark_debug = "true" *) output wire [31:0]		fadd_axis_b_tdata,
-	(* mark_debug = "true" *) input wire			fadd_axis_b_tready,
-	(* mark_debug = "true" *) output wire			fadd_axis_b_tvalid,
+	output wire [31:0]		fadd_axis_b_tdata,
+	input wire			fadd_axis_b_tready,
+	output wire			fadd_axis_b_tvalid,
 
-	(* mark_debug = "true" *) input wire [31:0]		fadd_axis_result_tdata,
-	(* mark_debug = "true" *) output wire			fadd_axis_result_tready,
-	(* mark_debug = "true" *) input wire			fadd_axis_result_tvalid,
+	input wire [31:0]		fadd_axis_result_tdata,
+	output wire			fadd_axis_result_tready,
+	input wire			fadd_axis_result_tvalid,
+
+	// fsub
+	output wire [31:0]		fsub_axis_a_tdata,
+	input wire			fsub_axis_a_tready,
+	output wire			fsub_axis_a_tvalid,
+
+	output wire [31:0]		fsub_axis_b_tdata,
+	input wire			fsub_axis_b_tready,
+	output wire			fsub_axis_b_tvalid,
+
+	input wire [31:0]		fsub_axis_result_tdata,
+	output wire			fsub_axis_result_tready,
+	input wire			fsub_axis_result_tvalid,
+
+	// fmul
+	output wire [31:0]		fmul_axis_a_tdata,
+	input wire			fmul_axis_a_tready,
+	output wire			fmul_axis_a_tvalid,
+
+	output wire [31:0]		fmul_axis_b_tdata,
+	input wire			fmul_axis_b_tready,
+	output wire			fmul_axis_b_tvalid,
+
+	input wire [31:0]		fmul_axis_result_tdata,
+	output wire			fmul_axis_result_tready,
+	input wire			fmul_axis_result_tvalid,
+
+	// fdiv
+	output wire [31:0]		fdiv_axis_a_tdata,
+	input wire			fdiv_axis_a_tready,
+	output wire			fdiv_axis_a_tvalid,
+
+	output wire [31:0]		fdiv_axis_b_tdata,
+	input wire			fdiv_axis_b_tready,
+	output wire			fdiv_axis_b_tvalid,
+
+	input wire [31:0]		fdiv_axis_result_tdata,
+	output wire			fdiv_axis_result_tready,
+	input wire			fdiv_axis_result_tvalid,
 
 	output reg [7:0]		led,
 	input wire [4:0]		btn,
@@ -129,12 +169,30 @@ module cpu (
 	(* mark_debug = "true" *) reg	eq;
 	(* mark_debug = "true" *) reg	le;
 
-	(* mark_debug = "true" *) reg		fadd_en;
-	(* mark_debug = "true" *) wire [31:0]	fadd_result;
-	(* mark_debug = "true" *) wire		fadd_done;
-	(* mark_debug = "true" *) wire		fadd_busy;
+	reg		fadd_en;
+	wire [31:0]	fadd_result;
+	wire		fadd_done;
+	wire		fadd_busy;
 	fadd fa(.*, .en(fadd_en), .adata(srca), .bdata(srcb), .result(fadd_result), .done(fadd_done), .busy(fadd_busy), .clk(clk), .rstn(rstn));
 	
+	reg		fsub_en;
+	wire [31:0]	fsub_result;
+	wire		fsub_done;
+	wire		fsub_busy;
+	fsub fs(.*, .en(fsub_en), .adata(srca), .bdata(srcb), .result(fsub_result), .done(fsub_done), .busy(fsub_busy), .clk(clk), .rstn(rstn));
+
+	reg		fmul_en;
+	wire [31:0]	fmul_result;
+	wire		fmul_done;
+	wire		fmul_busy;
+	fmul fm(.*, .en(fmul_en), .adata(srca), .bdata(srcb), .result(fmul_result), .done(fmul_done), .busy(fmul_busy), .clk(clk), .rstn(rstn));
+
+	reg		fdiv_en;
+	wire [31:0]	fdiv_result;
+	wire		fdiv_done;
+	wire		fdiv_busy;
+	fdiv fd(.*, .en(fdiv_en), .adata(srca), .bdata(srcb), .result(fdiv_result), .done(fdiv_done), .busy(fdiv_busy), .clk(clk), .rstn(rstn));
+
 	typedef enum logic {
 		CHECK_TX_ST, WRITE_ST
 	} out_state_type;
@@ -148,6 +206,11 @@ module cpu (
 			uart_wdata <= 8'b0;
 			uart_waddr <= TX_FIFO;
 			uart_wen <= 0;
+
+			fadd_en <= 0;
+			fsub_en <= 0;
+			fmul_en <= 0;
+			fdiv_en <= 0;
 
 			data <= 8'b0;
 			inst_enb <= 0;
@@ -271,19 +334,17 @@ module cpu (
 								2'b10:	gpr[rt] <= srca * srcb; // Mul
 								2'b11:	gpr[rt] <= srca / srcb; // Div
 							endcase
-							cpu_state <= FETCH_ST;
-							pc <= pc + 1;
 						end else begin
-							// Fadd
-							if (inst[27:26] == 2'b00) begin
-								fadd_en <= 1;
-								if (fadd_busy == 0) begin
-									state <= FPU_ST;
-									cpu_state <= FETCH_ST;
-									pc <= pc + 1;
-								end
-							end
+							case (inst[27:26])
+								2'b00: fadd_en <= 1; // Fadd
+								2'b01: fsub_en <= 1; // Fsub
+								2'b10: fmul_en <= 1; // Fmul
+								2'b11: fdiv_en <= 1; // Fdiv
+							endcase
+							state <= FPU_ST;
 						end
+						cpu_state <= FETCH_ST;
+						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b011) begin
 						// Load
 						if (inst[28:26] == 3'b000) begin
@@ -364,8 +425,23 @@ module cpu (
 				end
 			end else if (state == FPU_ST) begin
 				fadd_en <= 0;
+				fsub_en <= 0;
+				fmul_en <= 0;
+				fdiv_en <= 0;
 				if (fadd_done) begin
 					gpr[rt] <= fadd_result;
+					state <= RUN_ST;
+				end
+				if (fsub_done) begin
+					gpr[rt] <= fsub_result;
+					state <= RUN_ST;
+				end
+				if (fmul_done) begin
+					gpr[rt] <= fmul_result;
+					state <= RUN_ST;
+				end
+				if (fdiv_done) begin
+					gpr[rt] <= fdiv_result;
 					state <= RUN_ST;
 				end
 			end else if (state == OUT_ST) begin
