@@ -350,7 +350,7 @@ module cpu (
 						if (inst[28:26] == 3'b000) begin
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addrb <= $unsigned(srca) + {{16{si[15]}}, si};
+								data_addrb <= ($unsigned(srca) + {{16{si[15]}}, si}) << 2;
 								data_enb <= 1;
 							end else if (memory_wait == 2'b11) begin
 								data_enb <= 0;
@@ -362,7 +362,7 @@ module cpu (
 						end else if (inst[28:26] == 3'b001) begin // Store
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addra <= $unsigned(srca) + {{16{si[15]}}, si};
+								data_addra <= ($unsigned(srca) + {{16{si[15]}}, si}) << 2;
 								data_dina <= srcs;
 								data_wea <= 4'b1111;
 							end else if (memory_wait == 2'b11) begin
