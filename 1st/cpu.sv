@@ -307,6 +307,7 @@ module cpu (
 
 					case (inst[31:29])
 						3'b000:		si <= inst[15:0];
+						3'b010:		si <= inst[15:0];
 						3'b011:		si <= inst[15:0];
 						default:	si <= 16'b0;
 					endcase
@@ -342,6 +343,17 @@ module cpu (
 								2'b11: fdiv_en <= 1; // Fdiv
 							endcase
 							state <= FPU_ST;
+						end
+						cpu_state <= FETCH_ST;
+						pc <= pc + 1;
+					end else if (inst[31:29] == 3'b010) begin
+						if (inst[28] == 0) begin
+							case (inst[27:26])
+								2'b00:	gpr[rt] <= srca & srcb;	// And
+								2'b01:	gpr[rt] <= srca | srcb;	// Or
+								2'b10:	gpr[rt] <= srca >>> si;	// Srawi
+								2'b11:	gpr[rt] <= srca <<< si;	// Slawi
+							endcase
 						end
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
