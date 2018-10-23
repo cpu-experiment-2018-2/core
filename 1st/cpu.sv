@@ -36,15 +36,15 @@ module cpu (
 	
 	// data BRAM
 	// Port A:WRITE
-	(* mark_debug = "true" *) output wire [31:0]		data_addra,	// WRADDR
-	(* mark_debug = "true" *) output reg [31:0]		data_dina,	// data to be written
-	(* mark_debug = "true" *) output reg			data_ena,	// ENA
-	(* mark_debug = "true" *) output reg [3:0]		data_wea,	// WEN
+	output wire [31:0]		data_addra,	// WRADDR
+	output reg [31:0]		data_dina,	// data to be written
+	output reg			data_ena,	// ENA
+	output reg [3:0]		data_wea,	// WEN
 
 	// Port B:READ
-	(* mark_debug = "true" *) output wire [31:0]		data_addrb,	// RDADDR
-	(* mark_debug = "true" *) input wire [31:0]		data_doutb,	// data from READ operation
-	(* mark_debug = "true" *) output reg			data_enb,	// REN
+	output wire [31:0]		data_addrb,	// RDADDR
+	input wire [31:0]		data_doutb,	// data from READ operation
+	output reg			data_enb,	// REN
 
 	// fadd
 	output wire [31:0]		fadd_axis_a_tdata,
@@ -322,7 +322,7 @@ module cpu (
 
 					case (inst[31:29])
 						3'b011:		srcs <= gpr[inst[25:21]];
-						3'b100:		srcs <= gpr[5'b11111];
+						3'b100:		srcs <= (inst[28:26] == 3'b001) ? gpr[5'b11111] : gpr[inst[25:21]];
 						3'b110:		srcs <= gpr[inst[25:21]];
 						default:	srcs <= 32'b0;
 					endcase
@@ -458,6 +458,11 @@ module cpu (
 							rt_flag <= 1;
 							rt <= 5'b11111;
 							pc <= li;
+						end else if (inst[28:26] == 3'b011) begin // Blrr
+							tdata <= pc + 1;
+							rt_flag <= 1;
+							rt <= 5'b11111;
+							pc <= srcs;
 						end
 						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b101) begin
