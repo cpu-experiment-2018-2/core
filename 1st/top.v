@@ -42,6 +42,7 @@ module top (
 	output wire [31:0]		data_addra,	// WRADDR
 	output wire			data_clka,
 	output wire [31:0]		data_dina,	// data to be written
+	output wire			data_ena,	// ENA
 	output wire [3:0]		data_wea,	// WEN
 
 	// Port B:READ
@@ -123,7 +124,7 @@ module top (
 	      uart_axi_wdata, uart_axi_wready, uart_axi_wstrb, uart_axi_wvalid,
 	      inst_addra, inst_dina, inst_wea,
 	      inst_addrb, inst_doutb, inst_enb,
-	      data_addra, data_dina, data_wea,
+	      data_addra, data_dina, data_ena, data_wea,
 	      data_addrb, data_doutb, data_enb,
 	      fadd_axis_a_tdata, fadd_axis_a_tready, fadd_axis_a_tvalid,
 	      fadd_axis_b_tdata, fadd_axis_b_tready, fadd_axis_b_tvalid,

@@ -16,13 +16,14 @@ module fadd(
 	input wire [31:0]	bdata,
 	output reg [31:0]	result,
 	output reg		done,
-	output reg		busy,
+	output wire		busy,
 	input wire		clk,
 	input wire		rstn);
 
 	assign fadd_axis_a_tdata = adata;
 	assign fadd_axis_b_tdata = bdata;
 
+	assign busy = fadd_axis_result_tvalid | (fadd_state == SET_ST) | (fadd_state == RESULT_ST);
 
 	typedef enum logic [1:0] {
 		WAIT_ST, SET_ST, RESULT_ST
@@ -33,10 +34,9 @@ module fadd(
 		if (~rstn) begin
 			result <= 32'b0;
 			done <= 0;
-			busy <= 0;
 			fadd_axis_a_tvalid <= 0;
 			fadd_axis_b_tvalid <= 0;
-			fadd_axis_result_tready <= 0;
+			fadd_axis_result_tready <= 1;
 			fadd_state <= WAIT_ST;
 		end else begin
 			if (fadd_state == WAIT_ST) begin
@@ -45,8 +45,8 @@ module fadd(
 				if (en) begin
 					fadd_axis_a_tvalid <= 1;
 					fadd_axis_b_tvalid <= 1;
+					fadd_axis_result_tready <= 0;
 					fadd_state <= SET_ST;
-					busy <= 1;
 				end
 			end else if (fadd_state == SET_ST) begin
 				if (fadd_axis_a_tready) fadd_axis_a_tvalid <= 0;
@@ -58,7 +58,6 @@ module fadd(
 				if (fadd_axis_result_tvalid) begin
 					fadd_axis_result_tready <= 1;
 					result <= fadd_axis_result_tdata;
-					busy <= 0;
 					done <= 1;
 					fadd_state <= WAIT_ST;
 				end

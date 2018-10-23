@@ -16,13 +16,14 @@ module fmul(
 	input wire [31:0]	bdata,
 	output reg [31:0]	result,
 	output reg		done,
-	output reg		busy,
+	output wire		busy,
 	input wire		clk,
 	input wire		rstn);
 
 	assign fmul_axis_a_tdata = adata;
 	assign fmul_axis_b_tdata = bdata;
 
+	assign busy = fmul_axis_result_tvalid | (fmul_state == SET_ST) | (fmul_state == RESULT_ST);
 
 	typedef enum logic [1:0] {
 		WAIT_ST, SET_ST, RESULT_ST
@@ -33,10 +34,9 @@ module fmul(
 		if (~rstn) begin
 			result <= 32'b0;
 			done <= 0;
-			busy <= 0;
 			fmul_axis_a_tvalid <= 0;
 			fmul_axis_b_tvalid <= 0;
-			fmul_axis_result_tready <= 0;
+			fmul_axis_result_tready <= 1;
 			fmul_state <= WAIT_ST;
 		end else begin
 			if (fmul_state == WAIT_ST) begin
@@ -45,8 +45,8 @@ module fmul(
 				if (en) begin
 					fmul_axis_a_tvalid <= 1;
 					fmul_axis_b_tvalid <= 1;
+					fmul_axis_result_tready <= 0;
 					fmul_state <= SET_ST;
-					busy <= 1;
 				end
 			end else if (fmul_state == SET_ST) begin
 				if (fmul_axis_a_tready) fmul_axis_a_tvalid <= 0;
@@ -58,7 +58,6 @@ module fmul(
 				if (fmul_axis_result_tvalid) begin
 					fmul_axis_result_tready <= 1;
 					result <= fmul_axis_result_tdata;
-					busy <= 0;
 					done <= 1;
 					fmul_state <= WAIT_ST;
 				end

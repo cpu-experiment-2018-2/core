@@ -16,13 +16,14 @@ module fsub(
 	input wire [31:0]	bdata,
 	output reg [31:0]	result,
 	output reg		done,
-	output reg		busy,
+	output wire		busy,
 	input wire		clk,
 	input wire		rstn);
 
 	assign fsub_axis_a_tdata = adata;
 	assign fsub_axis_b_tdata = bdata;
 
+	assign busy = fsub_axis_result_tvalid | (fsub_state == SET_ST) | (fsub_state == RESULT_ST);
 
 	typedef enum logic [1:0] {
 		WAIT_ST, SET_ST, RESULT_ST
@@ -33,10 +34,9 @@ module fsub(
 		if (~rstn) begin
 			result <= 32'b0;
 			done <= 0;
-			busy <= 0;
 			fsub_axis_a_tvalid <= 0;
 			fsub_axis_b_tvalid <= 0;
-			fsub_axis_result_tready <= 0;
+			fsub_axis_result_tready <= 1;
 			fsub_state <= WAIT_ST;
 		end else begin
 			if (fsub_state == WAIT_ST) begin
@@ -45,8 +45,8 @@ module fsub(
 				if (en) begin
 					fsub_axis_a_tvalid <= 1;
 					fsub_axis_b_tvalid <= 1;
+					fsub_axis_result_tready <= 0;
 					fsub_state <= SET_ST;
-					busy <= 1;
 				end
 			end else if (fsub_state == SET_ST) begin
 				if (fsub_axis_a_tready) fsub_axis_a_tvalid <= 0;
@@ -58,7 +58,6 @@ module fsub(
 				if (fsub_axis_result_tvalid) begin
 					fsub_axis_result_tready <= 1;
 					result <= fsub_axis_result_tdata;
-					busy <= 0;
 					done <= 1;
 					fsub_state <= WAIT_ST;
 				end

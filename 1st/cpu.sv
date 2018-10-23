@@ -36,14 +36,15 @@ module cpu (
 	
 	// data BRAM
 	// Port A:WRITE
-	output reg [31:0]		data_addra,	// WRADDR
-	output reg [31:0]		data_dina,	// data to be written
-	output reg [3:0]		data_wea,	// WEN
+	(* mark_debug = "true" *) output wire [31:0]		data_addra,	// WRADDR
+	(* mark_debug = "true" *) output reg [31:0]		data_dina,	// data to be written
+	(* mark_debug = "true" *) output reg			data_ena,	// ENA
+	(* mark_debug = "true" *) output reg [3:0]		data_wea,	// WEN
 
 	// Port B:READ
-	output reg [31:0]		data_addrb,	// RDADDR
-	input wire [31:0]		data_doutb,	// data from READ operation
-	output reg			data_enb,	// REN
+	(* mark_debug = "true" *) output wire [31:0]		data_addrb,	// RDADDR
+	(* mark_debug = "true" *) input wire [31:0]		data_doutb,	// data from READ operation
+	(* mark_debug = "true" *) output reg			data_enb,	// REN
 
 	// fadd
 	output wire [31:0]		fadd_axis_a_tdata,
@@ -152,12 +153,20 @@ module cpu (
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
 	(* mark_debug = "true" *) reg [1:0]	memory_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
+	(* mark_debug = "true" *) reg		rt_flag;
 	(* mark_debug = "true" *) reg [4:0]	rt;
+	(* mark_debug = "true" *) reg signed [31:0]	tdata;
 	(* mark_debug = "true" *) reg signed [31:0]	srca;
 	(* mark_debug = "true" *) reg signed [31:0]	srcb;
 	(* mark_debug = "true" *) reg signed [31:0]	srcs;
 	(* mark_debug = "true" *) reg [15:0]	si;
 	(* mark_debug = "true" *) reg [25:0]	li;
+	(* mark_debug = "true" *) reg [31:0]	read_addr;
+	(* mark_debug = "true" *) reg [31:0]	write_addr;
+	assign		data_addra[1:0] = 0;
+	assign		data_addra[31:2] = write_addr[29:0];
+	assign		data_addrb[1:0] = 0;
+	assign		data_addrb[31:2] = read_addr[29:0];
 
 	assign		inst = inst_doutb;
 	typedef enum logic [1:0] {
@@ -198,7 +207,7 @@ module cpu (
 	} out_state_type;
 	out_state_type out_state;
 
-	always@(posedge clk) begin
+	always_ff@(posedge clk) begin
 		if (~rstn) begin     
 			uart_raddr <= STAT_REG;
 			uart_ren <= 0;
@@ -219,6 +228,12 @@ module cpu (
 			pc <= 30'b0;
 			fetch_wait <= 0;
 			memory_wait <= 0;
+			rt_flag <= 0;
+			read_addr <= 32'b0;
+			write_addr <= 32'b0;
+			data_ena <= 0;
+			data_wea <= 4'b0;
+			data_enb <= 0;
 
 			state <= WAIT_ST;
 			load_state <= CHECK_RX_ST;
@@ -268,6 +283,10 @@ module cpu (
 					fetch_wait <= fetch_wait + 1;
 					if (fetch_wait == 0) begin
 						inst_enb <= 1;
+						if (rt_flag) begin
+							gpr[rt] <= tdata;
+							rt_flag <= 0;
+						end
 					end else if (fetch_wait == 2'b11) begin
 						fetch_wait <= 0;
 						inst_enb <= 0;
@@ -297,13 +316,16 @@ module cpu (
 					case (inst[31:29])
 						3'b001:		srcb <= gpr[inst[15:11]];
 						3'b010:		srcb <= gpr[inst[15:11]];
-						3'b011:		srcb <= gpr[inst[25:21]];
 						3'b101:		srcb <= gpr[inst[20:16]];
 						default:	srcb <= 32'b0;
 					endcase
 
-					if (inst[31:29] == 3'b011) srcs <= gpr[inst[25:21]];
-					else srcs <= 32'b0;
+					case (inst[31:29])
+						3'b011:		srcs <= gpr[inst[25:21]];
+						3'b100:		srcs <= gpr[5'b11111];
+						3'b110:		srcs <= gpr[inst[25:21]];
+						default:	srcs <= 32'b0;
+					endcase
 
 					case (inst[31:29])
 						3'b000:		si <= inst[15:0];
@@ -320,41 +342,67 @@ module cpu (
 				end else if (cpu_state == EXEC_ST) begin
 					if (inst[31:29] == 3'b000) begin
 						case (inst[28:26])
-							3'b000:		gpr[rt] <= srca + $signed({16'b0, si}); // Addi
-							3'b001:		gpr[rt] <= srca - $signed({16'b0, si}); // Subi
-							3'b010:		gpr[rt] <= srca * $signed({16'b0, si}); // Muli
-							default:	gpr[rt] <= srca / $signed({16'b0, si}); // Divi
+							3'b000:		tdata <= srca + $signed({16'b0, si}); // Addi
+							3'b001:		tdata <= srca - $signed({16'b0, si}); // Subi
+							3'b010:		tdata <= srca * $signed({16'b0, si}); // Muli
+							default:	tdata <= srca / $signed({16'b0, si}); // Divi
 						endcase
+						rt_flag <= 1;
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b001) begin
 						if (inst[28] == 0) begin
 							case (inst[27:26])
-								2'b00:	gpr[rt] <= srca + srcb; // Add
-								2'b01:	gpr[rt] <= srca - srcb; // Sub
-								2'b10:	gpr[rt] <= srca * srcb; // Mul
-								2'b11:	gpr[rt] <= srca / srcb; // Div
+								2'b00:	tdata <= srca + srcb; // Add
+								2'b01:	tdata <= srca - srcb; // Sub
+								2'b10:	tdata <= srca * srcb; // Mul
+								2'b11:	tdata <= srca / srcb; // Div
 							endcase
+							cpu_state <= FETCH_ST;
+							rt_flag <= 1;
+							pc <= pc + 1;
 						end else begin
-							case (inst[27:26])
-								2'b00: fadd_en <= 1; // Fadd
-								2'b01: fsub_en <= 1; // Fsub
-								2'b10: fmul_en <= 1; // Fmul
-								2'b11: fdiv_en <= 1; // Fdiv
-							endcase
-							state <= FPU_ST;
+							// Fadd
+							if (inst[27:26] == 2'b00 && ~fadd_busy) begin
+								fadd_en <= 1;
+								cpu_state <= FETCH_ST;
+								state <= FPU_ST;
+
+								rt_flag <= 1;
+								pc <= pc + 1;
+							end else if (inst[27:26] == 2'b01 && ~fsub_busy) begin // Fsub
+								fsub_en <= 1;
+								cpu_state <= FETCH_ST;
+								state <= FPU_ST;
+
+								rt_flag <= 1;
+								pc <= pc + 1;
+							end else if (inst[27:26] == 2'b10 && ~fmul_busy) begin // Fmul
+								fmul_en <= 1;
+								cpu_state <= FETCH_ST;
+								state <= FPU_ST;
+
+								rt_flag <= 1;
+								pc <= pc + 1;
+							end else if (inst[27:26] == 2'b11 && ~fdiv_busy) begin // Fdiv
+								fdiv_en <= 1;
+								cpu_state <= FETCH_ST;
+								state <= FPU_ST;
+
+								rt_flag <= 1;
+								pc <= pc + 1;
+							end
 						end
-						cpu_state <= FETCH_ST;
-						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b010) begin
 						if (inst[28] == 0) begin
 							case (inst[27:26])
-								2'b00:	gpr[rt] <= srca & srcb;	// And
-								2'b01:	gpr[rt] <= srca | srcb;	// Or
-								2'b10:	gpr[rt] <= srca >>> si;	// Srawi
-								2'b11:	gpr[rt] <= srca <<< si;	// Slawi
+								2'b00:	tdata <= $signed(srca & srcb);	// And
+								2'b01:	tdata <= $signed(srca | srcb);	// Or
+								2'b10:	tdata <= srca >>> $signed(si);	// Srawi
+								2'b11:	tdata <= srca <<< $signed(si);	// Slawi
 							endcase
 						end
+						rt_flag <= 1;
 						cpu_state <= FETCH_ST;
 						pc <= pc + 1;
 					end else if (inst[31:29] == 3'b011) begin
@@ -362,11 +410,13 @@ module cpu (
 						if (inst[28:26] == 3'b000) begin
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addrb <= ($unsigned(srca) + {16'b0, si}) << 2;
+								read_addr <= srca + {16'b0, si};
+							end else if (memory_wait == 2'b01) begin
 								data_enb <= 1;
 							end else if (memory_wait == 2'b11) begin
 								data_enb <= 0;
-								gpr[rt] <= data_doutb;
+								tdata <= data_doutb;
+								rt_flag <= 1;
 
 								cpu_state <= FETCH_ST;
 								pc <= pc + 1;
@@ -374,21 +424,26 @@ module cpu (
 						end else if (inst[28:26] == 3'b001) begin // Store
 							memory_wait <= memory_wait + 1;
 							if (memory_wait == 2'b00) begin
-								data_addra <= ($unsigned(srca) + {16'b0, si}) << 2;
+								write_addr <= srca + {16'b0, si};
 								data_dina <= srcs;
+							end else if (memory_wait == 2'b01) begin
+								data_ena <= 1;
 								data_wea <= 4'b1111;
 							end else if (memory_wait == 2'b11) begin
+								data_ena <= 0;
 								data_wea <= 4'b0;
 
 								cpu_state <= FETCH_ST;
 								pc <= pc + 1;
 							end
 						end else if (inst[28:26] == 3'b010) begin // Li
-							gpr[rt] <= {16'b0, si};
+							tdata <= $signed({16'b0, si});
+							rt_flag <= 1;
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end else if (inst[28:26] == 3'b011) begin // Lis
-							gpr[rt] <= {si, srcb[15:0]};
+							tdata <= $signed({si, srcb[15:0]});
+							rt_flag <= 1;
 							cpu_state <= FETCH_ST;
 							pc <= pc + 1;
 						end
@@ -397,9 +452,11 @@ module cpu (
 						if (inst[28:26] == 3'b000) begin
 							pc <= li;
 						end else if (inst[28:26] == 3'b001) begin // Blr
-							pc <= gpr[5'b11111];
+							pc <= srcs;
 						end else if (inst[28:26] == 3'b010) begin // Bl
-							gpr[5'b11111] <= pc + 1;
+							tdata <= pc + 1;
+							rt_flag <= 1;
+							rt <= 5'b11111;
 							pc <= li;
 						end
 						cpu_state <= FETCH_ST;
@@ -417,10 +474,10 @@ module cpu (
 						// Outll
 						if (inst[28] == 1) begin
 							case (inst[27:26])
-								3'b000:	uart_wdata <= gpr[rt][7:0]; // Outll
-								3'b001:	uart_wdata <= gpr[rt][15:8]; // Outlh
-								3'b010:	uart_wdata <= gpr[rt][23:16]; // Outul
-								3'b011:	uart_wdata <= gpr[rt][31:24]; // Outuh
+								3'b000:	uart_wdata <= srcs[7:0]; // Outll
+								3'b001:	uart_wdata <= srcs[15:8]; // Outlh
+								3'b010:	uart_wdata <= srcs[23:16]; // Outul
+								3'b011:	uart_wdata <= srcs[31:24]; // Outuh
 							endcase
 
 
@@ -441,19 +498,19 @@ module cpu (
 				fmul_en <= 0;
 				fdiv_en <= 0;
 				if (fadd_done) begin
-					gpr[rt] <= fadd_result;
+					tdata <= fadd_result;
 					state <= RUN_ST;
 				end
 				if (fsub_done) begin
-					gpr[rt] <= fsub_result;
+					tdata <= fsub_result;
 					state <= RUN_ST;
 				end
 				if (fmul_done) begin
-					gpr[rt] <= fmul_result;
+					tdata <= fmul_result;
 					state <= RUN_ST;
 				end
 				if (fdiv_done) begin
-					gpr[rt] <= fdiv_result;
+					tdata <= fdiv_result;
 					state <= RUN_ST;
 				end
 			end else if (state == OUT_ST) begin
