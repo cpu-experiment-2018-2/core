@@ -17,6 +17,8 @@
 
 #define NUM_OBS_PAUSE 1000000
 
+int count;
+
 int baudnum2sym(int num_baud, speed_t *sym_baud) {
     int ret;
     ret = 0;
@@ -217,6 +219,8 @@ int main(int argc, char *argv[]) {
             }
 	    for (int i = 0; i < rlen; i++) {
 		    fprintf(stderr, "%c", buf[i]);
+		    count++;
+		    if (count >= 100) printf("%d\n", count);
 	    }
         }
         for (i=0;i < num_pause; i++){
