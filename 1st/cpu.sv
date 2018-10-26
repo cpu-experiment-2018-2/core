@@ -46,58 +46,6 @@ module cpu (
 	input wire [31:0]		data_doutb,	// data from READ operation
 	output reg			data_enb,	// REN
 
-	// fadd
-	output wire [31:0]		fadd_axis_a_tdata,
-	input wire			fadd_axis_a_tready,
-	output wire			fadd_axis_a_tvalid,
-
-	output wire [31:0]		fadd_axis_b_tdata,
-	input wire			fadd_axis_b_tready,
-	output wire			fadd_axis_b_tvalid,
-
-	input wire [31:0]		fadd_axis_result_tdata,
-	output wire			fadd_axis_result_tready,
-	input wire			fadd_axis_result_tvalid,
-
-	// fsub
-	output wire [31:0]		fsub_axis_a_tdata,
-	input wire			fsub_axis_a_tready,
-	output wire			fsub_axis_a_tvalid,
-
-	output wire [31:0]		fsub_axis_b_tdata,
-	input wire			fsub_axis_b_tready,
-	output wire			fsub_axis_b_tvalid,
-
-	input wire [31:0]		fsub_axis_result_tdata,
-	output wire			fsub_axis_result_tready,
-	input wire			fsub_axis_result_tvalid,
-
-	// fmul
-	output wire [31:0]		fmul_axis_a_tdata,
-	input wire			fmul_axis_a_tready,
-	output wire			fmul_axis_a_tvalid,
-
-	output wire [31:0]		fmul_axis_b_tdata,
-	input wire			fmul_axis_b_tready,
-	output wire			fmul_axis_b_tvalid,
-
-	input wire [31:0]		fmul_axis_result_tdata,
-	output wire			fmul_axis_result_tready,
-	input wire			fmul_axis_result_tvalid,
-
-	// fdiv
-	output wire [31:0]		fdiv_axis_a_tdata,
-	input wire			fdiv_axis_a_tready,
-	output wire			fdiv_axis_a_tvalid,
-
-	output wire [31:0]		fdiv_axis_b_tdata,
-	input wire			fdiv_axis_b_tready,
-	output wire			fdiv_axis_b_tvalid,
-
-	input wire [31:0]		fdiv_axis_result_tdata,
-	output wire			fdiv_axis_result_tready,
-	input wire			fdiv_axis_result_tvalid,
-
 	output reg [7:0]		led,
 	input wire [4:0]		btn,
 	input wire			clk,
@@ -182,25 +130,25 @@ module cpu (
 	wire [31:0]	fadd_result;
 	wire		fadd_done;
 	wire		fadd_busy;
-	fadd fa(.*, .en(fadd_en), .adata(srca), .bdata(srcb), .result(fadd_result), .done(fadd_done), .busy(fadd_busy), .clk(clk), .rstn(rstn));
+	fadd fa(.en(fadd_en), .adata(srca), .bdata(srcb), .result(fadd_result), .done(fadd_done), .busy(fadd_busy), .clk(clk), .rstn(rstn));
 	
 	reg		fsub_en;
 	wire [31:0]	fsub_result;
 	wire		fsub_done;
 	wire		fsub_busy;
-	fsub fs(.*, .en(fsub_en), .adata(srca), .bdata(srcb), .result(fsub_result), .done(fsub_done), .busy(fsub_busy), .clk(clk), .rstn(rstn));
+	fsub fs(.en(fsub_en), .adata(srca), .bdata(srcb), .result(fsub_result), .done(fsub_done), .busy(fsub_busy), .clk(clk), .rstn(rstn));
 
 	reg		fmul_en;
 	wire [31:0]	fmul_result;
 	wire		fmul_done;
 	wire		fmul_busy;
-	fmul fm(.*, .en(fmul_en), .adata(srca), .bdata(srcb), .result(fmul_result), .done(fmul_done), .busy(fmul_busy), .clk(clk), .rstn(rstn));
+	fmul fm(.en(fmul_en), .adata(srca), .bdata(srcb), .result(fmul_result), .done(fmul_done), .busy(fmul_busy), .clk(clk), .rstn(rstn));
 
 	reg		fdiv_en;
 	wire [31:0]	fdiv_result;
 	wire		fdiv_done;
 	wire		fdiv_busy;
-	fdiv fd(.*, .en(fdiv_en), .adata(srca), .bdata(srcb), .result(fdiv_result), .done(fdiv_done), .busy(fdiv_busy), .clk(clk), .rstn(rstn));
+	fdiv fd(.en(fdiv_en), .adata(srca), .bdata(srcb), .result(fdiv_result), .done(fdiv_done), .busy(fdiv_busy), .clk(clk), .rstn(rstn));
 
 	typedef enum logic {
 		CHECK_RX_ST_IN, READ_ST_IN
