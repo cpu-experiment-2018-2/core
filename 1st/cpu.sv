@@ -203,6 +203,11 @@ module cpu (
 	fdiv fd(.*, .en(fdiv_en), .adata(srca), .bdata(srcb), .result(fdiv_result), .done(fdiv_done), .busy(fdiv_busy), .clk(clk), .rstn(rstn));
 
 	typedef enum logic {
+		CHECK_RX_ST_IN, READ_ST_IN
+	} in_state_type;
+	in_state_type in_state;
+
+	typedef enum logic {
 		CHECK_TX_ST, WRITE_ST
 	} out_state_type;
 	out_state_type out_state;
@@ -238,6 +243,7 @@ module cpu (
 			state <= WAIT_ST;
 			load_state <= CHECK_RX_ST;
 			cpu_state <= FETCH_ST;
+			in_state <= CHECK_RX_ST_IN;
 			out_state <= CHECK_TX_ST;
 		end else begin
 			if (state == WAIT_ST) begin
@@ -483,8 +489,17 @@ module cpu (
 						end else if (inst[28:26] == 3'b100) pc <= less ? li : (pc + 1); // Bless
 						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b110) begin
-						// Outll
-						if (inst[28] == 1) begin
+						// In
+						if (inst[28] == 0) begin
+							tdata <= srcs;
+							uart_raddr <= STAT_REG;
+							uart_ren <= 1;
+
+							state <= IN_ST;
+							in_state <= CHECK_RX_ST_IN;
+							cpu_state <= FETCH_ST;
+							pc <= pc + 1;
+						end else begin // Out
 							case (inst[27:26])
 								3'b000:	uart_wdata <= srcs[7:0]; // Outll
 								3'b001:	uart_wdata <= srcs[15:8]; // Outlh
@@ -524,6 +539,27 @@ module cpu (
 				if (fdiv_done) begin
 					tdata <= fdiv_result;
 					state <= RUN_ST;
+				end
+			end else if (state == IN_ST) begin
+				if (in_state == CHECK_RX_ST_IN) begin
+					if (uart_rdone) begin
+						uart_ren <= 1;
+						// Rx FIFO Valid Data flag
+						if (uart_rdata[0]) begin
+							uart_raddr <= RX_FIFO;
+							in_state <= READ_ST_IN;
+						end
+					end else uart_ren <= 0;
+				end else if (in_state == READ_ST_IN) begin
+					if (uart_rdone) begin
+						rt_flag <= 1;
+						if (inst[28:26] == 3'b000) tdata[7:0] <= uart_rdata;
+						else if (inst[28:26] == 3'b001) tdata[15:8] <= uart_rdata;
+						else if (inst[28:26] == 3'b010) tdata[23:16] <= uart_rdata;
+						else if (inst[28:26] == 3'b011) tdata[31:24] <= uart_rdata;
+
+						state <= RUN_ST;
+					end else uart_ren <= 0;
 				end
 			end else if (state == OUT_ST) begin
 				if (out_state == CHECK_TX_ST) begin
