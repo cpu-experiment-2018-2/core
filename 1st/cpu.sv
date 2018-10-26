@@ -176,7 +176,7 @@ module cpu (
 	(* mark_debug = "true" *) cpu_state_type cpu_state;
 	(* mark_debug = "true" *) reg signed [31:0]	gpr [0:31];
 	(* mark_debug = "true" *) reg	eq;
-	(* mark_debug = "true" *) reg	le;
+	(* mark_debug = "true" *) reg	less;
 
 	reg		fadd_en;
 	wire [31:0]	fadd_result;
@@ -471,12 +471,16 @@ module cpu (
 					end else if (inst[31:29] == 3'b101) begin
 						// Beq
 						if (inst[28:26] == 3'b000) pc <= eq ? li : (pc + 1);
-						else if (inst[28:26] == 3'b001) pc <= le ? li : (pc + 1); // Ble
+						else if (inst[28:26] == 3'b001) pc <= (eq || less) ? li : (pc + 1); // Ble
 						else if (inst[28:26] == 3'b010) begin // Cmpd
 							eq <= (srca == srcb);
-							le <= (srca <= srcb);
+							less <= (srca < srcb);
 							pc <= pc + 1;
-						end
+						end else if (inst[28:26] == 3'b011) begin // Cmpf
+							eq <= (srca == srcb);
+							less <= (srca[31] == 1 && srcb[31] == 1) ? srca > srcb : srca < srcb; // -0 != +0
+							pc <= pc + 1;
+						end else if (inst[28:26] == 3'b100) pc <= less ? li : (pc + 1); // Bless
 						cpu_state <= FETCH_ST;
 					end else if (inst[31:29] == 3'b110) begin
 						// Outll
