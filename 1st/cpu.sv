@@ -151,7 +151,7 @@ module cpu (
 	load_state_type load_state;
 
 	(* mark_debug = "true" *) reg [1:0]	fetch_wait;
-	(* mark_debug = "true" *) reg [1:0]	memory_wait;
+	(* mark_debug = "true" *) reg [2:0]	memory_wait;
 	(* mark_debug = "true" *) wire [31:0]	inst;
 	(* mark_debug = "true" *) reg		rt_flag;
 	(* mark_debug = "true" *) reg [4:0]	rt;
@@ -339,6 +339,9 @@ module cpu (
 						3'b101:		li <= inst[25:0];
 						default:	li <= 26'b0;
 					endcase
+
+					if (inst[31:29] == 3'b011) memory_wait <= 3'b000;
+
 				end else if (cpu_state == EXEC_ST) begin
 					if (inst[31:29] == 3'b000) begin
 						case (inst[28:26])
@@ -409,11 +412,11 @@ module cpu (
 						// Load
 						if (inst[28:26] == 3'b000) begin
 							memory_wait <= memory_wait + 1;
-							if (memory_wait == 2'b00) begin
+							if (memory_wait == 3'b000) begin
 								read_addr <= srca + {16'b0, si};
-							end else if (memory_wait == 2'b01) begin
+							end else if (memory_wait == 3'b001) begin
 								data_enb <= 1;
-							end else if (memory_wait == 2'b11) begin
+							end else if (memory_wait == 3'b100) begin
 								data_enb <= 0;
 								tdata <= data_doutb;
 								rt_flag <= 1;
@@ -423,13 +426,13 @@ module cpu (
 							end
 						end else if (inst[28:26] == 3'b001) begin // Store
 							memory_wait <= memory_wait + 1;
-							if (memory_wait == 2'b00) begin
+							if (memory_wait == 3'b000) begin
 								write_addr <= srca + {16'b0, si};
 								data_dina <= srcs;
-							end else if (memory_wait == 2'b01) begin
+							end else if (memory_wait == 3'b001) begin
 								data_ena <= 1;
 								data_wea <= 4'b1111;
-							end else if (memory_wait == 2'b11) begin
+							end else if (memory_wait == 3'b100) begin
 								data_ena <= 0;
 								data_wea <= 4'b0;
 
