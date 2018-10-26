@@ -37,8 +37,10 @@
 |Blrr |100    |011    |RS     |       |       |      |GPR31 <- PC + 1, PC <- (RS)
 ||
 |Beq  |101    |000    |LI     |LI     |LI     |LI    |if eq then PC <- LI
-|Ble  |101    |001    |LI     |LI     |LI     |LI    |if le then PC <- LI
-|Cmpd |101    |010    |RA     |RB     |       |      |if (RA) == (RB) then eq <- 1, if (RA) <= (RB) then le <- 1
+|Ble  |101    |001    |LI     |LI     |LI     |LI    |if eq &#124&#124 less then PC <- LI
+|Cmpd |101    |010    |RA     |RB     |       |      |if (RA) == (RB) then eq <- 1, if (RA) < (RB) then less <- 1
+|Cmpf |101    |011    |RA     |RB     |       |      |if (RA) == (RB) then eq <- 1, if (RA) < (RB) then less <- 1
+|Blt  |101    |100    |LI     |LI     |LI     |LI    |if less then PC <- LI
 ||
 |Inll |110    |000    |RT     |       |       |      | RT[7:0] <- input
 |Inlh |110    |001    |RT     |       |       |      | RT[15:8] <- input
