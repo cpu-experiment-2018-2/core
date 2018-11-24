@@ -431,7 +431,7 @@ module cpu (
 							less <= (srca < srcb);
 							pc <= pc + 1;
 						end else if (inst[28:26] == 3'b011) begin // Cmpf
-							eq <= (srca == srcb);
+							eq <= (srca == srcb) || (srca[30:0] == 31'b0 && srcb[30:0] == 31'b0);
 							less <= (srca[31] == 1 && srcb[31] == 1) ? srca > srcb : srca < srcb; // -0 != +0
 							pc <= pc + 1;
 						end else if (inst[28:26] == 3'b100) pc <= less ? li : (pc + 1); // Bless

@@ -1,0 +1,12 @@
+vivado*
+*.cache
+*.hw
+*.xpr
+*.runs
+*.srcs
+*.btree
+*.log
+*.jou
+*.pb
+*.ppm
+*.bin
