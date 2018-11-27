@@ -1,17 +1,24 @@
+interface gpr_if;
+    reg signed [31:0] gpr [0:31];
+endinterface
+
 module cpu (
+    output wire [7:0]   led,
+
     input  wire         clk,
     input  wire         rstn);
 
+    assign red = 7'b0;
+
     reg             interlock;
 
-    gpr_if          gpr;
-    reg  [31:0]     pc;
+    gpr_if          gpr();
+    assign led = gpr.gpr[0][7:0];
 
-    wire            fetch_stall;
-    wire            decode_stall;
-    wire            exec_stall;
+    wire [31:0]     pc;
+
+    wire            fde_stall;
     wire            memory1_stall;
-    wire            memory2_stall;
 
     wire [63:0]     decode_inst;
     wire [63:0]     exec_inst;
@@ -37,6 +44,7 @@ module cpu (
     //================
     fetch fi(   .interlock(interlock),
                 .fetch_stall(fde_stall),
+                .pc(pc),
                 .inst_to_the_next(decode_inst),
                 .clk(clk),
                 .rstn(rstn));
@@ -69,19 +77,18 @@ module cpu (
                 .u_e_type(u_e_type),
                 .u_rt(u_rt_to_exec),
                 .u_rt_flag(u_rt_flag_to_exec),
-                .l_srca(u_srca),
-                .l_srcb(u_srcb),
-                .l_srcs(u_srcs_to_exec),
-                .l_e_type(u_e_type),
-                .l_rt(u_rt_to_exec),
-                .l_rt_flag(u_rt_flag_to_exec),
+                .l_srca(l_srca),
+                .l_srcb(l_srcb),
+                .l_srcs(l_srcs_to_exec),
+                .l_e_type(l_e_type),
+                .l_rt(l_rt_to_exec),
+                .l_rt_flag(l_rt_flag_to_exec),
                 .clk(clk),
                 .rstn(rstn));
 
     //================
     //     Exec
     //================
-    wire                ex_to_wb_ready;
     wire signed [31:0]  u_tdata_from_exec;
     wire        [4:0]   u_rt_from_exec;
     wire                u_rt_flag_from_exec;
@@ -100,19 +107,19 @@ module cpu (
                 .u_e_type(u_e_type),
                 .u_rt(u_rt_to_exec),
                 .u_rt_flag(u_rt_flag_to_exec),
-                .l_srca(u_srca),
-                .l_srcb(u_srcb),
-                .l_srcs(u_srcs_to_exec),
-                .l_e_type(u_e_type),
-                .l_rt(u_rt_to_exec),
-                .l_rt_flag(u_rt_flag_to_exec),
+                .l_srca(l_srca),
+                .l_srcb(l_srcb),
+                .l_srcs(l_srcs_to_exec),
+                .l_e_type(l_e_type),
+                .l_rt(l_rt_to_exec),
+                .l_rt_flag(l_rt_flag_to_exec),
                 .inst_to_the_next(inst_from_exec),
                 .u_tdata(u_tdata_from_exec),
                 .u_rt_to_the_next(u_rt_from_exec),
                 .u_rt_flag_to_the_next(u_rt_flag_from_exec),
-                .l_tdata(u_tdata_from_exec),
-                .l_rt_to_the_next(u_rt_from_exec),
-                .l_rt_flag_to_the_next(u_rt_flag_from_exec),
+                .l_tdata(l_tdata_from_exec),
+                .l_rt_to_the_next(l_rt_from_exec),
+                .l_rt_flag_to_the_next(l_rt_flag_from_exec),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -151,33 +158,30 @@ module cpu (
     wire        [4:0]  wb_l_rt;
     wire               wb_l_rt_flag;
 
-    assign writeback_inst   = ex_to_wb_ready ? inst_from_exec : inst_from_mem1;
-    assign wb_u_tdata       = u_tdata_from_exec;
-    assign wb_u_rt          = u_rt_from_exec;
-    assign wb_u_rt_flag     = u_rt_flag_from_exec;
-    assign wb_l_tdata       = l_tdata_from_exec;
-    assign wb_l_rt          = l_rt_from_exec;
-    assign wb_l_rt_flag     = l_rt_flag_from_exec;
+    assign ex_to_wb_u_tdata       = u_tdata_from_exec;
+    assign ex_to_wb_u_rt          = u_rt_from_exec;
+    assign ex_to_wb_u_rt_flag     = u_rt_flag_from_exec;
+    assign ex_to_wb_l_tdata       = l_tdata_from_exec;
+    assign ex_to_wb_l_rt          = l_rt_from_exec;
+    assign ex_to_wb_l_rt_flag     = l_rt_flag_from_exec;
     
     writeback wb(   .interlock(interlock),
                     .gpr(gpr),
-                    .inst(writeback_inst),
-                    .u_tdata(wb_u_tdata),
-                    .u_rt(wb_u_rt),
-                    .u_rt_flag(wb_u_rt_flag),
-                    .l_tdata(wb_l_tdata),
-                    .l_rt(wb_l_rt),
-                    .l_rt_flag(wb_l_rt_flag),
+                    .inst(inst_from_exec),
+                    .u_tdata(ex_to_wb_u_tdata),
+                    .u_rt(ex_to_wb_u_rt),
+                    .u_rt_flag(ex_to_wb_u_rt_flag),
+                    .l_tdata(ex_to_wb_l_tdata),
+                    .l_rt(ex_to_wb_l_rt),
+                    .l_rt_flag(ex_to_wb_l_rt_flag),
                     .clk(clk),
                     .rstn(rstn));
 
     always@(posedge clk) begin
         if (~rstn) begin
             interlock <= 1;
-            pc <= 32'b0;
         end else begin
             interlock <= 0;
-            pc <= pc + 8;
         end
     end
 

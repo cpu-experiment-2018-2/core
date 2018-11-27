@@ -95,8 +95,8 @@ module decode (
 
     localparam Load = 6'b010000;
     localparam Store= 6'b010001;
-    localparam Li   = 6'b010001;
-    localparam Liw  = 6'b010001;
+    localparam Li   = 6'b010010;
+    localparam Liw  = 6'b010011;
 
     localparam Jump = 6'b011000;
     localparam Blr  = 6'b011001;
@@ -123,18 +123,18 @@ module decode (
         input [31:0] sform
     );
         case (inst[63:58])
-                Addi    : SRCA = gpr_if.gpr[dform.ra];
-                Subi    : SRCA = gpr_if.gpr[dform.ra];
-                Add     : SRCA = gpr_if.gpr[xform.ra];
-                Sub     : SRCA = gpr_if.gpr[xform.ra];
-                Srawi   : SRCA = gpr_if.gpr[dform.ra];
-                Slawi   : SRCA = gpr_if.gpr[dform.ra];
-                Fadd    : SRCA = gpr_if.gpr[xform.ra];
-                Fsub    : SRCA = gpr_if.gpr[xform.ra];
-                Fmul    : SRCA = gpr_if.gpr[xform.ra];
-                Fdiv    : SRCA = gpr_if.gpr[xform.ra];
-                Load    : SRCA = gpr_if.gpr[dform.ra];
-                Store   : SRCA = gpr_if.gpr[sform.ra];
+                Addi    : SRCA = gpr.gpr[dform.ra];
+                Subi    : SRCA = gpr.gpr[dform.ra];
+                Add     : SRCA = gpr.gpr[xform.ra];
+                Sub     : SRCA = gpr.gpr[xform.ra];
+                Srawi   : SRCA = gpr.gpr[dform.ra];
+                Slawi   : SRCA = gpr.gpr[dform.ra];
+                Fadd    : SRCA = gpr.gpr[xform.ra];
+                Fsub    : SRCA = gpr.gpr[xform.ra];
+                Fmul    : SRCA = gpr.gpr[xform.ra];
+                Fdiv    : SRCA = gpr.gpr[xform.ra];
+                Load    : SRCA = gpr.gpr[dform.ra];
+                Store   : SRCA = gpr.gpr[sform.ra];
                 Li      : SRCA = dform.si;
                 Liw     : SRCA = dform.si;
                 default : SRCA = dform.si;
@@ -160,21 +160,21 @@ module decode (
             else inst_to_the_next[31:0] <= inst[31:0];
 
             // SrcA
-            u_srca <= gpr_if.gpr[u_dform.ra];
-            l_srca <= gpr_if.gpr[l_dform.ra];
+            u_srca <= gpr.gpr[u_dform.ra];
+            l_srca <= gpr.gpr[l_dform.ra];
 
             // SrcB
             case (inst[63:58])
                 Addi    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 Subi    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Add     : u_srcb <= gpr_if.gpr[u_xform.rb];
-                Sub     : u_srcb <= gpr_if.gpr[u_xform.rb];
+                Add     : u_srcb <= gpr.gpr[u_xform.rb];
+                Sub     : u_srcb <= gpr.gpr[u_xform.rb];
                 Srawi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 Slawi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Fadd    : u_srcb <= gpr_if.gpr[u_xform.rb];
-                Fsub    : u_srcb <= gpr_if.gpr[u_xform.rb];
-                Fmul    : u_srcb <= gpr_if.gpr[u_xform.rb];
-                Fdiv    : u_srcb <= gpr_if.gpr[u_xform.rb];
+                Fadd    : u_srcb <= gpr.gpr[u_xform.rb];
+                Fsub    : u_srcb <= gpr.gpr[u_xform.rb];
+                Fmul    : u_srcb <= gpr.gpr[u_xform.rb];
+                Fdiv    : u_srcb <= gpr.gpr[u_xform.rb];
                 Load    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 Store   : u_srcb <= $signed({{16{u_sform.si[15]}}, u_sform.si});
                 Li      : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
@@ -184,34 +184,34 @@ module decode (
                 Beq     : u_srcb <= $signed(u_iform.li);
                 Ble     : u_srcb <= $signed(u_iform.li);
                 Blt     : u_srcb <= $signed(u_iform.li);
-                Cmpd    : u_srcb <= gpr_if.gpr[u_xform.rb];
-                Cmpf    : u_srcb <= gpr_if.gpr[u_xform.rb];
+                Cmpd    : u_srcb <= gpr.gpr[u_xform.rb];
+                Cmpf    : u_srcb <= gpr.gpr[u_xform.rb];
                 Cmpdi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 default : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
             endcase
             case (inst[31:26])
                 Addi    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 Subi    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Add     : l_srcb <= gpr_if.gpr[l_xform.rb];
-                Sub     : l_srcb <= gpr_if.gpr[l_xform.rb];
+                Add     : l_srcb <= gpr.gpr[l_xform.rb];
+                Sub     : l_srcb <= gpr.gpr[l_xform.rb];
                 Srawi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 Slawi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Fadd    : l_srcb <= gpr_if.gpr[l_xform.rb];
-                Fsub    : l_srcb <= gpr_if.gpr[l_xform.rb];
-                Fmul    : l_srcb <= gpr_if.gpr[l_xform.rb];
-                Fdiv    : l_srcb <= gpr_if.gpr[l_xform.rb];
+                Fadd    : l_srcb <= gpr.gpr[l_xform.rb];
+                Fsub    : l_srcb <= gpr.gpr[l_xform.rb];
+                Fmul    : l_srcb <= gpr.gpr[l_xform.rb];
+                Fdiv    : l_srcb <= gpr.gpr[l_xform.rb];
                 Load    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 Store   : l_srcb <= $signed({{16{l_sform.si[15]}}, l_sform.si});
                 Li      : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Cmpd    : l_srcb <= gpr_if.gpr[l_xform.rb];
-                Cmpf    : l_srcb <= gpr_if.gpr[l_xform.rb];
+                Cmpd    : l_srcb <= gpr.gpr[l_xform.rb];
+                Cmpf    : l_srcb <= gpr.gpr[l_xform.rb];
                 Cmpdi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 default : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
             endcase
 
             // SrcS
-            u_srcs <= gpr_if.gpr[u_sform.rs];
-            l_srcs <= gpr_if.gpr[l_sform.rs];
+            u_srcs <= gpr.gpr[u_sform.rs];
+            l_srcs <= gpr.gpr[l_sform.rs];
 
             // ExecType
             case (inst[63:58])
@@ -246,6 +246,8 @@ module decode (
             endcase
 
             // RT flag
+            // note that rt flag is 0 when inst is Load. in such a case rt
+            // flag is turned on at Memory2 stage.
             case (inst[63:58])
                 Addi    : u_rt_flag <= 1;
                 Subi    : u_rt_flag <= 1;
@@ -253,7 +255,6 @@ module decode (
                 Sub     : u_rt_flag <= 1;
                 Srawi   : u_rt_flag <= 1;
                 Slawi   : u_rt_flag <= 1;
-                Load    : u_rt_flag <= 1;
                 Li      : u_rt_flag <= 1;
                 Liw     : u_rt_flag <= 1;
                 Bl      : u_rt_flag <= 1;
@@ -280,9 +281,8 @@ module decode (
                     Sub     : l_rt_flag <= 1;
                     Srawi   : l_rt_flag <= 1;
                     Slawi   : l_rt_flag <= 1;
-                    Load    : l_rt_flag <= 1;
                     Li      : l_rt_flag <= 1;
-                    Liw     : l_rt_flag <= 1;
+                    // Liw     : l_rt_flag <= 1;    // Liw doesn't appear in lower inst
                     Bl      : l_rt_flag <= 1;
                     Blrr    : l_rt_flag <= 1;
                     Inll    : l_rt_flag <= 1;

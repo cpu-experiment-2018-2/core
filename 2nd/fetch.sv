@@ -2,10 +2,10 @@ module fetch (
     input  wire         interlock,
     input  wire         fetch_stall,
 
-    // input
+    // output
     //
-    input  wire [31:0]  pc,
 
+    output reg  [31:0]  pc,
     output wire [63:0]  inst_to_the_next,
 
     input  wire         clk,
@@ -20,9 +20,11 @@ module fetch (
 
     always@(posedge clk) begin
         if (~rstn) begin
+            pc <= 32'b0;
             interval <= 1;
         end else if (~fetch_stall && ~interlock) begin
             interval <= 0;
+            pc <= pc + 8;
         end
     end
 
