@@ -1,7 +1,7 @@
 module exec (
     input  wire         interlock,
     input  wire         exec_stall,
-    output reg          ex_to_mem1_ready,
+    output reg          ex_to_mem_ready,
 
     // input
     //
@@ -64,16 +64,13 @@ module exec (
 
     always@(posedge clk) begin
         if (~rstn) begin
-            ex_to_mem1_ready <= 0;
+            ex_to_mem_ready <= 0;
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
         end else if (~exec_stall && ~interlock) begin
             inst_to_the_next <= inst;
-            case (inst[63:58])
-                6'b010000   : ex_to_mem1_ready <= 1;    // Load
-                6'b010001   : ex_to_mem1_ready <= 1;    // Store
-                default     : ex_to_mem1_ready <= 0;
-            endcase
+            if (inst[63:58] == 6'b010000) ex_to_mem_ready <= 1; // Load
+            else ex_to_mem_ready <= 0;
 
             u_tdata <= EXEC(u_srca, u_srcb, u_e_type);
             u_rt_to_the_next <= u_rt;
@@ -83,6 +80,7 @@ module exec (
             l_rt_to_the_next <= l_rt;
             l_rt_flag_to_the_next <= l_rt_flag;
         end else begin
+            ex_to_mem_ready <= 0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;

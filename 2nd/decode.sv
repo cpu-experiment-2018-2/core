@@ -179,11 +179,11 @@ module decode (
                 Store   : u_srcb <= $signed({{16{u_sform.si[15]}}, u_sform.si});
                 Li      : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 Liw     : u_srcb <= $signed(inst[31:0]);
-                Jump    : u_srcb <= $signed(u_iform.li);
-                Bl      : u_srcb <= $signed(u_iform.li);
-                Beq     : u_srcb <= $signed(u_iform.li);
-                Ble     : u_srcb <= $signed(u_iform.li);
-                Blt     : u_srcb <= $signed(u_iform.li);
+                Jump    : u_srcb <= $signed({6'b0, u_iform.li});
+                Bl      : u_srcb <= $signed({6'b0, u_iform.li});
+                Beq     : u_srcb <= $signed({6'b0, u_iform.li});
+                Ble     : u_srcb <= $signed({6'b0, u_iform.li});
+                Blt     : u_srcb <= $signed({6'b0, u_iform.li});
                 Cmpd    : u_srcb <= gpr.gpr[u_xform.rb];
                 Cmpf    : u_srcb <= gpr.gpr[u_xform.rb];
                 Cmpdi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
