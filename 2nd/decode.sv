@@ -221,6 +221,8 @@ module decode (
                 Sub     : u_e_type <= ESub;
                 Srawi   : u_e_type <= ERshift;
                 Slawi   : u_e_type <= ELshift;
+                Load    : u_e_type <= EAdd;
+                Store   : u_e_type <= EAdd;
                 default : u_e_type <= ENop;
             endcase
             case (inst[31:26])
@@ -230,6 +232,8 @@ module decode (
                 Sub     : l_e_type <= ESub;
                 Srawi   : l_e_type <= ERshift;
                 Slawi   : l_e_type <= ELshift;
+                Load    : l_e_type <= EAdd;
+                Store   : l_e_type <= EAdd;
                 default : l_e_type <= ENop;
             endcase
 

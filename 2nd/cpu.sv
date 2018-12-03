@@ -30,7 +30,7 @@ module cpu (
     // fetch, decode & exec stall flag
     // Instructions which need not transit to writeback stage right after exec
     // (ex. Store/Load/Branch insts)
-    // can be processed even if the prev is Load inst.
+    // can be processed continuously even when the prev is Load inst.
     assign fde_stall = ~(exec_inst[63:58] == 6'b010000 || exec_inst[63:58] == 6'b010001     // Load, Store
                         || exec_inst[63:58] == 6'b011000 || exec_inst[63:58] == 6'b011001   // Jump, Blr
                         || exec_inst[63:61] == 3'b100 || exec_inst[63:61] == 3'b111         // Comp insts, Nop
@@ -109,6 +109,7 @@ module cpu (
     wire signed [31:0]  l_tdata_from_exec;
     wire        [4:0]   l_rt_from_exec;
     wire                l_rt_flag_from_exec;
+    wire        [63:0]  dina;
 
     exec ex(    .interlock(interlock),
                 .exec_stall(fde_stall),
@@ -133,13 +134,13 @@ module cpu (
                 .l_tdata(l_tdata_from_exec),
                 .l_rt_to_the_next(l_rt_from_exec),
                 .l_rt_flag_to_the_next(l_rt_flag_from_exec),
+                .dina(dina),
                 .clk(clk),
                 .rstn(rstn));
 
     //================
     //    Memory
     //================
-    /*
     wire        [4:0]   u_rt_from_mem;
     wire                u_rt_flag_from_mem;
     wire signed [31:0]  l_tdata_from_mem;
@@ -150,10 +151,9 @@ module cpu (
     memory mem( .interlock(interlock),
                 .memory_used(memory_used),
                 .inst(inst_from_exec),
-                .addra(mem_addra),
-                .dina(mem_dina),
-                .write_flag(mem_write_flag),
-                .addrb(mem_addrb),
+                .addra(u_tdata_from_exec),
+                .dina(dina),
+                .addrb(u_tdata_from_exec),
                 .u_rt(u_rt_from_exec),
                 .u_rt_flag(u_rt_flag_from_exec),
                 .l_tdata(l_tdata_from_exec),
@@ -165,21 +165,20 @@ module cpu (
                 .l_tdata_to_the_next(l_tdata_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
                 .l_rt_flag_to_the_next(l_rt_flag_from_mem),
-                .doutb(mem_doutb),
+                .mem_doutb(mem_doutb),
                 .clk(clk),
                 .rstn(rstn));
-    */
 
     //================
     //   Writeback
     //================
-    wire signed [31:0] wb_u_tdata;
-    wire        [4:0]  wb_u_rt;
-    wire               wb_u_rt_flag;
+    wire signed [31:0] ex_to_wb_u_tdata;
+    wire        [4:0]  ex_to_wb_u_rt;
+    wire               ex_to_wb_u_rt_flag;
 
-    wire signed [31:0] wb_l_tdata;
-    wire        [4:0]  wb_l_rt;
-    wire               wb_l_rt_flag;
+    wire signed [31:0] ex_to_wb_l_tdata;
+    wire        [4:0]  ex_to_wb_l_rt;
+    wire               ex_to_wb_l_rt_flag;
 
     assign ex_to_wb_u_tdata       = u_tdata_from_exec;
     assign ex_to_wb_u_rt          = u_rt_from_exec;
@@ -188,17 +187,7 @@ module cpu (
     assign ex_to_wb_l_rt          = l_rt_from_exec;
     assign ex_to_wb_l_rt_flag     = l_rt_flag_from_exec;
     
-    writeback wb(   .interlock(interlock),
-                    .gpr(gpr),
-                    .inst(inst_from_exec),
-                    .u_tdata(ex_to_wb_u_tdata),
-                    .u_rt(ex_to_wb_u_rt),
-                    .u_rt_flag(ex_to_wb_u_rt_flag),
-                    .l_tdata(ex_to_wb_l_tdata),
-                    .l_rt(ex_to_wb_l_rt),
-                    .l_rt_flag(ex_to_wb_l_rt_flag),
-                    .clk(clk),
-                    .rstn(rstn));
+    writeback wb(.*);
 
     always@(posedge clk) begin
         if (~rstn) begin

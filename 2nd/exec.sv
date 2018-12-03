@@ -35,6 +35,10 @@ module exec (
     output reg         [4:0]    l_rt_to_the_next,
     output reg                  l_rt_flag_to_the_next,
 
+    // Memory
+    output reg         [63:0]   dina,
+
+
     input  wire         clk,
     input  wire         rstn);
 
@@ -79,6 +83,8 @@ module exec (
             l_tdata <= EXEC(l_srca, l_srcb, l_e_type);
             l_rt_to_the_next <= l_rt;
             l_rt_flag_to_the_next <= l_rt_flag;
+
+            dina <= {u_srcs, l_srcs};
         end else begin
             ex_to_mem_ready <= 0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};

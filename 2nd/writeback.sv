@@ -5,15 +5,30 @@ module writeback (
 
     // input
     //
-    input  wire        [63:0]   inst,
+    input  wire        [63:0]   inst_from_exec,
+
+    // From exec
     // Upper
-    input  wire signed [31:0]   u_tdata,
-    input  wire        [4:0]    u_rt,
-    input  wire                 u_rt_flag,
+    input  wire signed [31:0]   u_tdata_from_exec,
+    input  wire        [4:0]    u_rt_from_exec,
+    input  wire                 u_rt_flag_from_exec,
     // Lower
-    input  wire signed [31:0]   l_tdata,
-    input  wire        [4:0]    l_rt,
-    input  wire                 l_rt_flag,
+    input  wire signed [31:0]   l_tdata_from_exec,
+    input  wire        [4:0]    l_rt_from_exec,
+    input  wire                 l_rt_flag_from_exec,
+
+    // From memory
+    input  wire        [63:0]   inst_from_mem,
+    // Upper
+    input  wire        [4:0]    u_rt_from_mem,
+    input  wire                 u_rt_flag_from_mem,
+    // Lower
+    input  wire signed [31:0]   l_tdata_from_mem,
+    input  wire        [4:0]    l_rt_from_mem,
+    input  wire                 l_rt_flag_from_mem,
+
+    input  wire        [63:0]   mem_doutb,
+
 
     input  wire         clk,
     input  wire         rstn);
@@ -21,8 +36,18 @@ module writeback (
     always@(posedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
-            if (u_rt_flag) gpr.gpr[u_rt] <= u_tdata;
-            if (l_rt_flag) gpr.gpr[l_rt] <= l_tdata;
+            if (inst_from_mem[63:58] == 6'b010000) begin
+                gpr.gpr[u_rt_from_mem] <= mem_doutb[63:32];
+            end else begin
+                if (u_rt_flag_from_exec) gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
+            end
+
+            if (inst_from_mem[31:26] == 6'b010000) begin
+                gpr.gpr[l_rt_from_mem] <= mem_doutb[31:0];
+            end else begin
+                if (l_rt_flag_from_mem) gpr.gpr[l_rt_from_mem] <= l_tdata_from_mem;
+                else if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;
+            end
         end
     end
 
