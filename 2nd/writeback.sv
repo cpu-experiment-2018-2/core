@@ -27,27 +27,35 @@ module writeback (
     input  wire        [4:0]    l_rt_from_mem,
     input  wire                 l_rt_flag_from_mem,
 
-    input  wire        [63:0]   mem_doutb,
+    input  wire        [63:0]   n_doutb,
 
 
     input  wire         clk,
     input  wire         rstn);
 
-    always@(posedge clk) begin
+    reg  [63:0] mem_doutb;
+
+    always_ff@(posedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
             if (inst_from_mem[63:58] == 6'b010000) begin
                 gpr.gpr[u_rt_from_mem] <= mem_doutb[63:32];
-            end else begin
-                if (u_rt_flag_from_exec) gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
+            end 
+            if (u_rt_flag_from_exec) begin
+                gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
             end
 
             if (inst_from_mem[31:26] == 6'b010000) begin
                 gpr.gpr[l_rt_from_mem] <= mem_doutb[31:0];
-            end else begin
-                if (l_rt_flag_from_mem) gpr.gpr[l_rt_from_mem] <= l_tdata_from_mem;
-                else if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;
-            end
+            end else if (l_rt_flag_from_mem) gpr.gpr[l_rt_from_mem] <= l_tdata_from_mem;
+            if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;
+        end
+    end
+
+    always_ff@(negedge clk) begin
+        if (~rstn) begin
+        end else if (~interlock) begin
+            mem_doutb <= n_doutb;
         end
     end
 

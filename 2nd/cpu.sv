@@ -79,6 +79,10 @@ module cpu (
     wire        [4:0]   l_rt_to_exec;
     wire                l_rt_flag_to_exec;
 
+    wire        [31:0]  addr;
+    wire        [63:0]  dina;
+    wire        [7:0]   wea;
+
     decode di(  .interlock(interlock),
                 .decode_stall(fde_stall),
                 .gpr(gpr),
@@ -96,6 +100,9 @@ module cpu (
                 .l_e_type(l_e_type),
                 .l_rt(l_rt_to_exec),
                 .l_rt_flag(l_rt_flag_to_exec),
+                .addr(addr),
+                .dina(dina),
+                .wea(wea),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -109,7 +116,6 @@ module cpu (
     wire signed [31:0]  l_tdata_from_exec;
     wire        [4:0]   l_rt_from_exec;
     wire                l_rt_flag_from_exec;
-    wire        [63:0]  dina;
 
     exec ex(    .interlock(interlock),
                 .exec_stall(fde_stall),
@@ -134,7 +140,6 @@ module cpu (
                 .l_tdata(l_tdata_from_exec),
                 .l_rt_to_the_next(l_rt_from_exec),
                 .l_rt_flag_to_the_next(l_rt_flag_from_exec),
-                .dina(dina),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -146,14 +151,14 @@ module cpu (
     wire signed [31:0]  l_tdata_from_mem;
     wire        [4:0]   l_rt_from_mem;
     wire                l_rt_flag_from_mem;
-    wire        [63:0]  mem_doutb;
+    wire        [63:0]  n_doutb;
     
     memory mem( .interlock(interlock),
-                .memory_used(memory_used),
                 .inst(inst_from_exec),
-                .addra(u_tdata_from_exec),
+                .addra(addr),
                 .dina(dina),
-                .addrb(u_tdata_from_exec),
+                .wea(wea),
+                .addrb(addr),
                 .u_rt(u_rt_from_exec),
                 .u_rt_flag(u_rt_flag_from_exec),
                 .l_tdata(l_tdata_from_exec),
@@ -165,7 +170,7 @@ module cpu (
                 .l_tdata_to_the_next(l_tdata_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
                 .l_rt_flag_to_the_next(l_rt_flag_from_mem),
-                .mem_doutb(mem_doutb),
+                .n_doutb(n_doutb),
                 .clk(clk),
                 .rstn(rstn));
 

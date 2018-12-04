@@ -26,6 +26,11 @@ module decode (
     output reg         [4:0]    l_rt,
     output reg                  l_rt_flag,
 
+    // Memory
+    output reg         [31:0]   addr,
+    output reg         [63:0]   dina,
+    output reg         [7:0]    wea,
+
     input  wire         clk,
     input  wire         rstn);
 
@@ -296,11 +301,16 @@ module decode (
                     default : l_rt_flag <= 0;
                 endcase
             end
+
+            addr <= gpr.gpr[u_dform.ra] + $signed({{16{u_dform.si[15]}}, u_dform.si});
+            dina <= {gpr.gpr[u_sform.rs], gpr.gpr[l_sform.rs]};
+            wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;
+            wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;
         end else begin
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
+            wea <= 7'b0;
         end
     end
-
 endmodule

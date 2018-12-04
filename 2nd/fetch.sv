@@ -6,15 +6,13 @@ module fetch (
     //
 
     output reg  [31:0]  pc,
-    output wire [63:0]  inst_to_the_next,
+    output reg  [63:0]  inst_to_the_next,
 
     input  wire         clk,
     input  wire         rstn);
 
-    reg             interval;
+    reg  [1:0]      interval;
     wire [63:0]     douta;
-
-    assign inst_to_the_next = interval ? {3'b111, 29'b0, 3'b111, 29'b0} : douta;
 
     blk_mem_gen_0 inst_rom(.addra(pc), .clka(clk), .douta(douta));
 
@@ -22,8 +20,14 @@ module fetch (
         if (~rstn) begin
             pc <= 32'b0;
             interval <= 1;
+            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
         end else if (~fetch_stall && ~interlock) begin
-            interval <= 0;
+            if (interval == 0) inst_to_the_next <= douta;
+            else begin
+                inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+                interval <= interval - 1;
+            end
+
             pc <= pc + 8;
         end
     end
