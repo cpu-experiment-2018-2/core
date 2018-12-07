@@ -1,6 +1,5 @@
 module exec (
     input  wire         interlock,
-    input  wire         exec_stall,
     output reg          ex_to_mem_ready,
 
     // input
@@ -68,7 +67,7 @@ module exec (
             ex_to_mem_ready <= 0;
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
-        end else if (~exec_stall && ~interlock) begin
+        end else if (~interlock) begin
             inst_to_the_next <= inst;
             if (inst[63:58] == 6'b010000) ex_to_mem_ready <= 1; // Load
             else ex_to_mem_ready <= 0;

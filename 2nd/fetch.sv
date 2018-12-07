@@ -1,6 +1,5 @@
 module fetch (
     input  wire         interlock,
-    input  wire         fetch_stall,
 
     // output
     //
@@ -21,7 +20,7 @@ module fetch (
             pc <= 32'b0;
             interval <= 1;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
-        end else if (~fetch_stall && ~interlock) begin
+        end else if (~interlock) begin
             if (interval == 0) inst_to_the_next <= douta;
             else begin
                 inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};

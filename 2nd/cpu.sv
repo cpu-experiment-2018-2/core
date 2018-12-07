@@ -8,8 +8,6 @@ module cpu (
     input  wire         clk,
     input  wire         rstn);
 
-    assign red = 7'b0;
-
     reg             interlock;
 
     gpr_if          gpr();
@@ -17,46 +15,19 @@ module cpu (
 
     wire [31:0]     pc;
 
-    wire            fde_stall;
 
     wire [63:0]     decode_inst;
     wire [63:0]     exec_inst;
     wire [63:0]     inst_from_exec;
     wire [63:0]     inst_from_mem;
-    wire [63:0]     writeback_inst;
 
     wire            memory_used;
-
-    // fetch, decode & exec stall flag
-    // Instructions which need not transit to writeback stage right after exec
-    // (ex. Store/Load/Branch insts)
-    // can be processed continuously even when the prev is Load inst.
-    assign fde_stall = ~(exec_inst[63:58] == 6'b010000 || exec_inst[63:58] == 6'b010001     // Load, Store
-                        || exec_inst[63:58] == 6'b011000 || exec_inst[63:58] == 6'b011001   // Jump, Blr
-                        || exec_inst[63:61] == 3'b100 || exec_inst[63:61] == 3'b111         // Comp insts, Nop
-                        ) && memory_used;
-    // When the inst at exec is Store, the data to be stored is directly sent to
-    // BRAM and pipeline processing keeps going.
-    // If exec stage has Load inst, memory stage is executed before writing back to
-    // regs. In such a case, the next inst has to be stalled at exec stage
-    // if it is not Load.
-    // -->-->-->-->-->-->
-    // F D E W
-    //   F D E M W      ... Load inst
-    //     F D E M W    ... the next inst is also Load
-    //       F D - E
-    //         F - D
-    //
-    //     F D - E W    ... otherwise
-    //       F - D E W
-    //         - F D E
 
 
     //================
     //     Fetch
     //================
     fetch fi(   .interlock(interlock),
-                .fetch_stall(fde_stall),
                 .pc(pc),
                 .inst_to_the_next(decode_inst),
                 .clk(clk),
@@ -84,7 +55,6 @@ module cpu (
     wire        [7:0]   wea;
 
     decode di(  .interlock(interlock),
-                .decode_stall(fde_stall),
                 .gpr(gpr),
                 .inst(decode_inst),
                 .inst_to_the_next(exec_inst),
@@ -118,7 +88,6 @@ module cpu (
     wire                l_rt_flag_from_exec;
 
     exec ex(    .interlock(interlock),
-                .exec_stall(fde_stall),
                 .ex_to_mem_ready(memory_used),
                 .inst(exec_inst),
                 .u_srca(u_srca),

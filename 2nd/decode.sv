@@ -1,6 +1,5 @@
 module decode (
     input  wire         interlock,
-    input  wire         decode_stall,
 
     // input
     //
@@ -152,7 +151,7 @@ module decode (
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
-        end else if (~decode_stall && ~interlock) begin
+        end else if (~interlock) begin
             inst_to_the_next[63:32] <= inst[63:32];
             if (inst[63:58] == Liw
                 || inst[63:58] == Jump
@@ -226,8 +225,6 @@ module decode (
                 Sub     : u_e_type <= ESub;
                 Srawi   : u_e_type <= ERshift;
                 Slawi   : u_e_type <= ELshift;
-                Load    : u_e_type <= EAdd;
-                Store   : u_e_type <= EAdd;
                 default : u_e_type <= ENop;
             endcase
             case (inst[31:26])
@@ -237,8 +234,6 @@ module decode (
                 Sub     : l_e_type <= ESub;
                 Srawi   : l_e_type <= ERshift;
                 Slawi   : l_e_type <= ELshift;
-                Load    : l_e_type <= EAdd;
-                Store   : l_e_type <= EAdd;
                 default : l_e_type <= ENop;
             endcase
 
