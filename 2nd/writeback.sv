@@ -27,13 +27,10 @@ module writeback (
     input  wire        [4:0]    l_rt_from_mem,
     input  wire                 l_rt_flag_from_mem,
 
-    input  wire        [63:0]   n_doutb,
-
+    input  wire        [63:0]   mem_doutb,
 
     input  wire         clk,
     input  wire         rstn);
-
-    reg  [63:0] mem_doutb;
 
     always_ff@(posedge clk) begin
         if (~rstn) begin
@@ -49,13 +46,6 @@ module writeback (
                 gpr.gpr[l_rt_from_mem] <= mem_doutb[31:0];
             end else if (l_rt_flag_from_mem) gpr.gpr[l_rt_from_mem] <= l_tdata_from_mem;
             if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;
-        end
-    end
-
-    always_ff@(negedge clk) begin
-        if (~rstn) begin
-        end else if (~interlock) begin
-            mem_doutb <= n_doutb;
         end
     end
 

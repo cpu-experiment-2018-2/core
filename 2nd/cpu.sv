@@ -120,7 +120,7 @@ module cpu (
     wire signed [31:0]  l_tdata_from_mem;
     wire        [4:0]   l_rt_from_mem;
     wire                l_rt_flag_from_mem;
-    wire        [63:0]  n_doutb;
+    wire        [63:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
                 .inst(inst_from_exec),
@@ -139,7 +139,7 @@ module cpu (
                 .l_tdata_to_the_next(l_tdata_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
                 .l_rt_flag_to_the_next(l_rt_flag_from_mem),
-                .n_doutb(n_doutb),
+                .mem_doutb(mem_doutb),
                 .clk(clk),
                 .rstn(rstn));
 

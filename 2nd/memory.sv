@@ -28,7 +28,7 @@ module memory (
     output reg          [4:0]   l_rt_to_the_next,
     output reg                  l_rt_flag_to_the_next,
 
-    output wire         [63:0]  n_doutb,
+    output reg          [63:0]  mem_doutb,
 
     input  wire         clk,
     input  wire         rstn);
@@ -41,25 +41,32 @@ module memory (
     reg        [4:0]    middle_l_rt;
     reg                 middle_l_rt_flag;
 
-    reg  [31:0] n_addra;
-    reg  [7:0]  n_wea;
-    reg  [63:0] n_dina;
-    reg  [31:0] n_addrb;
+    reg        [31:0]   middle_n_addrb;
+    reg        [31:0]   n_addrb_to_the_next;
+
+    reg  [31:0] n_addra [0:7];
+    reg  [7:0]  n_wea [0:7];
+    reg  [63:0] n_dina [0:7];
+    reg  [31:0] n_addrb [0:7];
+    reg  [63:0] n_doutb [0:7];
 
     wire        ena;
-    wire        enb;
 
     assign ena = 1;
-    assign enb = 1;
 
-    blk_mem_gen_1 data_ram( .clka(~clk),
-                            .ena(ena),
-                            .wea(n_wea),
-                            .addra(n_addra),
-                            .dina(n_dina),
-                            .clkb(~clk),
-                            .addrb(n_addrb),
-                            .doutb(n_doutb));
+    generate
+        genvar i;
+        for (i = 0; i < 8; i++) begin: data_rams
+            blk_mem_gen_1 data_ram( .clka(~clk),
+                                    .ena(ena),
+                                    .wea(n_wea[i]),
+                                    .addra(n_addra[i]),
+                                    .dina(n_dina[i]),
+                                    .clkb(~clk),
+                                    .addrb(n_addrb[i]),
+                                    .doutb(n_doutb[i]));
+        end
+    endgenerate
 
     always@(posedge clk) begin
         if (~rstn) begin
@@ -96,12 +103,21 @@ module memory (
     always@(negedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
-            n_addra <= addra;
-            n_wea <= wea;
-            n_dina <= dina;
-            n_addrb <= addrb;
+            for (int i = 0; i < 8; i++) begin
+                n_addra[i] <= addra;
+                n_dina[i] <= dina;
+                n_addrb[i] <= addrb;
+                if (addra[17:15] == i) n_wea[i] <= wea;
+                else n_wea[i] <= 8'b0;
+            end
+
+            middle_n_addrb <= n_addrb[0];
+            n_addrb_to_the_next <= middle_n_addrb;
+            mem_doutb <= n_doutb[n_addrb_to_the_next[17:15]];
         end else begin
-            n_wea <= 7'b0;
+            for (int i = 0; i < 8; i++) begin
+                n_wea[i] <= 8'b0;
+            end
         end
     end
 
