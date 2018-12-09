@@ -34,6 +34,14 @@ module memory (
     input  wire         rstn);
 
 
+    // Memory Access Process
+    //           | id  | ex  | mem | mem | wb  |
+    // addr      ______|^^^^^|__________________
+    // n_addr    _________|^^^^^|_______________
+    // BRAM                     |---->
+    // n_doutb   _____________________|^^^^^|___
+    // mem_doutb ________________________|^^^^^|
+
     reg        [63:0]   middle_inst;
     reg        [4:0]    middle_u_rt;
     reg                 middle_u_rt_flag;
@@ -45,9 +53,10 @@ module memory (
     reg        [31:0]   n_addrb_to_the_next;
 
     reg  [31:0] n_addra [0:7];
-    reg  [7:0]  n_wea [0:7];
-    reg  [63:0] n_dina [0:7];
+    reg  [7:0]  n_wea   [0:7];
+    reg  [63:0] n_dina  [0:7];
     reg  [31:0] n_addrb [0:7];
+    wire [63:0] doutb   [0:7];
     reg  [63:0] n_doutb [0:7];
 
     wire        ena;
@@ -64,7 +73,7 @@ module memory (
                                     .dina(n_dina[i]),
                                     .clkb(~clk),
                                     .addrb(n_addrb[i]),
-                                    .doutb(n_doutb[i]));
+                                    .doutb(doutb[i]));
         end
     endgenerate
 
@@ -93,6 +102,8 @@ module memory (
             l_tdata_to_the_next <= middle_l_tdata;
             l_rt_to_the_next <= middle_l_rt;
             l_rt_flag_to_the_next <= middle_l_rt_flag;
+
+            mem_doutb <= n_doutb[n_addrb_to_the_next[17:15]];
         end else begin
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag_to_the_next <= 0;
@@ -107,13 +118,13 @@ module memory (
                 n_addra[i] <= addra;
                 n_dina[i] <= dina;
                 n_addrb[i] <= addrb;
+                n_doutb[i] <= doutb[i];
                 if (addra[17:15] == i) n_wea[i] <= wea;
                 else n_wea[i] <= 8'b0;
             end
 
             middle_n_addrb <= n_addrb[0];
             n_addrb_to_the_next <= middle_n_addrb;
-            mem_doutb <= n_doutb[n_addrb_to_the_next[17:15]];
         end else begin
             for (int i = 0; i < 8; i++) begin
                 n_wea[i] <= 8'b0;
