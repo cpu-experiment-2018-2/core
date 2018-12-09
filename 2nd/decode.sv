@@ -33,6 +33,9 @@ module decode (
     input  wire         clk,
     input  wire         rstn);
 
+    reg eq;
+    reg less;
+
     typedef enum logic [3:0] {
         ENop = 4'b0000,
         EAdd = 4'b0001,
@@ -151,6 +154,8 @@ module decode (
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
+            eq <= 0;
+            less <= 0;
         end else if (~interlock) begin
             inst_to_the_next[63:32] <= inst[63:32];
             if (inst[63:58] == Liw
@@ -297,10 +302,35 @@ module decode (
                 endcase
             end
 
+            // Comparison Regs
+            if (inst[63:58] == 6'b011100) begin // Compd
+                eq <= (gpr.gpr[u_xform.ra] == gpr.gpr[u_xform.rb]);
+                less <= (gpr.gpr[u_xform.ra] < gpr.gpr[u_xform.rb]);
+            end else if (inst[31:26] == 6'b011100) begin
+                eq <= (gpr.gpr[l_xform.ra] == gpr.gpr[l_xform.rb]);
+                less <= (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
+            end /*else if (inst[63:58] == 6'b011101) begin // Compf
+                eq <= (gpr.gpr[u_xform.ra] == gpr.gpr[u_xform.rb])
+                        || (gpr.gpr[u_xform.ra][30:0] == 31'b0 && gpr.gpr[u_xform.rb][30:0] == 31'b0);
+                less <= (gpr.gpr[u_xform.ra][31] == 1 && gpr.gpr[u_xform.rb][31] == 1) ?
+                            (gpr.gpr[u_xform.ra] > gpr.gpr[u_xform.rb]) : (gpr.gpr[u_xform.ra] < gpr.gpr[u_xform.rb]);
+            end else if (inst[31:26] == 6'b011101) begin
+                eq <= (gpr.gpr[l_xform.ra] == gpr.gpr[l_xform.rb])
+                        || (gpr.gpr[l_xform.ra][30:0] == 31'b0 && gpr.gpr[l_xform.rb][30:0] == 31'b0);
+                less <= (gpr.gpr[l_xform.ra][31] == 1 && gpr.gpr[l_xform.rb][31] == 1) ?
+                            (gpr.gpr[l_xform.ra] > gpr.gpr[l_xform.rb]) : (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
+            end*/ else if (inst[63:58] == 6'b011110) begin // Compdi
+                eq <= (gpr.gpr[u_dform.ra] == gpr.gpr[u_dform.si]);
+                less <= (gpr.gpr[u_xform.ra] < gpr.gpr[u_dform.si]);
+            end else if (inst[31:26] == 6'b011110) begin
+                eq <= (gpr.gpr[l_dform.ra] == gpr.gpr[l_dform.si]);
+                less <= (gpr.gpr[l_xform.ra] < gpr.gpr[l_dform.si]);
+            end
+
             addr <= gpr.gpr[u_dform.ra] + $signed({{16{u_dform.si[15]}}, u_dform.si});
             dina <= {gpr.gpr[u_sform.rs], gpr.gpr[l_sform.rs]};
-            wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;
-            wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;
+            wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;     // upper Store
+            wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;     // lower Store
         end else begin
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;

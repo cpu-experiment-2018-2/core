@@ -63,6 +63,9 @@ module memory (
 
     always@(posedge clk) begin
         if (~rstn) begin
+            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+            u_rt_flag_to_the_next <= 0;
+            l_rt_flag_to_the_next <= 0;
         end else if (~interlock) begin
             // middle
             middle_inst <= inst;
