@@ -13,7 +13,10 @@ module cpu (
     gpr_if          gpr();
     assign led = gpr.gpr[0][7:0];
 
-    wire [31:0]     pc;
+    wire [31:0]     decode_pc;
+    wire [31:0]     exec_pc;
+    wire [31:0]     pc_from_exec;
+    wire [31:0]     pc_from_mem;
 
 
     wire [63:0]     decode_inst;
@@ -27,8 +30,13 @@ module cpu (
     //================
     //     Fetch
     //================
+    wire                branch_flag;
+    wire        [31:0]  branch_pc;
+
     fetch fi(   .interlock(interlock),
-                .pc(pc),
+                .branch_flag(branch_flag),
+                .branch_pc(branch_pc),
+                .pc_to_the_next(decode_pc),
                 .inst_to_the_next(decode_inst),
                 .clk(clk),
                 .rstn(rstn));
@@ -56,7 +64,11 @@ module cpu (
 
     decode di(  .interlock(interlock),
                 .gpr(gpr),
+                .pc(decode_pc),
                 .inst(decode_inst),
+                .branch_flag(branch_flag),
+                .branch_pc(branch_pc),
+                .pc_to_the_next(exec_pc),
                 .inst_to_the_next(exec_inst),
                 .u_srca(u_srca),
                 .u_srcb(u_srcb),
@@ -89,6 +101,7 @@ module cpu (
 
     exec ex(    .interlock(interlock),
                 .ex_to_mem_ready(memory_used),
+                .pc(exec_pc),
                 .inst(exec_inst),
                 .u_srca(u_srca),
                 .u_srcb(u_srcb),
@@ -102,6 +115,7 @@ module cpu (
                 .l_e_type(l_e_type),
                 .l_rt(l_rt_to_exec),
                 .l_rt_flag(l_rt_flag_to_exec),
+                .pc_to_the_next(pc_from_exec),
                 .inst_to_the_next(inst_from_exec),
                 .u_tdata(u_tdata_from_exec),
                 .u_rt_to_the_next(u_rt_from_exec),
@@ -123,16 +137,17 @@ module cpu (
     wire        [63:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
+                .pc(pc_from_exec),
                 .inst(inst_from_exec),
-                .addra(addr),
+                .addr(addr),
                 .dina(dina),
                 .wea(wea),
-                .addrb(addr),
                 .u_rt(u_rt_from_exec),
                 .u_rt_flag(u_rt_flag_from_exec),
                 .l_tdata(l_tdata_from_exec),
                 .l_rt(l_rt_from_exec),
                 .l_rt_flag(l_rt_flag_from_exec),
+                .pc_to_the_next(pc_from_mem),
                 .inst_to_the_next(inst_from_mem),
                 .u_rt_to_the_next(u_rt_from_mem),
                 .u_rt_flag_to_the_next(u_rt_flag_from_mem),

@@ -4,6 +4,7 @@ module exec (
 
     // input
     //
+    input  wire        [31:0]   pc,
     input  wire        [63:0]   inst,
     // Upper ([63:32])
     input  wire signed [31:0]   u_srca,
@@ -23,6 +24,7 @@ module exec (
 
     // output
     //
+    output reg         [31:0]   pc_to_the_next,
     output reg         [63:0]   inst_to_the_next,
     // Upper
     output reg  signed [31:0]   u_tdata,
@@ -68,6 +70,7 @@ module exec (
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
         end else if (~interlock) begin
+            pc_to_the_next <= pc;
             inst_to_the_next <= inst;
             if (inst[63:58] == 6'b010000) ex_to_mem_ready <= 1; // Load
             else ex_to_mem_ready <= 0;
@@ -82,6 +85,7 @@ module exec (
 
         end else begin
             ex_to_mem_ready <= 0;
+            pc_to_the_next <= 32'b0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;

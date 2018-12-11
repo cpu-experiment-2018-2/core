@@ -4,10 +4,15 @@ module decode (
     // input
     //
     gpr_if                     gpr,
+    input  wire        [31:0]  pc,
     input  wire        [63:0]  inst,
 
     // output
     //
+    output reg                  branch_flag,
+    output reg         [31:0]   branch_pc,
+
+    output reg         [31:0]   pc_to_the_next,
     output reg         [63:0]   inst_to_the_next,
     // Upper
     output reg  signed [31:0]   u_srca,
@@ -109,13 +114,16 @@ module decode (
     localparam Blr  = 6'b011001;
     localparam Bl   = 6'b011010;
     localparam Blrr = 6'b011011;
+    localparam Cmpd = 6'b011100;
+    localparam Cmpf = 6'b011101;
+    localparam Cmpdi= 6'b011110;
 
     localparam Beq  = 6'b100000;
-    localparam Ble  = 6'b100000;
-    localparam Blt  = 6'b100000;
-    localparam Cmpd = 6'b100000;
-    localparam Cmpf = 6'b100000;
-    localparam Cmpdi= 6'b100000;
+    localparam Ble  = 6'b100001;
+    localparam Blt  = 6'b100010;
+    localparam Bne  = 6'b100011;
+    localparam Bge  = 6'b100100;
+    localparam Bgt  = 6'b100101;
 
     localparam Inll = 6'b101000;
     localparam Inlh = 6'b101001;
@@ -151,12 +159,15 @@ module decode (
 
     always@(posedge clk) begin
         if (~rstn) begin
+            pc_to_the_next <= 32'b0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
             eq <= 0;
             less <= 0;
-        end else if (~interlock) begin
+            branch_flag <= 0;
+        end else if (~branch_flag && ~interlock) begin
+            pc_to_the_next <= pc;
             inst_to_the_next[63:32] <= inst[63:32];
             if (inst[63:58] == Liw
                 || inst[63:58] == Jump
@@ -188,14 +199,8 @@ module decode (
                 Store   : u_srcb <= $signed({{16{u_sform.si[15]}}, u_sform.si});
                 Li      : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
                 Liw     : u_srcb <= $signed(inst[31:0]);
-                Jump    : u_srcb <= $signed({6'b0, u_iform.li});
-                Bl      : u_srcb <= $signed({6'b0, u_iform.li});
-                Beq     : u_srcb <= $signed({6'b0, u_iform.li});
-                Ble     : u_srcb <= $signed({6'b0, u_iform.li});
-                Blt     : u_srcb <= $signed({6'b0, u_iform.li});
-                Cmpd    : u_srcb <= gpr.gpr[u_xform.rb];
-                Cmpf    : u_srcb <= gpr.gpr[u_xform.rb];
-                Cmpdi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
+                Bl      : u_srcb <= pc + 1;
+                Blrr    : u_srcb <= pc + 1;
                 default : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
             endcase
             case (inst[31:26])
@@ -212,9 +217,6 @@ module decode (
                 Load    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 Store   : l_srcb <= $signed({{16{l_sform.si[15]}}, l_sform.si});
                 Li      : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Cmpd    : l_srcb <= gpr.gpr[l_xform.rb];
-                Cmpf    : l_srcb <= gpr.gpr[l_xform.rb];
-                Cmpdi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
                 default : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
             endcase
 
@@ -327,15 +329,47 @@ module decode (
                 less <= (gpr.gpr[l_xform.ra] < gpr.gpr[l_dform.si]);
             end
 
+            // Branch operation
+            case (inst[63:58])
+                Jump    : branch_flag <= 1;
+                Blr     : branch_flag <= 1;
+                Bl      : branch_flag <= 1;
+                Blrr    : branch_flag <= 1;
+                Beq     : branch_flag <= (eq) ? 1 : 0;
+                Ble     : branch_flag <= (eq || less) ? 1 : 0;
+                Blt     : branch_flag <= (less) ? 1 : 0;
+                Bne     : branch_flag <= (~eq) ? 1 : 0;
+                Bge     : branch_flag <= (~less) ? 1 : 0;
+                Bgt     : branch_flag <= (~(less && eq)) ? 1 : 0;
+                default : branch_flag <= 0;
+            endcase
+
+            case (inst[63:58])
+                Jump    : branch_pc <= {6'b0, u_iform.li};
+                Blr     : branch_pc <= gpr.gpr[5'b11111];
+                Bl      : branch_pc <= {6'b0, u_iform.li};
+                Blrr    : branch_pc <= gpr.gpr[u_sform.rs];
+                Beq     : branch_pc <= {6'b0, u_iform.li};
+                Ble     : branch_pc <= {6'b0, u_iform.li};
+                Blt     : branch_pc <= {6'b0, u_iform.li};
+                Bne     : branch_pc <= {6'b0, u_iform.li};
+                Bgt     : branch_pc <= {6'b0, u_iform.li};
+                Bge     : branch_pc <= {6'b0, u_iform.li};
+                default : branch_pc <= 32'b0;
+            endcase
+
+            // Memory address
             addr <= gpr.gpr[u_dform.ra] + $signed({{16{u_dform.si[15]}}, u_dform.si});
             dina <= {gpr.gpr[u_sform.rs], gpr.gpr[l_sform.rs]};
             wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;     // upper Store
             wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;     // lower Store
         end else begin
+            pc_to_the_next <= 32'b0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
             wea <= 7'b0;
+            branch_flag <= 0;
         end
     end
 endmodule

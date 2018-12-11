@@ -5,6 +5,7 @@ module writeback (
 
     // input
     //
+    input  wire        [31:0]   pc_from_exec,
     input  wire        [63:0]   inst_from_exec,
 
     // From exec
@@ -18,6 +19,7 @@ module writeback (
     input  wire                 l_rt_flag_from_exec,
 
     // From memory
+    input  wire        [31:0]   pc_from_mem,
     input  wire        [63:0]   inst_from_mem,
     // Upper
     input  wire        [4:0]    u_rt_from_mem,
