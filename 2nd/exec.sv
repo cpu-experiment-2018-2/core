@@ -1,6 +1,5 @@
 module exec (
     input  wire         interlock,
-    output reg          ex_to_mem_ready,
 
     // input
     //
@@ -36,17 +35,39 @@ module exec (
     output reg         [4:0]    l_rt_to_the_next,
     output reg                  l_rt_flag_to_the_next,
 
+    // FPU
+    fpu_in_if           u_fadd_in,
+    fpu_in_if           l_fadd_in,
+    fpu_in_if           u_fsub_in,
+    fpu_in_if           l_fsub_in,
+    fpu_in_if           u_fmul_in,
+    fpu_in_if           l_fmul_in,
+    fpu_in_if           u_fdiv_in,
+    fpu_in_if           l_fdiv_in,
+    fpu_in_if           u_fsqrt_in,
+    fpu_in_if           l_fsqrt_in,
+    fpu_in_if           u_ftoi_in,
+    fpu_in_if           l_ftoi_in,
+    fpu_in_if           u_itof_in,
+    fpu_in_if           l_itof_in,
+
 
     input  wire         clk,
     input  wire         rstn);
-
 
     typedef enum logic [3:0] {
         ENop = 4'b0000,
         EAdd = 4'b0001,
         ESub = 4'b0010, 
         ERshift = 4'b0011,
-        ELshift = 4'b0100
+        ELshift = 4'b0100,
+        EFadd = 4'b0101,
+        EFsub = 4'b0110,
+        EFmul = 4'b0111,
+        EFdiv = 4'b1000,
+        EFsqrt = 4'b1001,
+        EFtoi = 4'b1010,
+        EItof = 4'b1011
     } exec_type;
 
     function [31:0] EXEC (
@@ -66,14 +87,11 @@ module exec (
 
     always@(posedge clk) begin
         if (~rstn) begin
-            ex_to_mem_ready <= 0;
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
         end else if (~interlock) begin
             pc_to_the_next <= pc;
             inst_to_the_next <= inst;
-            if (inst[63:58] == 6'b010000) ex_to_mem_ready <= 1; // Load
-            else ex_to_mem_ready <= 0;
 
             u_tdata <= EXEC(u_srca, u_srcb, u_e_type);
             u_rt_to_the_next <= u_rt;
@@ -83,12 +101,112 @@ module exec (
             l_rt_to_the_next <= l_rt;
             l_rt_flag_to_the_next <= l_rt_flag;
 
+
+            // FPU
+            // fadd
+            u_fadd_in.srca <= u_srca;
+            u_fadd_in.srcb <= u_srcb;
+            u_fadd_in.rt <= u_rt;
+            if (u_e_type == EFadd) u_fadd_in.rt_flag <= 1;
+            else u_fadd_in.rt_flag <= 0;
+            l_fadd_in.srca <= l_srca;
+            l_fadd_in.srcb <= l_srcb;
+            l_fadd_in.rt <= l_rt;
+            if (l_e_type == EFadd) l_fadd_in.rt_flag <= 1;
+            else l_fadd_in.rt_flag <= 0;
+
+            // fsub
+            u_fsub_in.srca <= u_srca;
+            u_fsub_in.srcb <= u_srcb;
+            u_fsub_in.rt <= u_rt;
+            if (u_e_type == EFsub) u_fsub_in.rt_flag <= 1;
+            else u_fsub_in.rt_flag <= 0;
+            l_fsub_in.srca <= l_srca;
+            l_fsub_in.srcb <= l_srcb;
+            l_fsub_in.rt <= l_rt;
+            if (l_e_type == EFsub) l_fsub_in.rt_flag <= 1;
+            else l_fsub_in.rt_flag <= 0;
+
+            // fmul
+            u_fmul_in.srca <= u_srca;
+            u_fmul_in.srcb <= u_srcb;
+            u_fmul_in.rt <= u_rt;
+            if (u_e_type == EFmul) u_fmul_in.rt_flag <= 1;
+            else u_fmul_in.rt_flag <= 0;
+            l_fmul_in.srca <= l_srca;
+            l_fmul_in.srcb <= l_srcb;
+            l_fmul_in.rt <= l_rt;
+            if (l_e_type == EFmul) l_fmul_in.rt_flag <= 1;
+            else l_fmul_in.rt_flag <= 0;
+
+            // fdiv
+            u_fdiv_in.srca <= u_srca;
+            u_fdiv_in.srcb <= u_srcb;
+            u_fdiv_in.rt <= u_rt;
+            if (u_e_type == EFdiv) u_fdiv_in.rt_flag <= 1;
+            else u_fdiv_in.rt_flag <= 0;
+            l_fdiv_in.srca <= l_srca;
+            l_fdiv_in.srcb <= l_srcb;
+            l_fdiv_in.rt <= l_rt;
+            if (l_e_type == EFdiv) l_fdiv_in.rt_flag <= 1;
+            else l_fdiv_in.rt_flag <= 0;
+
+            // fsqrt
+            u_fsqrt_in.srca <= u_srca;
+            u_fsqrt_in.srcb <= u_srcb;
+            u_fsqrt_in.rt <= u_rt;
+            if (u_e_type == EFsqrt) u_fsqrt_in.rt_flag <= 1;
+            else u_fsqrt_in.rt_flag <= 0;
+            l_fsqrt_in.srca <= l_srca;
+            l_fsqrt_in.srcb <= l_srcb;
+            l_fsqrt_in.rt <= l_rt;
+            if (l_e_type == EFsqrt) l_fsqrt_in.rt_flag <= 1;
+            else l_fsqrt_in.rt_flag <= 0;
+
+            // ftoi
+            u_ftoi_in.srca <= u_srca;
+            u_ftoi_in.srcb <= u_srcb;
+            u_ftoi_in.rt <= u_rt;
+            if (u_e_type == EFtoi) u_ftoi_in.rt_flag <= 1;
+            else u_ftoi_in.rt_flag <= 0;
+            l_ftoi_in.srca <= l_srca;
+            l_ftoi_in.srcb <= l_srcb;
+            l_ftoi_in.rt <= l_rt;
+            if (l_e_type == EFtoi) l_ftoi_in.rt_flag <= 1;
+            else l_ftoi_in.rt_flag <= 0;
+
+            // itof
+            u_itof_in.srca <= u_srca;
+            u_itof_in.srcb <= u_srcb;
+            u_itof_in.rt <= u_rt;
+            if (u_e_type == EItof) u_itof_in.rt_flag <= 1;
+            else u_itof_in.rt_flag <= 0;
+            l_itof_in.srca <= l_srca;
+            l_itof_in.srcb <= l_srcb;
+            l_itof_in.rt <= l_rt;
+            if (l_e_type == EItof) l_itof_in.rt_flag <= 1;
+            else l_itof_in.rt_flag <= 0;
+
         end else begin
-            ex_to_mem_ready <= 0;
             pc_to_the_next <= 32'b0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
+
+            u_fadd_in.rt_flag <= 0;
+            l_fadd_in.rt_flag <= 0;
+            u_fsub_in.rt_flag <= 0;
+            l_fsub_in.rt_flag <= 0;
+            u_fmul_in.rt_flag <= 0;
+            l_fmul_in.rt_flag <= 0;
+            u_fdiv_in.rt_flag <= 0;
+            l_fdiv_in.rt_flag <= 0;
+            u_fsqrt_in.rt_flag <= 0;
+            l_fsqrt_in.rt_flag <= 0;
+            u_ftoi_in.rt_flag <= 0;
+            l_ftoi_in.rt_flag <= 0;
+            u_itof_in.rt_flag <= 0;
+            l_itof_in.rt_flag <= 0;
         end
     end
 

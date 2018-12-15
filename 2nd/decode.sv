@@ -41,56 +41,33 @@ module decode (
     reg eq;
     reg less;
 
+    wire        [4:0]   u_target= inst[57:53];
+    wire        [4:0]   l_target= inst[25:21];
+    wire signed [31:0]  u_reg_s = gpr.gpr[inst[57:53]];
+    wire signed [31:0]  l_reg_s = gpr.gpr[inst[25:21]];
+    wire signed [31:0]  u_reg_a = gpr.gpr[inst[52:48]];
+    wire signed [31:0]  l_reg_a = gpr.gpr[inst[20:16]];
+    wire signed [31:0]  u_reg_b = gpr.gpr[inst[47:43]];
+    wire signed [31:0]  l_reg_b = gpr.gpr[inst[15:11]];
+    wire signed [31:0]  u_si    = $signed({{16{inst[47]}}, inst[47:32]});
+    wire signed [31:0]  l_si    = $signed({{16{inst[15]}}, inst[15:0]});
+    wire        [31:0]  u_li    = {6'b0, inst[57:32]};
+    wire        [31:0]  l_li    = {6'b0, inst[25:0]};
+
     typedef enum logic [3:0] {
         ENop = 4'b0000,
         EAdd = 4'b0001,
         ESub = 4'b0010, 
         ERshift = 4'b0011,
-        ELshift = 4'b0100
+        ELshift = 4'b0100,
+        EFadd = 4'b0101,
+        EFsub = 4'b0110,
+        EFmul = 4'b0111,
+        EFdiv = 4'b1000,
+        EFsqrt = 4'b1001,
+        EFtoi = 4'b1010,
+        EItof = 4'b1011
     } exec_type;
-
-    // Dform
-    typedef struct packed {
-        bit [4:0] rt;
-        bit [4:0] ra;
-        bit [15:0] si;
-    } Dform;
-    Dform u_dform;
-    Dform l_dform;
-    assign u_dform = inst[57:32];
-    assign l_dform = inst[25:0];
-
-    // Sform
-    typedef struct packed {
-        bit [4:0] rs;
-        bit [4:0] ra;
-        bit [15:0] si;
-    } Sform;
-    Sform u_sform;
-    Sform l_sform;
-    assign u_sform = inst[57:32];
-    assign l_sform = inst[25:0];
-
-    // Xform
-    typedef struct packed {
-        bit [4:0] rt;
-        bit [4:0] ra;
-        bit [4:0] rb;
-        bit [10:0] dummy;
-    } Xform;
-    Xform u_xform;
-    Xform l_xform;
-    assign u_xform = inst[57:32];
-    assign l_xform = inst[25:0];
-
-    // Iform
-    typedef struct packed {
-        bit [25:0] li;
-    } Iform;
-    Iform u_iform;
-    Iform l_iform;
-    assign u_iform = inst[57:32];
-    assign l_iform = inst[25:0];
 
 
     localparam Addi = 6'b000000;
@@ -104,6 +81,9 @@ module decode (
     localparam Fsub = 6'b001001;
     localparam Fmul = 6'b001010;
     localparam Fdiv = 6'b001011;
+    localparam Ftoi = 6'b001100;
+    localparam Itof = 6'b001101;
+    localparam Fsqrt= 6'b001110;
 
     localparam Load = 6'b010000;
     localparam Store= 6'b010001;
@@ -180,49 +160,55 @@ module decode (
             else inst_to_the_next[31:0] <= inst[31:0];
 
             // SrcA
-            u_srca <= gpr.gpr[u_dform.ra];
-            l_srca <= gpr.gpr[l_dform.ra];
+            u_srca <= u_reg_a;
+            l_srca <= l_reg_a;
 
             // SrcB
             case (inst[63:58])
-                Addi    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Subi    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Add     : u_srcb <= gpr.gpr[u_xform.rb];
-                Sub     : u_srcb <= gpr.gpr[u_xform.rb];
-                Srawi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Slawi   : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Fadd    : u_srcb <= gpr.gpr[u_xform.rb];
-                Fsub    : u_srcb <= gpr.gpr[u_xform.rb];
-                Fmul    : u_srcb <= gpr.gpr[u_xform.rb];
-                Fdiv    : u_srcb <= gpr.gpr[u_xform.rb];
-                Load    : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
-                Store   : u_srcb <= $signed({{16{u_sform.si[15]}}, u_sform.si});
-                Li      : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
+                Addi    : u_srcb <= u_si;
+                Subi    : u_srcb <= u_si;
+                Add     : u_srcb <= u_reg_b;
+                Sub     : u_srcb <= u_reg_b;
+                Srawi   : u_srcb <= u_si;
+                Slawi   : u_srcb <= u_si;
+                Fadd    : u_srcb <= u_reg_b;
+                Fsub    : u_srcb <= u_reg_b;
+                Fmul    : u_srcb <= u_reg_b;
+                Fdiv    : u_srcb <= u_reg_b;
+                Fsqrt   : u_srcb <= u_reg_b;
+                Ftoi    : u_srcb <= u_reg_b;
+                Itof    : u_srcb <= u_reg_b;
+                Load    : u_srcb <= u_si;
+                Store   : u_srcb <= u_si;
+                Li      : u_srcb <= u_si;
                 Liw     : u_srcb <= $signed(inst[31:0]);
                 Bl      : u_srcb <= pc + 1;
                 Blrr    : u_srcb <= pc + 1;
-                default : u_srcb <= $signed({{16{u_dform.si[15]}}, u_dform.si});
+                default : u_srcb <= u_si;
             endcase
             case (inst[31:26])
-                Addi    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Subi    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Add     : l_srcb <= gpr.gpr[l_xform.rb];
-                Sub     : l_srcb <= gpr.gpr[l_xform.rb];
-                Srawi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Slawi   : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Fadd    : l_srcb <= gpr.gpr[l_xform.rb];
-                Fsub    : l_srcb <= gpr.gpr[l_xform.rb];
-                Fmul    : l_srcb <= gpr.gpr[l_xform.rb];
-                Fdiv    : l_srcb <= gpr.gpr[l_xform.rb];
-                Load    : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                Store   : l_srcb <= $signed({{16{l_sform.si[15]}}, l_sform.si});
-                Li      : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
-                default : l_srcb <= $signed({{16{l_dform.si[15]}}, l_dform.si});
+                Addi    : l_srcb <= l_si;
+                Subi    : l_srcb <= l_si;
+                Add     : l_srcb <= l_reg_b;
+                Sub     : l_srcb <= l_reg_b;
+                Srawi   : l_srcb <= l_si;
+                Slawi   : l_srcb <= l_si;
+                Fadd    : u_srcb <= u_reg_b;
+                Fsub    : u_srcb <= u_reg_b;
+                Fmul    : u_srcb <= u_reg_b;
+                Fdiv    : u_srcb <= u_reg_b;
+                Fsqrt   : u_srcb <= u_reg_b;
+                Ftoi    : u_srcb <= u_reg_b;
+                Itof    : u_srcb <= u_reg_b;
+                Load    : l_srcb <= l_si;
+                Store   : l_srcb <= l_si;
+                Li      : l_srcb <= l_si;
+                default : l_srcb <= l_si;
             endcase
 
             // SrcS
-            u_srcs <= gpr.gpr[u_sform.rs];
-            l_srcs <= gpr.gpr[l_sform.rs];
+            u_srcs <= u_reg_s;
+            l_srcs <= l_reg_s;
 
             // ExecType
             case (inst[63:58])
@@ -232,6 +218,13 @@ module decode (
                 Sub     : u_e_type <= ESub;
                 Srawi   : u_e_type <= ERshift;
                 Slawi   : u_e_type <= ELshift;
+                Fadd    : u_e_type <= EFadd;
+                Fsub    : u_e_type <= EFsub;
+                Fmul    : u_e_type <= EFmul;
+                Fdiv    : u_e_type <= EFdiv;
+                Fsqrt   : u_e_type <= EFsqrt;
+                Ftoi    : u_e_type <= EFtoi;
+                Itof    : u_e_type <= EItof;
                 default : u_e_type <= ENop;
             endcase
             case (inst[31:26])
@@ -241,6 +234,13 @@ module decode (
                 Sub     : l_e_type <= ESub;
                 Srawi   : l_e_type <= ERshift;
                 Slawi   : l_e_type <= ELshift;
+                Fadd    : u_e_type <= EFadd;
+                Fsub    : u_e_type <= EFsub;
+                Fmul    : u_e_type <= EFmul;
+                Fdiv    : u_e_type <= EFdiv;
+                Fsqrt   : u_e_type <= EFsqrt;
+                Ftoi    : u_e_type <= EFtoi;
+                Itof    : u_e_type <= EItof;
                 default : l_e_type <= ENop;
             endcase
 
@@ -248,12 +248,12 @@ module decode (
             case (inst[63:58])
                 Bl      : u_rt <= 5'b11111;
                 Blrr    : u_rt <= 5'b11111;
-                default : u_rt <= u_dform.rt;
+                default : u_rt <= u_target;
             endcase
             case (inst[31:26])
                 Bl      : l_rt <= 5'b11111;
                 Blrr    : l_rt <= 5'b11111;
-                default : l_rt <= l_dform.rt;
+                default : l_rt <= l_target;
             endcase
 
             // RT flag
@@ -306,11 +306,11 @@ module decode (
 
             // Comparison Regs
             if (inst[63:58] == 6'b011100) begin // Compd
-                eq <= (gpr.gpr[u_xform.ra] == gpr.gpr[u_xform.rb]);
-                less <= (gpr.gpr[u_xform.ra] < gpr.gpr[u_xform.rb]);
+                eq <= (u_reg_a == u_reg_b);
+                less <= (u_reg_a < u_reg_b);
             end else if (inst[31:26] == 6'b011100) begin
-                eq <= (gpr.gpr[l_xform.ra] == gpr.gpr[l_xform.rb]);
-                less <= (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
+                eq <= (l_reg_a == l_reg_b);
+                less <= (l_reg_a < l_reg_b);
             end /*else if (inst[63:58] == 6'b011101) begin // Compf
                 eq <= (gpr.gpr[u_xform.ra] == gpr.gpr[u_xform.rb])
                         || (gpr.gpr[u_xform.ra][30:0] == 31'b0 && gpr.gpr[u_xform.rb][30:0] == 31'b0);
@@ -322,11 +322,11 @@ module decode (
                 less <= (gpr.gpr[l_xform.ra][31] == 1 && gpr.gpr[l_xform.rb][31] == 1) ?
                             (gpr.gpr[l_xform.ra] > gpr.gpr[l_xform.rb]) : (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
             end*/ else if (inst[63:58] == 6'b011110) begin // Compdi
-                eq <= (gpr.gpr[u_dform.ra] == gpr.gpr[u_dform.si]);
-                less <= (gpr.gpr[u_xform.ra] < gpr.gpr[u_dform.si]);
+                eq <= (u_reg_a == u_si);
+                less <= (u_reg_a < u_si);
             end else if (inst[31:26] == 6'b011110) begin
-                eq <= (gpr.gpr[l_dform.ra] == gpr.gpr[l_dform.si]);
-                less <= (gpr.gpr[l_xform.ra] < gpr.gpr[l_dform.si]);
+                eq <= (l_reg_a == l_si);
+                less <= (l_reg_a < l_si);
             end
 
             // Branch operation
@@ -345,24 +345,25 @@ module decode (
             endcase
 
             case (inst[63:58])
-                Jump    : branch_pc <= {6'b0, u_iform.li};
+                Jump    : branch_pc <= u_li;
                 Blr     : branch_pc <= gpr.gpr[5'b11111];
-                Bl      : branch_pc <= {6'b0, u_iform.li};
-                Blrr    : branch_pc <= gpr.gpr[u_sform.rs];
-                Beq     : branch_pc <= {6'b0, u_iform.li};
-                Ble     : branch_pc <= {6'b0, u_iform.li};
-                Blt     : branch_pc <= {6'b0, u_iform.li};
-                Bne     : branch_pc <= {6'b0, u_iform.li};
-                Bgt     : branch_pc <= {6'b0, u_iform.li};
-                Bge     : branch_pc <= {6'b0, u_iform.li};
+                Bl      : branch_pc <= u_li;
+                Blrr    : branch_pc <= u_reg_s;
+                Beq     : branch_pc <= u_li;
+                Ble     : branch_pc <= u_li;
+                Blt     : branch_pc <= u_li;
+                Bne     : branch_pc <= u_li;
+                Bgt     : branch_pc <= u_li;
+                Bge     : branch_pc <= u_li;
                 default : branch_pc <= 32'b0;
             endcase
 
             // Memory address
-            addr <= gpr.gpr[u_dform.ra] + $signed({{16{u_dform.si[15]}}, u_dform.si});
-            dina <= {gpr.gpr[u_sform.rs], gpr.gpr[l_sform.rs]};
+            addr <= u_reg_a + u_si;
+            dina <= {u_reg_s, l_reg_s};
             wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;     // upper Store
             wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;     // lower Store
+
         end else begin
             pc_to_the_next <= 32'b0;
             inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
