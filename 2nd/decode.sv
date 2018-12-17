@@ -1,3 +1,5 @@
+import inst_package::*;
+
 module decode (
     input  wire         interlock,
 
@@ -54,63 +56,6 @@ module decode (
     wire        [31:0]  u_li    = {6'b0, inst[57:32]};
     wire        [31:0]  l_li    = {6'b0, inst[25:0]};
 
-    typedef enum logic [3:0] {
-        ENop = 4'b0000,
-        EAdd = 4'b0001,
-        ESub = 4'b0010, 
-        ERshift = 4'b0011,
-        ELshift = 4'b0100,
-        EFadd = 4'b0101,
-        EFsub = 4'b0110,
-        EFmul = 4'b0111,
-        EFdiv = 4'b1000,
-        EFsqrt = 4'b1001,
-        EFtoi = 4'b1010,
-        EItof = 4'b1011
-    } exec_type;
-
-
-    localparam Addi = 6'b000000;
-    localparam Subi = 6'b000001;
-    localparam Add  = 6'b000010;
-    localparam Sub  = 6'b000011;
-    localparam Srawi= 6'b000100;
-    localparam Slawi= 6'b000101;
-    
-    localparam Fadd = 6'b001000;
-    localparam Fsub = 6'b001001;
-    localparam Fmul = 6'b001010;
-    localparam Fdiv = 6'b001011;
-    localparam Ftoi = 6'b001100;
-    localparam Itof = 6'b001101;
-    localparam Fsqrt= 6'b001110;
-
-    localparam Load = 6'b010000;
-    localparam Store= 6'b010001;
-    localparam Li   = 6'b010010;
-    localparam Liw  = 6'b010011;
-
-    localparam Jump = 6'b011000;
-    localparam Blr  = 6'b011001;
-    localparam Bl   = 6'b011010;
-    localparam Blrr = 6'b011011;
-    localparam Cmpd = 6'b011100;
-    localparam Cmpf = 6'b011101;
-    localparam Cmpdi= 6'b011110;
-
-    localparam Beq  = 6'b100000;
-    localparam Ble  = 6'b100001;
-    localparam Blt  = 6'b100010;
-    localparam Bne  = 6'b100011;
-    localparam Bge  = 6'b100100;
-    localparam Bgt  = 6'b100101;
-
-    localparam Inll = 6'b101000;
-    localparam Inlh = 6'b101001;
-    localparam Inul = 6'b101010;
-    localparam Inuh = 6'b101011;
-    localparam Outll= 6'b101100;
-
     /*
     function [31:0] SRCA (
         input [31:0] dform,
@@ -140,7 +85,7 @@ module decode (
     always@(posedge clk) begin
         if (~rstn) begin
             pc_to_the_next <= 32'b0;
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+            inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
             u_rt_flag <= 0;
             l_rt_flag <= 0;
             eq <= 0;
@@ -156,7 +101,7 @@ module decode (
                 || inst[63:58] == Blrr
                 || inst[63:58] == Beq
                 || inst[63:58] == Ble
-                || inst[63:58] == Blt) inst_to_the_next[31:0] <= {3'b111, 29'b0}; // Nop
+                || inst[63:58] == Blt) inst_to_the_next[31:0] <= {Nop, 26'b0}; // Nop
             else inst_to_the_next[31:0] <= inst[31:0];
 
             // SrcA
@@ -305,10 +250,10 @@ module decode (
             end
 
             // Comparison Regs
-            if (inst[63:58] == 6'b011100) begin // Compd
+            if (inst[63:58] == Cmpd) begin // Compd
                 eq <= (u_reg_a == u_reg_b);
                 less <= (u_reg_a < u_reg_b);
-            end else if (inst[31:26] == 6'b011100) begin
+            end else if (inst[31:26] == Cmpd) begin
                 eq <= (l_reg_a == l_reg_b);
                 less <= (l_reg_a < l_reg_b);
             end /*else if (inst[63:58] == 6'b011101) begin // Compf
@@ -321,10 +266,10 @@ module decode (
                         || (gpr.gpr[l_xform.ra][30:0] == 31'b0 && gpr.gpr[l_xform.rb][30:0] == 31'b0);
                 less <= (gpr.gpr[l_xform.ra][31] == 1 && gpr.gpr[l_xform.rb][31] == 1) ?
                             (gpr.gpr[l_xform.ra] > gpr.gpr[l_xform.rb]) : (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
-            end*/ else if (inst[63:58] == 6'b011110) begin // Compdi
+            end*/ else if (inst[63:58] == Cmpdi) begin // Compdi
                 eq <= (u_reg_a == u_si);
                 less <= (u_reg_a < u_si);
-            end else if (inst[31:26] == 6'b011110) begin
+            end else if (inst[31:26] == Cmpdi) begin
                 eq <= (l_reg_a == l_si);
                 less <= (l_reg_a < l_si);
             end
@@ -361,16 +306,9 @@ module decode (
             // Memory address
             addr <= u_reg_a + u_si;
             dina <= {u_reg_s, l_reg_s};
-            wea[3:0] <= (inst[31:26] == 6'b010001) ? 4'b1111 : 4'b0000;     // upper Store
-            wea[7:4] <= (inst[63:58] == 6'b010001) ? 4'b1111 : 4'b0000;     // lower Store
+            wea[3:0] <= (inst[31:26] == Store) ? 4'b1111 : 4'b0000;     // upper Store
+            wea[7:4] <= (inst[63:58] == Store) ? 4'b1111 : 4'b0000;     // lower Store
 
-        end else begin
-            pc_to_the_next <= 32'b0;
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
-            u_rt_flag <= 0;
-            l_rt_flag <= 0;
-            wea <= 7'b0;
-            branch_flag <= 0;
-        end
+        end else if (branch_flag) branch_flag <= 0;
     end
 endmodule

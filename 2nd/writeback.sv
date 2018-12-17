@@ -1,3 +1,5 @@
+import inst_package::*;
+
 module writeback (
     input  wire         interlock,
 
@@ -53,14 +55,14 @@ module writeback (
     always_ff@(posedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
-            if (inst_from_mem[63:58] == 6'b010000) begin
+            if (inst_from_mem[63:58] == Load) begin
                 gpr.gpr[u_rt_from_mem] <= mem_doutb[63:32];
             end 
             if (u_rt_flag_from_exec) begin
                 gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
             end
 
-            if (inst_from_mem[31:26] == 6'b010000) begin
+            if (inst_from_mem[31:26] == Load) begin
                 gpr.gpr[l_rt_from_mem] <= mem_doutb[31:0];
             end else if (l_rt_flag_from_mem) gpr.gpr[l_rt_from_mem] <= l_tdata_from_mem;
             if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;

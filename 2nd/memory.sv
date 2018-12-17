@@ -1,3 +1,5 @@
+import inst_package::*;
+
 module memory (
     input  wire         interlock,
 
@@ -81,7 +83,12 @@ module memory (
 
     always@(posedge clk) begin
         if (~rstn) begin
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+            middle_pc <= 32'b0;
+            middle_inst <= {Nop, 26'b0, Nop, 26'b0};
+
+            pc_to_the_next <= 32'b0;
+            inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
+
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
         end else if (~interlock) begin
@@ -109,17 +116,14 @@ module memory (
 
             mem_doutb <= n_doutb[n_addr_to_the_next[17:15]];
         end else begin
-            middle_pc <= 32'b0;
-            pc_to_the_next <= 32'b0;
-            middle_inst <= {3'b111, 29'b0, 3'b111, 29'b0};
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
-            u_rt_flag_to_the_next <= 0;
-            l_rt_flag_to_the_next <= 0;
         end
     end
 
     always@(negedge clk) begin
         if (~rstn) begin
+            for (int i = 0; i < 8; i++) begin
+                n_wea[i] <= 8'b0;
+            end
         end else if (~interlock) begin
             for (int i = 0; i < 8; i++) begin
                 n_addr[i] <= addr;
@@ -133,9 +137,6 @@ module memory (
             middle_n_addr <= neg_addr;
             n_addr_to_the_next <= middle_n_addr;
         end else begin
-            for (int i = 0; i < 8; i++) begin
-                n_wea[i] <= 8'b0;
-            end
         end
     end
 

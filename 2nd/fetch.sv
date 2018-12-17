@@ -1,3 +1,5 @@
+import inst_package::*;
+
 module fetch (
     input  wire         interlock,
 
@@ -25,20 +27,18 @@ module fetch (
         if (~rstn) begin
             pc <= 32'b0;
             interval <= 1;
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+            inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
             pc_to_the_next <= 32'b0;
         end else if (~interlock) begin
             if (interval == 0) inst_to_the_next <= douta;
             else begin
-                inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
+                inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
                 interval <= interval - 1;
             end
 
             pc <= inst_addra + 1;
             pc_to_the_next <= inst_addra;
         end else begin
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
-            pc_to_the_next <= 32'b0;
         end
     end
 

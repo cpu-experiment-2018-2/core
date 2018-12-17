@@ -1,3 +1,5 @@
+import inst_package::*;
+
 module exec (
     input  wire         interlock,
 
@@ -55,21 +57,6 @@ module exec (
     input  wire         clk,
     input  wire         rstn);
 
-    typedef enum logic [3:0] {
-        ENop = 4'b0000,
-        EAdd = 4'b0001,
-        ESub = 4'b0010, 
-        ERshift = 4'b0011,
-        ELshift = 4'b0100,
-        EFadd = 4'b0101,
-        EFsub = 4'b0110,
-        EFmul = 4'b0111,
-        EFdiv = 4'b1000,
-        EFsqrt = 4'b1001,
-        EFtoi = 4'b1010,
-        EItof = 4'b1011
-    } exec_type;
-
     function [31:0] EXEC (
         input [31:0] SRCA,
         input [31:0] SRCB,
@@ -87,8 +74,26 @@ module exec (
 
     always@(posedge clk) begin
         if (~rstn) begin
+            pc_to_the_next <= 32'b0;
+            inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
+
             u_rt_flag_to_the_next <= 0;
             l_rt_flag_to_the_next <= 0;
+
+            u_fadd_in.rt_flag <= 0;
+            l_fadd_in.rt_flag <= 0;
+            u_fsub_in.rt_flag <= 0;
+            l_fsub_in.rt_flag <= 0;
+            u_fmul_in.rt_flag <= 0;
+            l_fmul_in.rt_flag <= 0;
+            u_fdiv_in.rt_flag <= 0;
+            l_fdiv_in.rt_flag <= 0;
+            u_fsqrt_in.rt_flag <= 0;
+            l_fsqrt_in.rt_flag <= 0;
+            u_ftoi_in.rt_flag <= 0;
+            l_ftoi_in.rt_flag <= 0;
+            u_itof_in.rt_flag <= 0;
+            l_itof_in.rt_flag <= 0;
         end else if (~interlock) begin
             pc_to_the_next <= pc;
             inst_to_the_next <= inst;
@@ -188,25 +193,6 @@ module exec (
             else l_itof_in.rt_flag <= 0;
 
         end else begin
-            pc_to_the_next <= 32'b0;
-            inst_to_the_next <= {3'b111, 29'b0, 3'b111, 29'b0};
-            u_rt_flag_to_the_next <= 0;
-            l_rt_flag_to_the_next <= 0;
-
-            u_fadd_in.rt_flag <= 0;
-            l_fadd_in.rt_flag <= 0;
-            u_fsub_in.rt_flag <= 0;
-            l_fsub_in.rt_flag <= 0;
-            u_fmul_in.rt_flag <= 0;
-            l_fmul_in.rt_flag <= 0;
-            u_fdiv_in.rt_flag <= 0;
-            l_fdiv_in.rt_flag <= 0;
-            u_fsqrt_in.rt_flag <= 0;
-            l_fsqrt_in.rt_flag <= 0;
-            u_ftoi_in.rt_flag <= 0;
-            l_ftoi_in.rt_flag <= 0;
-            u_itof_in.rt_flag <= 0;
-            l_itof_in.rt_flag <= 0;
         end
     end
 
