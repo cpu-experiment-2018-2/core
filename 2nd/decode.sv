@@ -56,30 +56,16 @@ module decode (
     wire        [31:0]  u_li    = {6'b0, inst[57:32]};
     wire        [31:0]  l_li    = {6'b0, inst[25:0]};
 
-    /*
-    function [31:0] SRCA (
-        input [31:0] dform,
-        input [31:0] xform,
-        input [31:0] sform
-    );
-        case (inst[63:58])
-                Addi    : SRCA = gpr.gpr[dform.ra];
-                Subi    : SRCA = gpr.gpr[dform.ra];
-                Add     : SRCA = gpr.gpr[xform.ra];
-                Sub     : SRCA = gpr.gpr[xform.ra];
-                Srawi   : SRCA = gpr.gpr[dform.ra];
-                Slawi   : SRCA = gpr.gpr[dform.ra];
-                Fadd    : SRCA = gpr.gpr[xform.ra];
-                Fsub    : SRCA = gpr.gpr[xform.ra];
-                Fmul    : SRCA = gpr.gpr[xform.ra];
-                Fdiv    : SRCA = gpr.gpr[xform.ra];
-                Load    : SRCA = gpr.gpr[dform.ra];
-                Store   : SRCA = gpr.gpr[sform.ra];
-                Li      : SRCA = dform.si;
-                Liw     : SRCA = dform.si;
-                default : SRCA = dform.si;
-        endcase
-    endfunction */
+
+    wire                u_fless_result;
+    wire                l_fless_result;
+
+    fless u_fless(  .srca(u_reg_a),
+                    .srcb(u_reg_b),
+                    .result(u_fless_result));
+    fless l_fless(  .srca(l_reg_a),
+                    .srcb(l_reg_b),
+                    .result(l_fless_result));
 
 
     always@(posedge clk) begin
@@ -250,23 +236,19 @@ module decode (
             end
 
             // Comparison Regs
-            if (inst[63:58] == Cmpd) begin // Compd
+            if (inst[63:58] == Cmpd) begin
                 eq <= (u_reg_a == u_reg_b);
                 less <= (u_reg_a < u_reg_b);
             end else if (inst[31:26] == Cmpd) begin
                 eq <= (l_reg_a == l_reg_b);
                 less <= (l_reg_a < l_reg_b);
-            end /*else if (inst[63:58] == 6'b011101) begin // Compf
-                eq <= (gpr.gpr[u_xform.ra] == gpr.gpr[u_xform.rb])
-                        || (gpr.gpr[u_xform.ra][30:0] == 31'b0 && gpr.gpr[u_xform.rb][30:0] == 31'b0);
-                less <= (gpr.gpr[u_xform.ra][31] == 1 && gpr.gpr[u_xform.rb][31] == 1) ?
-                            (gpr.gpr[u_xform.ra] > gpr.gpr[u_xform.rb]) : (gpr.gpr[u_xform.ra] < gpr.gpr[u_xform.rb]);
-            end else if (inst[31:26] == 6'b011101) begin
-                eq <= (gpr.gpr[l_xform.ra] == gpr.gpr[l_xform.rb])
-                        || (gpr.gpr[l_xform.ra][30:0] == 31'b0 && gpr.gpr[l_xform.rb][30:0] == 31'b0);
-                less <= (gpr.gpr[l_xform.ra][31] == 1 && gpr.gpr[l_xform.rb][31] == 1) ?
-                            (gpr.gpr[l_xform.ra] > gpr.gpr[l_xform.rb]) : (gpr.gpr[l_xform.ra] < gpr.gpr[l_xform.rb]);
-            end*/ else if (inst[63:58] == Cmpdi) begin // Compdi
+            end else if (inst[63:58] == Cmpf) begin
+                eq <= (u_reg_a == u_reg_b) || (u_reg_a[30:23] == 8'b0 && u_reg_b[30:23] == 8'b0);
+                less <= u_fless_result;
+            end else if (inst[31:26] == Cmpf) begin
+                eq <= (l_reg_a == l_reg_b) || (l_reg_a[30:23] == 8'b0 && l_reg_b[30:23] == 8'b0);
+                less <= l_fless_result;
+            end else if (inst[63:58] == Cmpdi) begin
                 eq <= (u_reg_a == u_si);
                 less <= (u_reg_a < u_si);
             end else if (inst[31:26] == Cmpdi) begin
