@@ -4,10 +4,10 @@
 #USB UART
 #set_property PACKAGE_PIN K27 [get_ports {rts[0]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {rts[0]}]
-#set_property PACKAGE_PIN G25 [get_ports rx]
-#set_property IOSTANDARD LVCMOS18 [get_ports rx]
-#set_property PACKAGE_PIN K26 [get_ports tx]
-#set_property IOSTANDARD LVCMOS18 [get_ports tx]
+set_property PACKAGE_PIN G25 [get_ports rx]
+set_property IOSTANDARD LVCMOS18 [get_ports rx]
+set_property PACKAGE_PIN K26 [get_ports tx]
+set_property IOSTANDARD LVCMOS18 [get_ports tx]
 
 # leds
 set_property PACKAGE_PIN AP8 [get_ports {led[0]}]

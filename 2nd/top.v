@@ -1,10 +1,12 @@
 `timescale 1ns/1ps
 module top (
+    input  wire         rx,
+    output wire         tx,
     output wire [7:0]   led,
 
     input  wire         clk,
     input  wire         rstn);
 
-    cpu c(led, clk, rstn);
+    cpu c(rx, tx, led, clk, rstn);
 
 endmodule
