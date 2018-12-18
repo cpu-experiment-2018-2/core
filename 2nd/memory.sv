@@ -25,11 +25,7 @@ module memory (
     output reg          [31:0]  pc_to_the_next,
     output reg          [63:0]  inst_to_the_next,
     output reg          [4:0]   u_rt_to_the_next,
-    output reg                  u_rt_flag_to_the_next,
-
-    output reg signed   [31:0]  l_tdata_to_the_next,
     output reg          [4:0]   l_rt_to_the_next,
-    output reg                  l_rt_flag_to_the_next,
 
     output reg          [63:0]  mem_doutb,
 
@@ -48,10 +44,7 @@ module memory (
     reg        [31:0]   middle_pc;
     reg        [63:0]   middle_inst;
     reg        [4:0]    middle_u_rt;
-    reg                 middle_u_rt_flag;
-    reg signed [31:0]   middle_l_tdata;
     reg        [4:0]    middle_l_rt;
-    reg                 middle_l_rt_flag;
 
     reg        [31:0]   middle_n_addr;
     reg        [31:0]   n_addr_to_the_next;
@@ -88,31 +81,20 @@ module memory (
 
             pc_to_the_next <= 32'b0;
             inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
-
-            u_rt_flag_to_the_next <= 0;
-            l_rt_flag_to_the_next <= 0;
         end else if (~interlock) begin
             // middle
             middle_pc <= pc;
             middle_inst <= inst;
 
             middle_u_rt <= u_rt;
-            middle_u_rt_flag <= u_rt_flag;
-
-            middle_l_tdata <= l_tdata;
             middle_l_rt <= l_rt;
-            middle_l_rt_flag <= l_rt_flag;
 
             // to the next
             pc_to_the_next <= middle_pc;
             inst_to_the_next <= middle_inst;
             
             u_rt_to_the_next <= middle_u_rt;
-            u_rt_flag_to_the_next <= middle_u_rt_flag;
-
-            l_tdata_to_the_next <= middle_l_tdata;
             l_rt_to_the_next <= middle_l_rt;
-            l_rt_flag_to_the_next <= middle_l_rt_flag;
 
             mem_doutb <= n_doutb[n_addr_to_the_next[17:15]];
         end else begin

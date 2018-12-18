@@ -170,10 +170,7 @@ module cpu (
     //    Memory
     //================
     wire        [4:0]   u_rt_from_mem;
-    wire                u_rt_flag_from_mem;
-    wire signed [31:0]  l_tdata_from_mem;
     wire        [4:0]   l_rt_from_mem;
-    wire                l_rt_flag_from_mem;
     wire        [63:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
@@ -183,17 +180,11 @@ module cpu (
                 .dina(dina),
                 .wea(wea),
                 .u_rt(u_rt_from_exec),
-                .u_rt_flag(u_rt_flag_from_exec),
-                .l_tdata(l_tdata_from_exec),
                 .l_rt(l_rt_from_exec),
-                .l_rt_flag(l_rt_flag_from_exec),
                 .pc_to_the_next(pc_from_mem),
                 .inst_to_the_next(inst_from_mem),
                 .u_rt_to_the_next(u_rt_from_mem),
-                .u_rt_flag_to_the_next(u_rt_flag_from_mem),
-                .l_tdata_to_the_next(l_tdata_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
-                .l_rt_flag_to_the_next(l_rt_flag_from_mem),
                 .mem_doutb(mem_doutb),
                 .clk(clk),
                 .rstn(rstn));
