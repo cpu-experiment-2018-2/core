@@ -14,7 +14,8 @@ module fetch (
     input  wire         clk,
     input  wire         rstn);
 
-    reg  [31:0]  pc;
+	reg  [31:0]		middle_pc;
+    reg  [31:0]     pc;
     wire [31:0]     inst_addra;
     assign inst_addra = branch_flag ? branch_pc : pc;
 
@@ -26,18 +27,20 @@ module fetch (
     always@(posedge clk) begin
         if (~rstn) begin
             pc <= 32'b0;
+            middle_pc <= 32'b0;
             interval <= 1;
             inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
             pc_to_the_next <= 32'b0;
         end else if (~interlock) begin
-            if (interval == 0) inst_to_the_next <= douta;
+            if (interval == 0) inst_to_the_next <= (~branch_flag) ? douta : {Nop, 26'b0, Nop, 26'b0};
             else begin
                 inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
                 interval <= interval - 1;
             end
 
             pc <= inst_addra + 1;
-            pc_to_the_next <= inst_addra;
+			middle_pc <= inst_addra;
+            pc_to_the_next <= (~branch_flag) ? middle_pc : 32'b0;
         end else begin
         end
     end

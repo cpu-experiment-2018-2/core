@@ -214,7 +214,12 @@ module decode (
                 || inst[63:58] == Blrr
                 || inst[63:58] == Beq
                 || inst[63:58] == Ble
-                || inst[63:58] == Blt) l_rt_flag <= 0;
+                || inst[63:58] == Blt
+                || inst[63:58] == Inll
+                || inst[63:58] == Inlh
+                || inst[63:58] == Inul
+                || inst[63:58] == Inuh
+                || inst[63:58] == Outll) l_rt_flag <= 0;
             else begin
                 case (inst[31:26])
                     Addi    : l_rt_flag <= 1;
@@ -227,10 +232,6 @@ module decode (
                     // Liw     : l_rt_flag <= 1;    // Liw doesn't appear in lower inst
                     Bl      : l_rt_flag <= 1;
                     Blrr    : l_rt_flag <= 1;
-                    Inll    : l_rt_flag <= 1;
-                    Inlh    : l_rt_flag <= 1;
-                    Inul    : l_rt_flag <= 1;
-                    Inuh    : l_rt_flag <= 1;
                     default : l_rt_flag <= 0;
                 endcase
             end
@@ -291,6 +292,15 @@ module decode (
             wea[3:0] <= (inst[31:26] == Store) ? 4'b1111 : 4'b0000;     // upper Store
             wea[7:4] <= (inst[63:58] == Store) ? 4'b1111 : 4'b0000;     // lower Store
 
-        end else if (branch_flag) branch_flag <= 0;
+        end else if (branch_flag) begin
+            branch_flag <= 0;
+            pc_to_the_next <= 32'b0;
+            inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};
+            u_rt_flag <= 0;
+            l_rt_flag <= 0;
+            eq <= 0;
+            less <= 0;
+            branch_flag <= 0;
+        end
     end
 endmodule

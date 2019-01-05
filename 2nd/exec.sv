@@ -53,6 +53,7 @@ module exec (
     fpu_in_if           u_itof_in,
     fpu_in_if           l_itof_in,
 
+    input  wire [7:0]   uart_rdata,
 
     input  wire         clk,
     input  wire         rstn);
@@ -98,7 +99,13 @@ module exec (
             pc_to_the_next <= pc;
             inst_to_the_next <= inst;
 
-            u_tdata <= EXEC(u_srca, u_srcb, u_e_type);
+            case (inst[63:58])
+                Inll    : u_tdata <= {u_srcs[31:8], uart_rdata};
+                Inlh    : u_tdata <= {u_srcs[31:16], uart_rdata, u_srcs[7:0]};
+                Inul    : u_tdata <= {u_srcs[31:24], uart_rdata, u_srcs[15:0]};
+                Inuh    : u_tdata <= {uart_rdata, u_srcs[23:0]};
+                default : u_tdata <= EXEC(u_srca, u_srcb, u_e_type);
+            endcase
             u_rt_to_the_next <= u_rt;
             u_rt_flag_to_the_next <= u_rt_flag;
 

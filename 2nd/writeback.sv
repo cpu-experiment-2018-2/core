@@ -3,7 +3,7 @@ import inst_package::*;
 module writeback (
     input  wire         interlock,
 
-    gpr_if              gpr,
+    (* mark_debug = "true" *) gpr_if              gpr,
 
     // input
     //

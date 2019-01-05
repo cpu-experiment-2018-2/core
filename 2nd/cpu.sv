@@ -26,21 +26,21 @@ module cpu (
     input  wire         clk,
     input  wire         rstn);
 
-    reg             interlock;
+    (* mark_debug = "true" *) reg             interlock;
 
     gpr_if          gpr();
     assign led = gpr.gpr[0][7:0];
 
-    wire [31:0]     decode_pc;
-    wire [31:0]     exec_pc;
-    wire [31:0]     pc_from_exec;
-    wire [31:0]     pc_from_mem;
+    (* mark_debug = "true" *) wire [31:0]     decode_pc;
+    (* mark_debug = "true" *) wire [31:0]     exec_pc;
+    (* mark_debug = "true" *) wire [31:0]     pc_from_exec;
+    (* mark_debug = "true" *) wire [31:0]     pc_from_mem;
 
 
-    wire [63:0]     decode_inst;
-    wire [63:0]     exec_inst;
-    wire [63:0]     inst_from_exec;
-    wire [63:0]     inst_from_mem;
+    (* mark_debug = "true" *) wire [63:0]     decode_inst;
+    (* mark_debug = "true" *) wire [63:0]     exec_inst;
+    (* mark_debug = "true" *) wire [63:0]     inst_from_exec;
+    (* mark_debug = "true" *) wire [63:0]     inst_from_mem;
 
 
     //================
@@ -60,23 +60,23 @@ module cpu (
     //================
     //     Decode
     //================
-    wire signed [31:0]  u_srca;
-    wire signed [31:0]  u_srcb;
-    wire signed [31:0]  u_srcs_to_exec;
-    wire        [3:0]   u_e_type;
-    wire        [4:0]   u_rt_from_decode;
-    wire                u_rt_flag_from_decode;
+    (* mark_debug = "true" *) wire signed [31:0]  u_srca;
+    (* mark_debug = "true" *) wire signed [31:0]  u_srcb;
+    (* mark_debug = "true" *) wire signed [31:0]  u_srcs_to_exec;
+    (* mark_debug = "true" *) wire        [3:0]   u_e_type;
+    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_decode;
+    (* mark_debug = "true" *) wire                u_rt_flag_from_decode;
 
-    wire signed [31:0]  l_srca;
-    wire signed [31:0]  l_srcb;
-    wire signed [31:0]  l_srcs_to_exec;
-    wire        [3:0]   l_e_type;
-    wire        [4:0]   l_rt_from_decode;
-    wire                l_rt_flag_from_decode;
+    (* mark_debug = "true" *) wire signed [31:0]  l_srca;
+    (* mark_debug = "true" *) wire signed [31:0]  l_srcb;
+    (* mark_debug = "true" *) wire signed [31:0]  l_srcs_to_exec;
+    (* mark_debug = "true" *) wire        [3:0]   l_e_type;
+    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_decode;
+    (* mark_debug = "true" *) wire                l_rt_flag_from_decode;
 
-    wire        [31:0]  addr;
-    wire        [63:0]  dina;
-    wire        [7:0]   wea;
+    (* mark_debug = "true" *) wire        [31:0]  addr;
+    (* mark_debug = "true" *) wire        [63:0]  dina;
+    (* mark_debug = "true" *) wire        [7:0]   wea;
 
     decode di(  .interlock(interlock),
                 .gpr(gpr),
@@ -107,13 +107,13 @@ module cpu (
     //================
     //     Exec
     //================
-    wire signed [31:0]  u_tdata_from_exec;
-    wire        [4:0]   u_rt_from_exec;
-    wire                u_rt_flag_from_exec;
+    (* mark_debug = "true" *) wire signed [31:0]  u_tdata_from_exec;
+    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_exec;
+    (* mark_debug = "true" *) wire                u_rt_flag_from_exec;
 
-    wire signed [31:0]  l_tdata_from_exec;
-    wire        [4:0]   l_rt_from_exec;
-    wire                l_rt_flag_from_exec;
+    (* mark_debug = "true" *) wire signed [31:0]  l_tdata_from_exec;
+    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_exec;
+    (* mark_debug = "true" *) wire                l_rt_flag_from_exec;
 
     fpu_in_if   u_fadd_in();
     fpu_in_if   l_fadd_in();
@@ -129,6 +129,8 @@ module cpu (
     fpu_in_if   l_ftoi_in();
     fpu_in_if   u_itof_in();
     fpu_in_if   l_itof_in();
+
+    (* mark_debug = "true" *) wire [7:0]  uart_rdata;
 
     exec ex(    .interlock(interlock),
                 .pc(exec_pc),
@@ -167,15 +169,16 @@ module cpu (
                 .l_ftoi_in(l_ftoi_in),
                 .u_itof_in(u_itof_in),
                 .l_itof_in(l_itof_in),
+                .uart_rdata(uart_rdata),
                 .clk(clk),
                 .rstn(rstn));
 
     //================
     //    Memory
     //================
-    wire        [4:0]   u_rt_from_mem;
-    wire        [4:0]   l_rt_from_mem;
-    wire        [63:0]  mem_doutb;
+    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_mem;
+    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_mem;
+    (* mark_debug = "true" *) wire        [63:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
                 .pc(pc_from_exec),
@@ -355,13 +358,13 @@ module cpu (
     //================
     //   Writeback
     //================
-    wire signed [31:0] ex_to_wb_u_tdata;
-    wire        [4:0]  ex_to_wb_u_rt;
-    wire               ex_to_wb_u_rt_flag;
+    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_u_tdata;
+    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_u_rt;
+    (* mark_debug = "true" *) wire               ex_to_wb_u_rt_flag;
 
-    wire signed [31:0] ex_to_wb_l_tdata;
-    wire        [4:0]  ex_to_wb_l_rt;
-    wire               ex_to_wb_l_rt_flag;
+    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_l_tdata;
+    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_l_rt;
+    (* mark_debug = "true" *) wire               ex_to_wb_l_rt_flag;
 
     assign ex_to_wb_u_tdata       = u_tdata_from_exec;
     assign ex_to_wb_u_rt          = u_rt_from_exec;
@@ -401,6 +404,7 @@ module cpu (
                             .s_axi_aresetn(rstn),
                             .s_axi_awaddr(uart_axi_awaddr),
                             .s_axi_awvalid(uart_axi_awvalid),
+                            .s_axi_awready(uart_axi_awready),
                             .s_axi_wdata(uart_axi_wdata),
                             .s_axi_wstrb(uart_axi_wstrb),
                             .s_axi_wvalid(uart_axi_wvalid),
@@ -429,16 +433,15 @@ module cpu (
 	} waddr_type;
 
     raddr_type  uart_raddr;
-    reg         uart_ren;
-    wire [7:0]  uart_rdata;
+    (* mark_debug = "true" *) reg         uart_ren;
     wire        uart_rbusy;
     wire        uart_rdone;
 
-    reg  [7:0]  uart_wdone;
+    (* mark_debug = "true" *) reg  [7:0]  uart_wdata;
     waddr_type  uart_waddr;
-    reg         uart_wen;
+    (* mark_debug = "true" *) reg         uart_wen;
     wire        uart_wbusy;
-    wire        uart_wdata;
+    wire        uart_wdone;
 
     uart_rx u_rx( .*,
                 .addr(uart_raddr),
@@ -492,6 +495,7 @@ module cpu (
                     state <= CHECK_RX_ST;
                 end else if (decode_inst[63:58] == Outll) begin
                     interlock <= 1;
+                    uart_wdata <= u_srcs_to_exec[7:0];
                     uart_raddr <= STAT_REG;
                     uart_ren <= 1;
                     state <= CHECK_TX_ST;
@@ -516,6 +520,7 @@ module cpu (
                         // Tx FIFO Full flag
                         if (uart_rdata[3] == 0) begin
                             uart_wen <= 1;
+                            uart_waddr <= TX_FIFO;
                             state <= WRITE_ST;
                         end else uart_ren <= 1;
                     end else uart_ren <= 0;
