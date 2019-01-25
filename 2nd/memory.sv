@@ -108,7 +108,7 @@ module memory (
             end
         end else if (~interlock) begin
             for (int i = 0; i < 8; i++) begin
-                n_addr[i] <= addr;
+                n_addr[i] <= {14'b0, addr[14:0], 3'b0};
                 n_dina[i] <= dina;
                 n_doutb[i] <= doutb[i];
                 if (addr[17:15] == i) n_wea[i] <= wea;

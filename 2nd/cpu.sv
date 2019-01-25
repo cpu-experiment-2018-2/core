@@ -78,6 +78,8 @@ module cpu (
     (* mark_debug = "true" *) wire        [63:0]  dina;
     (* mark_debug = "true" *) wire        [7:0]   wea;
 
+    (* mark_debug = "true" *) wire        [7:0]   uart_wdata_from_decode;
+
     decode di(  .interlock(interlock),
                 .gpr(gpr),
                 .pc(decode_pc),
@@ -101,6 +103,7 @@ module cpu (
                 .addr(addr),
                 .dina(dina),
                 .wea(wea),
+                .uart_wdata(uart_wdata_from_decode),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -495,7 +498,7 @@ module cpu (
                     state <= CHECK_RX_ST;
                 end else if (decode_inst[63:58] == Outll) begin
                     interlock <= 1;
-                    uart_wdata <= u_srcs_to_exec[7:0];
+                    uart_wdata <= uart_wdata_from_decode;
                     uart_raddr <= STAT_REG;
                     uart_ren <= 1;
                     state <= CHECK_TX_ST;
