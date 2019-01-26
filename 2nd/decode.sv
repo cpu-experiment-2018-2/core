@@ -273,7 +273,7 @@ module decode (
                 Blt     : branch_flag <= (less) ? 1 : 0;
                 Bne     : branch_flag <= (~eq) ? 1 : 0;
                 Bge     : branch_flag <= (~less) ? 1 : 0;
-                Bgt     : branch_flag <= (~(less && eq)) ? 1 : 0;
+                Bgt     : branch_flag <= (~(less || eq)) ? 1 : 0;
                 default : branch_flag <= 0;
             endcase
 
