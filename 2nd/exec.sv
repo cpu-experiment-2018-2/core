@@ -69,6 +69,8 @@ module exec (
             ESub    : EXEC = $signed(SRCA) - $signed(SRCB);
             ERshift : EXEC = SRCA >>> $signed(SRCB);
             ELshift : EXEC = SRCA <<< $signed(SRCB);
+            EXor    : EXEC = SRCA ^ SRCB;
+            EAnd    : EXEC = SRCA & SRCB;
             default : EXEC = SRCB;
         endcase
     endfunction

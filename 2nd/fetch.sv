@@ -17,7 +17,7 @@ module fetch (
 	reg  [31:0]		middle_pc;
     reg  [31:0]     pc;
     wire [31:0]     inst_addra;
-    assign inst_addra = branch_flag ? branch_pc : pc;
+    assign inst_addra = interlock ? middle_pc : (branch_flag ? branch_pc : pc);
 
     reg  [1:0]      interval;
     wire [63:0]     douta;

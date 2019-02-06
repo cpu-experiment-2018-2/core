@@ -475,7 +475,7 @@ module cpu (
             interlock <= 0;
             state <= RUN_ST;
         end else begin
-            if (interlock == 0) begin
+            if (interlock == 0 && branch_flag == 0) begin
                 if (decode_inst[63:58] == Inll) begin
                     interlock <= 1;
                     uart_raddr <= STAT_REG;

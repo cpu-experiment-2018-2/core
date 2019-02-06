@@ -43,8 +43,8 @@ module decode (
     input  wire         clk,
     input  wire         rstn);
 
-    reg eq;
-    reg less;
+    (* mark_debug = "true" *)reg eq;
+    (* mark_debug = "true" *)reg less;
 
     wire        [4:0]   u_target= inst[57:53];
     wire        [4:0]   l_target= inst[25:21];
@@ -107,6 +107,8 @@ module decode (
                 Sub     : u_srcb <= u_reg_b;
                 Srawi   : u_srcb <= u_si;
                 Slawi   : u_srcb <= u_si;
+                Xor     : u_srcb <= u_reg_b;
+                And     : u_srcb <= u_reg_b;
                 Fadd    : u_srcb <= u_reg_b;
                 Fsub    : u_srcb <= u_reg_b;
                 Fmul    : u_srcb <= u_reg_b;
@@ -129,13 +131,15 @@ module decode (
                 Sub     : l_srcb <= l_reg_b;
                 Srawi   : l_srcb <= l_si;
                 Slawi   : l_srcb <= l_si;
-                Fadd    : u_srcb <= u_reg_b;
-                Fsub    : u_srcb <= u_reg_b;
-                Fmul    : u_srcb <= u_reg_b;
-                Fdiv    : u_srcb <= u_reg_b;
-                Fsqrt   : u_srcb <= u_reg_b;
-                Ftoi    : u_srcb <= u_reg_b;
-                Itof    : u_srcb <= u_reg_b;
+                Xor     : l_srcb <= l_reg_b;
+                And     : l_srcb <= l_reg_b;
+                Fadd    : l_srcb <= l_reg_b;
+                Fsub    : l_srcb <= l_reg_b;
+                Fmul    : l_srcb <= l_reg_b;
+                Fdiv    : l_srcb <= l_reg_b;
+                Fsqrt   : l_srcb <= l_reg_b;
+                Ftoi    : l_srcb <= l_reg_b;
+                Itof    : l_srcb <= l_reg_b;
                 Load    : l_srcb <= l_si;
                 Store   : l_srcb <= l_si;
                 Li      : l_srcb <= l_si;
@@ -154,6 +158,8 @@ module decode (
                 Sub     : u_e_type <= ESub;
                 Srawi   : u_e_type <= ERshift;
                 Slawi   : u_e_type <= ELshift;
+                Xor     : u_e_type <= EXor;
+                And     : u_e_type <= EAnd;
                 Fadd    : u_e_type <= EFadd;
                 Fsub    : u_e_type <= EFsub;
                 Fmul    : u_e_type <= EFmul;
@@ -170,13 +176,15 @@ module decode (
                 Sub     : l_e_type <= ESub;
                 Srawi   : l_e_type <= ERshift;
                 Slawi   : l_e_type <= ELshift;
-                Fadd    : u_e_type <= EFadd;
-                Fsub    : u_e_type <= EFsub;
-                Fmul    : u_e_type <= EFmul;
-                Fdiv    : u_e_type <= EFdiv;
-                Fsqrt   : u_e_type <= EFsqrt;
-                Ftoi    : u_e_type <= EFtoi;
-                Itof    : u_e_type <= EItof;
+                Xor     : l_e_type <= EXor;
+                And     : l_e_type <= EAnd;
+                Fadd    : l_e_type <= EFadd;
+                Fsub    : l_e_type <= EFsub;
+                Fmul    : l_e_type <= EFmul;
+                Fdiv    : l_e_type <= EFdiv;
+                Fsqrt   : l_e_type <= EFsqrt;
+                Ftoi    : l_e_type <= EFtoi;
+                Itof    : l_e_type <= EItof;
                 default : l_e_type <= ENop;
             endcase
 
@@ -202,6 +210,8 @@ module decode (
                 Sub     : u_rt_flag <= 1;
                 Srawi   : u_rt_flag <= 1;
                 Slawi   : u_rt_flag <= 1;
+                Xor     : u_rt_flag <= 1;
+                And     : u_rt_flag <= 1;
                 Li      : u_rt_flag <= 1;
                 Liw     : u_rt_flag <= 1;
                 Bl      : u_rt_flag <= 1;
@@ -234,6 +244,8 @@ module decode (
                     Srawi   : l_rt_flag <= 1;
                     Slawi   : l_rt_flag <= 1;
                     Li      : l_rt_flag <= 1;
+                    Xor     : l_rt_flag <= 1;
+                    And     : l_rt_flag <= 1;
                     // Liw     : l_rt_flag <= 1;    // Liw doesn't appear in lower inst
                     Bl      : l_rt_flag <= 1;
                     Blrr    : l_rt_flag <= 1;

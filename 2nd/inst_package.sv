@@ -5,13 +5,15 @@ package inst_package;
         ESub = 4'b0010, 
         ERshift = 4'b0011,
         ELshift = 4'b0100,
-        EFadd = 4'b0101,
-        EFsub = 4'b0110,
-        EFmul = 4'b0111,
-        EFdiv = 4'b1000,
-        EFsqrt = 4'b1001,
-        EFtoi = 4'b1010,
-        EItof = 4'b1011
+        EXor = 4'b0101,
+        EAnd = 4'b0110,
+        EFadd = 4'b0111,
+        EFsub = 4'b1000,
+        EFmul = 4'b1001,
+        EFdiv = 4'b1010,
+        EFsqrt = 4'b1011,
+        EFtoi = 4'b1100,
+        EItof = 4'b1101
     } exec_type;
 
     parameter Addi = 6'b000000;
@@ -20,7 +22,9 @@ package inst_package;
     parameter Sub  = 6'b000011;
     parameter Srawi= 6'b000100;
     parameter Slawi= 6'b000101;
-    
+    parameter Xor  = 6'b000110;
+    parameter And  = 6'b000111;
+
     parameter Fadd = 6'b001000;
     parameter Fsub = 6'b001001;
     parameter Fmul = 6'b001010;

@@ -96,7 +96,7 @@ module memory (
             u_rt_to_the_next <= middle_u_rt;
             l_rt_to_the_next <= middle_l_rt;
 
-            mem_doutb <= n_doutb[n_addr_to_the_next[17:15]];
+            mem_doutb <= n_doutb[n_addr_to_the_next[16:14]];
         end else begin
         end
     end
@@ -108,10 +108,10 @@ module memory (
             end
         end else if (~interlock) begin
             for (int i = 0; i < 8; i++) begin
-                n_addr[i] <= {14'b0, addr[14:0], 3'b0};
+                n_addr[i] <= {14'b0, addr[13:0], 3'b0};
                 n_dina[i] <= dina;
                 n_doutb[i] <= doutb[i];
-                if (addr[17:15] == i) n_wea[i] <= wea;
+                if (addr[16:14] == i) n_wea[i] <= wea;
                 else n_wea[i] <= 8'b0;
             end
 
