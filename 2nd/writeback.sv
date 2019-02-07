@@ -28,7 +28,8 @@ module writeback (
     // Lower
     input  wire        [4:0]    l_rt_from_mem,
 
-    input  wire        [63:0]   mem_doutb,
+    input  wire        [31:0]   mem_douta,
+    input  wire        [31:0]   mem_doutb,
 
     // From FPU
     fpu_out_if                  u_fadd_data,
@@ -92,10 +93,10 @@ module writeback (
     always_ff@(posedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
-            if (inst_from_mem[63:58] == Load) gpr.gpr[u_rt_from_mem] <= mem_doutb[63:32];
+            if (inst_from_mem[63:58] == Load) gpr.gpr[u_rt_from_mem] <= mem_douta;
             if (u_rt_flag_from_exec) gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
 
-            if (inst_from_mem[31:26] == Load) gpr.gpr[l_rt_from_mem] <= mem_doutb[31:0];
+            if (inst_from_mem[31:26] == Load) gpr.gpr[l_rt_from_mem] <= mem_doutb;
             if (l_rt_flag_from_exec) gpr.gpr[l_rt_from_exec] <= l_tdata_from_exec;
 
             // 4 clk

@@ -17,6 +17,12 @@ interface fpu_out_if;
     wire            rt_flag;
 endinterface
 
+interface mem_in_if;
+    reg     [31:0]  addr;
+    reg     [31:0]  din;
+    reg     [4:0]   we;
+endinterface
+
 
 module cpu (
     input  wire         rx,
@@ -74,11 +80,10 @@ module cpu (
     (* mark_debug = "true" *) wire        [4:0]   l_rt_from_decode;
     (* mark_debug = "true" *) wire                l_rt_flag_from_decode;
 
-    (* mark_debug = "true" *) wire        [31:0]  addr;
-    (* mark_debug = "true" *) wire        [63:0]  dina;
-    (* mark_debug = "true" *) wire        [7:0]   wea;
-
     (* mark_debug = "true" *) wire        [7:0]   uart_wdata_from_decode;
+
+    mem_in_if   u_mem_in();
+    mem_in_if   l_mem_in();
 
     decode di(  .interlock(interlock),
                 .gpr(gpr),
@@ -100,9 +105,8 @@ module cpu (
                 .l_e_type(l_e_type),
                 .l_rt(l_rt_from_decode),
                 .l_rt_flag(l_rt_flag_from_decode),
-                .addr(addr),
-                .dina(dina),
-                .wea(wea),
+                .u_mem_in(u_mem_in),
+                .l_mem_in(l_mem_in),
                 .uart_wdata(uart_wdata_from_decode),
                 .clk(clk),
                 .rstn(rstn));
@@ -181,20 +185,21 @@ module cpu (
     //================
     (* mark_debug = "true" *) wire        [4:0]   u_rt_from_mem;
     (* mark_debug = "true" *) wire        [4:0]   l_rt_from_mem;
-    (* mark_debug = "true" *) wire        [63:0]  mem_doutb;
+    (* mark_debug = "true" *) wire        [31:0]  mem_douta;
+    (* mark_debug = "true" *) wire        [31:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
                 .pc(pc_from_exec),
                 .inst(inst_from_exec),
-                .addr(addr),
-                .dina(dina),
-                .wea(wea),
+                .u_mem_in(u_mem_in),
+                .l_mem_in(l_mem_in),
                 .u_rt(u_rt_from_exec),
                 .l_rt(l_rt_from_exec),
                 .pc_to_the_next(pc_from_mem),
                 .inst_to_the_next(inst_from_mem),
                 .u_rt_to_the_next(u_rt_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
+                .mem_douta(mem_douta),
                 .mem_doutb(mem_doutb),
                 .clk(clk),
                 .rstn(rstn));

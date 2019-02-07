@@ -33,9 +33,8 @@ module decode (
     output reg                  l_rt_flag,
 
     // Memory
-    output reg         [31:0]   addr,
-    output reg         [63:0]   dina,
-    output reg         [7:0]    wea,
+    mem_in_if                   u_mem_in,
+    mem_in_if                   l_mem_in,
 
     // UART wdata
     output wire        [7:0]    uart_wdata,
@@ -303,11 +302,15 @@ module decode (
                 default : branch_pc <= 32'b0;
             endcase
 
+
             // Memory address
-            addr <= u_reg_a + u_si;
-            dina <= {u_reg_s, l_reg_s};
-            wea[3:0] <= (inst[31:26] == Store) ? 4'b1111 : 4'b0000;     // upper Store
-            wea[7:4] <= (inst[63:58] == Store) ? 4'b1111 : 4'b0000;     // lower Store
+            u_mem_in.addr <= u_reg_a + u_si;
+            u_mem_in.din <= u_reg_s;
+            u_mem_in.we <= (inst[63:58] == Store) ? 4'b1111 : 4'b0;
+
+            l_mem_in.addr <= l_reg_a + l_si;
+            l_mem_in.din <= l_reg_s;
+            l_mem_in.we <= (inst[31:26] == Store) ? 4'b1111 : 4'b0;
 
         end else if (branch_flag) begin
             branch_flag <= 0;
