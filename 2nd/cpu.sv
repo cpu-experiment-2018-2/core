@@ -479,6 +479,8 @@ module cpu (
         if (~rstn) begin
             interlock <= 0;
             state <= RUN_ST;
+            uart_ren <= 0;
+            uart_wen <= 0;
         end else begin
             if (interlock == 0 && branch_flag == 0) begin
                 if (decode_inst[63:58] == Inll) begin
