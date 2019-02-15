@@ -60,6 +60,10 @@ package inst_package;
     parameter Outll= 6'b101100;
 
     parameter Nop  = 6'b111000;
+    parameter End  = 6'b111001;
+    parameter Fork = 6'b111010;
+    parameter Join = 6'b111011;
+    parameter Fetch= 6'b111100;
 
 
     parameter DATA_MEM_DEPTH = 131072;

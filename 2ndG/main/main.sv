@@ -27,26 +27,26 @@ endinterface
 module main (
     input  wire         rx,
     output wire         tx,
-    output wire [7:0]   led,
 
     input  wire         clk,
     input  wire         rstn);
 
-    (* mark_debug = "true" *) reg             interlock;
+    reg             interlock;
+    reg  [3:0]      join_target;
+    reg  [3:0]      living_sub_count;
 
     gpr_if          gpr();
-    assign led = gpr.gpr[0][7:0];
 
-    (* mark_debug = "true" *) wire [31:0]     decode_pc;
-    (* mark_debug = "true" *) wire [31:0]     exec_pc;
-    (* mark_debug = "true" *) wire [31:0]     pc_from_exec;
-    (* mark_debug = "true" *) wire [31:0]     pc_from_mem;
+    wire [31:0]     decode_pc;
+    wire [31:0]     exec_pc;
+    wire [31:0]     pc_from_exec;
+    wire [31:0]     pc_from_mem;
 
 
-    (* mark_debug = "true" *) wire [63:0]     decode_inst;
-    (* mark_debug = "true" *) wire [63:0]     exec_inst;
-    (* mark_debug = "true" *) wire [63:0]     inst_from_exec;
-    (* mark_debug = "true" *) wire [63:0]     inst_from_mem;
+    wire [63:0]     decode_inst;
+    wire [63:0]     exec_inst;
+    wire [63:0]     inst_from_exec;
+    wire [63:0]     inst_from_mem;
 
 
     //================
@@ -66,21 +66,21 @@ module main (
     //================
     //     Decode
     //================
-    (* mark_debug = "true" *) wire signed [31:0]  u_srca;
-    (* mark_debug = "true" *) wire signed [31:0]  u_srcb;
-    (* mark_debug = "true" *) wire signed [31:0]  u_srcs_to_exec;
-    (* mark_debug = "true" *) wire        [3:0]   u_e_type;
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_decode;
-    (* mark_debug = "true" *) wire                u_rt_flag_from_decode;
+    wire signed [31:0]  u_srca;
+    wire signed [31:0]  u_srcb;
+    wire signed [31:0]  u_srcs_to_exec;
+    wire        [3:0]   u_e_type;
+    wire        [4:0]   u_rt_from_decode;
+    wire                u_rt_flag_from_decode;
 
-    (* mark_debug = "true" *) wire signed [31:0]  l_srca;
-    (* mark_debug = "true" *) wire signed [31:0]  l_srcb;
-    (* mark_debug = "true" *) wire signed [31:0]  l_srcs_to_exec;
-    (* mark_debug = "true" *) wire        [3:0]   l_e_type;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_decode;
-    (* mark_debug = "true" *) wire                l_rt_flag_from_decode;
+    wire signed [31:0]  l_srca;
+    wire signed [31:0]  l_srcb;
+    wire signed [31:0]  l_srcs_to_exec;
+    wire        [3:0]   l_e_type;
+    wire        [4:0]   l_rt_from_decode;
+    wire                l_rt_flag_from_decode;
 
-    (* mark_debug = "true" *) wire        [7:0]   uart_wdata_from_decode;
+    wire        [7:0]   uart_wdata_from_decode;
 
     mem_in_if   u_mem_in();
     mem_in_if   l_mem_in();
@@ -412,8 +412,8 @@ module main (
                 .clk(clk),
                 .rstn(rstn));
 
-    typedef enum logic [2:0] {
-        RUN_ST, PRE_READ_ST, READ_ST, PRE_WRITE_ST, WRITE_ST
+    typedef enum logic [3:0] {
+        RUN_ST, JOINING_ST, PRE_READ_ST, READ_ST, PRE_WRITE_ST, WRITE_ST
     } state_type;
 
     state_type state;
@@ -423,6 +423,7 @@ module main (
     always@(posedge clk) begin
         if (~rstn) begin
             interlock <= 0;
+            living_sub_count <= 0;
 
             io_ren <= 0;
             io_wen <= 0;
@@ -430,6 +431,10 @@ module main (
             state <= RUN_ST;
         end else begin
             if (interlock == 0 && branch_flag == 0) begin
+                if (exec_inst[63:58] == Fork) begin
+                    living_sub_count <= living_sub_count + 1;
+                end
+
                 if (decode_inst[63:58] == Inll) begin
                     interlock <= 1;
                     state <= PRE_READ_ST;
@@ -446,9 +451,14 @@ module main (
                     interlock <= 1;
                     state <= PRE_WRITE_ST;
                     uart_wdata <= uart_wdata_from_decode;
+                end else if (decode_inst[63:58] == Join) begin
+                    interlock <= 1;
+                    join_target <= u_srca[3:0];
+                    state <= JOINING_ST;
                 end
             end else begin
-                if (state == PRE_READ_ST) begin
+                if (state == JOINING_ST) begin
+                end else if (state == PRE_READ_ST) begin
                     if (~io_rbusy) begin
                         io_ren <= 1;
                         state <= READ_ST;

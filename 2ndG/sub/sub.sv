@@ -25,28 +25,24 @@ endinterface
 
 
 module sub (
-    input  wire         rx,
-    output wire         tx,
-    output wire [7:0]   led,
-
     input  wire         clk,
     input  wire         rstn);
 
-    (* mark_debug = "true" *) reg             interlock;
+    reg             interlock;
 
     gpr_if          gpr();
     assign led = gpr.gpr[0][7:0];
 
-    (* mark_debug = "true" *) wire [31:0]     decode_pc;
-    (* mark_debug = "true" *) wire [31:0]     exec_pc;
-    (* mark_debug = "true" *) wire [31:0]     pc_from_exec;
-    (* mark_debug = "true" *) wire [31:0]     pc_from_mem;
+    wire [31:0]     decode_pc;
+    wire [31:0]     exec_pc;
+    wire [31:0]     pc_from_exec;
+    wire [31:0]     pc_from_mem;
 
 
-    (* mark_debug = "true" *) wire [63:0]     decode_inst;
-    (* mark_debug = "true" *) wire [63:0]     exec_inst;
-    (* mark_debug = "true" *) wire [63:0]     inst_from_exec;
-    (* mark_debug = "true" *) wire [63:0]     inst_from_mem;
+    wire [63:0]     decode_inst;
+    wire [63:0]     exec_inst;
+    wire [63:0]     inst_from_exec;
+    wire [63:0]     inst_from_mem;
 
 
     //================
@@ -66,21 +62,19 @@ module sub (
     //================
     //     Decode
     //================
-    (* mark_debug = "true" *) wire signed [31:0]  u_srca;
-    (* mark_debug = "true" *) wire signed [31:0]  u_srcb;
-    (* mark_debug = "true" *) wire signed [31:0]  u_srcs_to_exec;
-    (* mark_debug = "true" *) wire        [3:0]   u_e_type;
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_decode;
-    (* mark_debug = "true" *) wire                u_rt_flag_from_decode;
+    wire signed [31:0]  u_srca;
+    wire signed [31:0]  u_srcb;
+    wire signed [31:0]  u_srcs_to_exec;
+    wire        [3:0]   u_e_type;
+    wire        [4:0]   u_rt_from_decode;
+    wire                u_rt_flag_from_decode;
 
-    (* mark_debug = "true" *) wire signed [31:0]  l_srca;
-    (* mark_debug = "true" *) wire signed [31:0]  l_srcb;
-    (* mark_debug = "true" *) wire signed [31:0]  l_srcs_to_exec;
-    (* mark_debug = "true" *) wire        [3:0]   l_e_type;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_decode;
-    (* mark_debug = "true" *) wire                l_rt_flag_from_decode;
-
-    (* mark_debug = "true" *) wire        [7:0]   uart_wdata_from_decode;
+    wire signed [31:0]  l_srca;
+    wire signed [31:0]  l_srcb;
+    wire signed [31:0]  l_srcs_to_exec;
+    wire        [3:0]   l_e_type;
+    wire        [4:0]   l_rt_from_decode;
+    wire                l_rt_flag_from_decode;
 
     mem_in_if   u_mem_in();
     mem_in_if   l_mem_in();
@@ -107,20 +101,19 @@ module sub (
                 .l_rt_flag(l_rt_flag_from_decode),
                 .u_mem_in(u_mem_in),
                 .l_mem_in(l_mem_in),
-                .uart_wdata(uart_wdata_from_decode),
                 .clk(clk),
                 .rstn(rstn));
 
     //================
     //     Exec
     //================
-    (* mark_debug = "true" *) wire signed [31:0]  u_tdata_from_exec;
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_exec;
-    (* mark_debug = "true" *) wire                u_rt_flag_from_exec;
+    wire signed [31:0]  u_tdata_from_exec;
+    wire        [4:0]   u_rt_from_exec;
+    wire                u_rt_flag_from_exec;
 
-    (* mark_debug = "true" *) wire signed [31:0]  l_tdata_from_exec;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_exec;
-    (* mark_debug = "true" *) wire                l_rt_flag_from_exec;
+    wire signed [31:0]  l_tdata_from_exec;
+    wire        [4:0]   l_rt_from_exec;
+    wire                l_rt_flag_from_exec;
 
     fpu_in_if   u_fadd_in();
     fpu_in_if   l_fadd_in();
@@ -136,8 +129,6 @@ module sub (
     fpu_in_if   l_ftoi_in();
     fpu_in_if   u_itof_in();
     fpu_in_if   l_itof_in();
-
-    reg  [7:0]  uart_rdata;
 
     exec ex(    .interlock(interlock),
                 .pc(exec_pc),
@@ -176,17 +167,16 @@ module sub (
                 .l_ftoi_in(l_ftoi_in),
                 .u_itof_in(u_itof_in),
                 .l_itof_in(l_itof_in),
-                .uart_rdata(uart_rdata),
                 .clk(clk),
                 .rstn(rstn));
 
     //================
     //    Memory
     //================
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_mem;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_mem;
-    (* mark_debug = "true" *) wire        [31:0]  mem_douta;
-    (* mark_debug = "true" *) wire        [31:0]  mem_doutb;
+    wire        [4:0]   u_rt_from_mem;
+    wire        [4:0]   l_rt_from_mem;
+    wire        [31:0]  mem_douta;
+    wire        [31:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
                 .pc(pc_from_exec),
@@ -366,13 +356,13 @@ module sub (
     //================
     //   Writeback
     //================
-    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_u_tdata;
-    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_u_rt;
-    (* mark_debug = "true" *) wire               ex_to_wb_u_rt_flag;
+    wire signed [31:0] ex_to_wb_u_tdata;
+    wire        [4:0]  ex_to_wb_u_rt;
+    wire               ex_to_wb_u_rt_flag;
 
-    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_l_tdata;
-    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_l_rt;
-    (* mark_debug = "true" *) wire               ex_to_wb_l_rt_flag;
+    wire signed [31:0] ex_to_wb_l_tdata;
+    wire        [4:0]  ex_to_wb_l_rt;
+    wire               ex_to_wb_l_rt_flag;
 
     assign ex_to_wb_u_tdata       = u_tdata_from_exec;
     assign ex_to_wb_u_rt          = u_rt_from_exec;
@@ -384,41 +374,11 @@ module sub (
     writeback wb(.*);
 
 
-
-    //===============
-    //      IO
-    //===============
-
-    (* mark_debug = "true" *)reg         io_ren;
-    (* mark_debug = "true" *)wire [7:0]  io_rdata;
-    (* mark_debug = "true" *)wire        io_rbusy;
-    (* mark_debug = "true" *)wire        io_rdone;
-
-    (* mark_debug = "true" *)reg         io_wen;
-    (* mark_debug = "true" *)reg  [7:0]  io_wdata;
-    (* mark_debug = "true" *)wire        io_wbusy;
-    (* mark_debug = "true" *)wire        io_wdone;
-
-    uart_io io( .ren(io_ren),
-                .rdata(io_rdata),
-                .rbusy(io_rbusy),
-                .rdone(io_rdone),
-                .wen(io_wen),
-                .wdata(io_wdata),
-                .wbusy(io_wbusy),
-                .wdone(io_wdone),
-                .rx(rx),
-                .tx(tx),
-                .clk(clk),
-                .rstn(rstn));
-
     typedef enum logic [2:0] {
         RUN_ST, PRE_READ_ST, READ_ST, PRE_WRITE_ST, WRITE_ST
     } state_type;
 
     state_type state;
-
-    reg  [7:0]  uart_wdata;
 
     always@(posedge clk) begin
         if (~rstn) begin
@@ -430,49 +390,7 @@ module sub (
             state <= RUN_ST;
         end else begin
             if (interlock == 0 && branch_flag == 0) begin
-                if (decode_inst[63:58] == Inll) begin
-                    interlock <= 1;
-                    state <= PRE_READ_ST;
-                end else if (decode_inst[63:58] == Inlh) begin
-                    interlock <= 1;
-                    state <= PRE_READ_ST;
-                end else if (decode_inst[63:58] == Inul) begin
-                    interlock <= 1;
-                    state <= PRE_READ_ST;
-                end else if (decode_inst[63:58] == Inuh) begin
-                    interlock <= 1;
-                    state <= PRE_READ_ST;
-                end else if (decode_inst[63:58] == Outll) begin
-                    interlock <= 1;
-                    state <= PRE_WRITE_ST;
-                    uart_wdata <= uart_wdata_from_decode;
-                end
             end else begin
-                if (state == PRE_READ_ST) begin
-                    if (~io_rbusy) begin
-                        io_ren <= 1;
-                        state <= READ_ST;
-                    end
-                end else if (state == READ_ST) begin
-                    io_ren <= 0;
-                    if (io_rdone) begin
-                        uart_rdata <= io_rdata;
-                        state <= RUN_ST;
-                        interlock <= 0;
-                    end
-                end else if (state == PRE_WRITE_ST) begin
-                    if (~io_wbusy) begin
-                        io_wen <= 1;
-                        io_wdata <= uart_wdata;
-                        state <= WRITE_ST;
-                    end
-                end else if (state == WRITE_ST) begin
-                    io_wen <= 0;
-                    if (io_wdone) begin
-                        state <= RUN_ST;
-                        interlock <= 0;
-                    end
-                end
             end
         end
     end

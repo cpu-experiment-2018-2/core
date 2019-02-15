@@ -42,8 +42,8 @@ module decode (
     input  wire         clk,
     input  wire         rstn);
 
-    (* mark_debug = "true" *)reg eq;
-    (* mark_debug = "true" *)reg less;
+    reg eq;
+    reg less;
 
     wire        [4:0]   u_target= inst[57:53];
     wire        [4:0]   l_target= inst[25:21];
@@ -121,6 +121,8 @@ module decode (
                 Liw     : u_srcb <= $signed(inst[31:0]);
                 Bl      : u_srcb <= pc + 1;
                 Blrr    : u_srcb <= pc + 1;
+                Fork    : u_srcb <= u_si;
+                Fetch   : u_srcb <= u_si;
                 default : u_srcb <= u_si;
             endcase
             case (inst[31:26])
@@ -219,6 +221,7 @@ module decode (
                 Inlh    : u_rt_flag <= 1;
                 Inul    : u_rt_flag <= 1;
                 Inuh    : u_rt_flag <= 1;
+                Fetch   : u_rt_flag <= 1;
                 default : u_rt_flag <= 0;
             endcase
             if (inst[63:58] == Liw
@@ -233,7 +236,11 @@ module decode (
                 || inst[63:58] == Inlh
                 || inst[63:58] == Inul
                 || inst[63:58] == Inuh
-                || inst[63:58] == Outll) l_rt_flag <= 0;
+                || inst[63:58] == Outll
+                || inst[63:58] == End
+                || inst[63:58] == Fork
+                || inst[63:58] == Join
+                || inst[63:58] == Fetch) l_rt_flag <= 0;
             else begin
                 case (inst[31:26])
                     Addi    : l_rt_flag <= 1;

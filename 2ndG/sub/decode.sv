@@ -36,9 +36,6 @@ module decode (
     mem_in_if                   u_mem_in,
     mem_in_if                   l_mem_in,
 
-    // UART wdata
-    output wire        [7:0]    uart_wdata,
-
     input  wire         clk,
     input  wire         rstn);
 
@@ -57,8 +54,6 @@ module decode (
     wire signed [31:0]  l_si    = $signed({{16{inst[15]}}, inst[15:0]});
     wire        [31:0]  u_li    = {6'b0, inst[57:32]};
     wire        [31:0]  l_li    = {6'b0, inst[25:0]};
-
-    assign uart_wdata = u_reg_s[7:0];
 
 
     wire                u_fless_result;
