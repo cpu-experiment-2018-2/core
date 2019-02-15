@@ -25,6 +25,12 @@ endinterface
 
 
 module sub (
+    input  wire         exec_requested,
+    input  wire  [31:0] requested_pc,
+    input  data_in      u_n_in_from_main,
+    input  data_in      l_n_in_from_main,
+    output reg          ended,
+
     input  wire         clk,
     input  wire         rstn);
 
@@ -54,6 +60,8 @@ module sub (
     fetch fi(   .interlock(interlock),
                 .branch_flag(branch_flag),
                 .branch_pc(branch_pc),
+                .exec_requested(exec_requested),
+                .requested_pc(requested_pc),
                 .pc_to_the_next(decode_pc),
                 .inst_to_the_next(decode_inst),
                 .clk(clk),
@@ -191,6 +199,8 @@ module sub (
                 .l_rt_to_the_next(l_rt_from_mem),
                 .mem_douta(mem_douta),
                 .mem_doutb(mem_doutb),
+                .u_n_in_from_main(u_n_in_from_main),
+                .l_n_in_from_main(l_n_in_from_main),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -383,6 +393,7 @@ module sub (
     always@(posedge clk) begin
         if (~rstn) begin
             interlock <= 0;
+            ended <= 0;
 
             io_ren <= 0;
             io_wen <= 0;
@@ -390,7 +401,15 @@ module sub (
             state <= RUN_ST;
         end else begin
             if (interlock == 0 && branch_flag == 0) begin
+                if (exec_inst[63:58] == End) begin
+                    interlock <= 1;
+                    ended <= 1;
+                end
             end else begin
+                if (exec_requested) begin
+                    interlock <= 0;
+                    ended <= 0;
+                end
             end
         end
     end

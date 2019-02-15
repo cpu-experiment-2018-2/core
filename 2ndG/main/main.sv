@@ -25,6 +25,14 @@ endinterface
 
 
 module main (
+    input  wire         subcore_ended [0:SUBCORE_NUM],
+
+    output data_in      u_n_in_to_sub [0:SUBCORE_NUM],
+    output data_in      l_n_in_to_sub [0:SUBCORE_NUM],
+
+    output reg          exec_requested[0:SUBCORE_NUM],
+    output reg [31:0]   requested_pc[0:SUBCORE_NUM],
+
     input  wire         rx,
     output wire         tx,
 
@@ -114,13 +122,13 @@ module main (
     //================
     //     Exec
     //================
-    (* mark_debug = "true" *) wire signed [31:0]  u_tdata_from_exec;
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_exec;
-    (* mark_debug = "true" *) wire                u_rt_flag_from_exec;
+    wire signed [31:0]  u_tdata_from_exec;
+    wire        [4:0]   u_rt_from_exec;
+    wire                u_rt_flag_from_exec;
 
-    (* mark_debug = "true" *) wire signed [31:0]  l_tdata_from_exec;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_exec;
-    (* mark_debug = "true" *) wire                l_rt_flag_from_exec;
+    wire signed [31:0]  l_tdata_from_exec;
+    wire        [4:0]   l_rt_from_exec;
+    wire                l_rt_flag_from_exec;
 
     fpu_in_if   u_fadd_in();
     fpu_in_if   l_fadd_in();
@@ -183,12 +191,13 @@ module main (
     //================
     //    Memory
     //================
-    (* mark_debug = "true" *) wire        [4:0]   u_rt_from_mem;
-    (* mark_debug = "true" *) wire        [4:0]   l_rt_from_mem;
-    (* mark_debug = "true" *) wire        [31:0]  mem_douta;
-    (* mark_debug = "true" *) wire        [31:0]  mem_doutb;
+    wire        [4:0]   u_rt_from_mem;
+    wire        [4:0]   l_rt_from_mem;
+    wire        [31:0]  mem_douta;
+    wire        [31:0]  mem_doutb;
     
     memory mem( .interlock(interlock),
+                .living_sub_count(living_sub_count),
                 .pc(pc_from_exec),
                 .inst(inst_from_exec),
                 .u_mem_in(u_mem_in),
@@ -201,6 +210,8 @@ module main (
                 .l_rt_to_the_next(l_rt_from_mem),
                 .mem_douta(mem_douta),
                 .mem_doutb(mem_doutb),
+                .u_n_in_to_sub(u_n_in_to_sub),
+                .l_n_in_to_sub(l_n_in_to_sub),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -389,15 +400,15 @@ module main (
     //      IO
     //===============
 
-    (* mark_debug = "true" *)reg         io_ren;
-    (* mark_debug = "true" *)wire [7:0]  io_rdata;
-    (* mark_debug = "true" *)wire        io_rbusy;
-    (* mark_debug = "true" *)wire        io_rdone;
+    reg         io_ren;
+    wire [7:0]  io_rdata;
+    wire        io_rbusy;
+    wire        io_rdone;
 
-    (* mark_debug = "true" *)reg         io_wen;
-    (* mark_debug = "true" *)reg  [7:0]  io_wdata;
-    (* mark_debug = "true" *)wire        io_wbusy;
-    (* mark_debug = "true" *)wire        io_wdone;
+    reg         io_wen;
+    reg  [7:0]  io_wdata;
+    wire        io_wbusy;
+    wire        io_wdone;
 
     uart_io io( .ren(io_ren),
                 .rdata(io_rdata),
@@ -433,6 +444,10 @@ module main (
             if (interlock == 0 && branch_flag == 0) begin
                 if (exec_inst[63:58] == Fork) begin
                     living_sub_count <= living_sub_count + 1;
+                    exec_requested[u_srca] <= 1;
+                    for (int i = 0; i < SUBCORE_NUM; i++) requested_pc[i] <= u_srcb;
+                end else begin
+                    for (int i = 0; i < SUBCORE_NUM; i++) exec_requested[i] <= 0;
                 end
 
                 if (decode_inst[63:58] == Inll) begin
@@ -458,6 +473,11 @@ module main (
                 end
             end else begin
                 if (state == JOINING_ST) begin
+                    if (subcore_ended[join_target] == 1) begin
+                        living_sub_count <= living_sub_count - 1;
+                        state <= RUN_ST;
+                        interlock <= 0;
+                    end
                 end else if (state == PRE_READ_ST) begin
                     if (~io_rbusy) begin
                         io_ren <= 1;

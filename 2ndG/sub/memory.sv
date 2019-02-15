@@ -5,7 +5,6 @@ module memory (
 
     // input
     //
-    input  wire                 memory_used,
     input  wire         [31:0]  pc,
     input  wire         [63:0]  inst,
     mem_in_if                   u_mem_in,

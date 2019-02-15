@@ -6,6 +6,9 @@ module fetch (
     input  wire         branch_flag,
     input  wire [31:0]  branch_pc,
 
+    input  wire         exec_requested,
+    input  wire [31:0]  requested_pc,
+
     // output
     //
     output reg  [31:0]  pc_to_the_next,
@@ -42,6 +45,10 @@ module fetch (
 			middle_pc <= inst_addra;
             pc_to_the_next <= (~branch_flag) ? middle_pc : 32'b0;
         end else begin
+            if (exec_requested) begin
+                interval <= 1;
+                pc <= requested_pc;
+            end
         end
     end
 
