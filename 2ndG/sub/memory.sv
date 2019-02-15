@@ -16,6 +16,8 @@ module memory (
     input  wire         [4:0]   l_rt,
     input  wire                 l_rt_flag,
 
+    input  wire         [31:0]  fetch_addr,
+
 
     // output
     //
@@ -26,6 +28,8 @@ module memory (
 
     output reg          [31:0]  mem_douta,
     output reg          [31:0]  mem_doutb,
+
+    output reg          [31:0]  fetch_result,
 
     // from maincore
     input data_in              u_n_in_from_main,
@@ -60,6 +64,8 @@ module memory (
 
             mem_douta <= n_douta;
             mem_doutb <= n_doutb;
+        end else begin
+            fetch_result <= n_douta;
         end
     end
     
@@ -74,6 +80,10 @@ module memory (
             l_n_in.addr <= {13'b0, l_mem_in.addr[16:0], 2'b0};
             l_n_in.din <= l_mem_in.din;
             l_n_in.we <= l_mem_in.we;
+        end else begin
+            u_n_in.addr <= fetch_addr;
+            u_n_in.we <= 0;
+            l_n_in.we <= 0;
         end
     end
 

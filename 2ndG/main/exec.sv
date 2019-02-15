@@ -27,6 +27,7 @@ module exec (
     //
     output reg         [31:0]   pc_to_the_next,
     output reg         [63:0]   inst_to_the_next,
+    output reg         [3:0]    fetch_core,
     // Upper
     output reg  signed [31:0]   u_tdata,
     output reg         [4:0]    u_rt_to_the_next,
@@ -100,6 +101,7 @@ module exec (
         end else if (~interlock) begin
             pc_to_the_next <= pc;
             inst_to_the_next <= inst;
+            fetch_core <= u_srca[3:0];
 
             case (inst[63:58])
                 Inll    : u_tdata <= {u_srcs[31:8], uart_rdata};

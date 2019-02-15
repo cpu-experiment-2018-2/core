@@ -25,13 +25,15 @@ endinterface
 
 
 module main (
-    input  wire         subcore_ended [0:SUBCORE_NUM],
+    input  wire         subcore_ended   [0:SUBCORE_NUM],
+    input  wire [31:0]  fetch_result    [0:SUBCORE_NUM],
 
-    output data_in      u_n_in_to_sub [0:SUBCORE_NUM],
-    output data_in      l_n_in_to_sub [0:SUBCORE_NUM],
+    output data_in      u_n_in_to_sub   [0:SUBCORE_NUM],
+    output data_in      l_n_in_to_sub   [0:SUBCORE_NUM],
 
-    output reg          exec_requested[0:SUBCORE_NUM],
-    output reg [31:0]   requested_pc[0:SUBCORE_NUM],
+    output reg          exec_requested  [0:SUBCORE_NUM],
+    output reg  [31:0]  requested_pc    [0:SUBCORE_NUM],
+    output wire [31:0]  fetch_addr      [0:SUBCORE_NUM],
 
     input  wire         rx,
     output wire         tx,
@@ -55,6 +57,9 @@ module main (
     wire [63:0]     exec_inst;
     wire [63:0]     inst_from_exec;
     wire [63:0]     inst_from_mem;
+
+    wire [3:0]      fetch_core_from_exec;
+    wire [3:0]      fetch_core_from_mem;
 
 
     //================
@@ -116,6 +121,7 @@ module main (
                 .u_mem_in(u_mem_in),
                 .l_mem_in(l_mem_in),
                 .uart_wdata(uart_wdata_from_decode),
+                .fetch_addr(fetch_addr),
                 .clk(clk),
                 .rstn(rstn));
 
@@ -164,6 +170,7 @@ module main (
                 .l_rt_flag(l_rt_flag_from_decode),
                 .pc_to_the_next(pc_from_exec),
                 .inst_to_the_next(inst_from_exec),
+                .fetch_core(fetch_core_from_exec),
                 .u_tdata(u_tdata_from_exec),
                 .u_rt_to_the_next(u_rt_from_exec),
                 .u_rt_flag_to_the_next(u_rt_flag_from_exec),
@@ -200,12 +207,14 @@ module main (
                 .living_sub_count(living_sub_count),
                 .pc(pc_from_exec),
                 .inst(inst_from_exec),
+                .fetch_core(fetch_core_from_exec),
                 .u_mem_in(u_mem_in),
                 .l_mem_in(l_mem_in),
                 .u_rt(u_rt_from_exec),
                 .l_rt(l_rt_from_exec),
                 .pc_to_the_next(pc_from_mem),
                 .inst_to_the_next(inst_from_mem),
+                .fetch_core_to_the_next(fetch_core_from_mem),
                 .u_rt_to_the_next(u_rt_from_mem),
                 .l_rt_to_the_next(l_rt_from_mem),
                 .mem_douta(mem_douta),
@@ -377,13 +386,13 @@ module main (
     //================
     //   Writeback
     //================
-    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_u_tdata;
-    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_u_rt;
-    (* mark_debug = "true" *) wire               ex_to_wb_u_rt_flag;
+    wire signed [31:0] ex_to_wb_u_tdata;
+    wire        [4:0]  ex_to_wb_u_rt;
+    wire               ex_to_wb_u_rt_flag;
 
-    (* mark_debug = "true" *) wire signed [31:0] ex_to_wb_l_tdata;
-    (* mark_debug = "true" *) wire        [4:0]  ex_to_wb_l_rt;
-    (* mark_debug = "true" *) wire               ex_to_wb_l_rt_flag;
+    wire signed [31:0] ex_to_wb_l_tdata;
+    wire        [4:0]  ex_to_wb_l_rt;
+    wire               ex_to_wb_l_rt_flag;
 
     assign ex_to_wb_u_tdata       = u_tdata_from_exec;
     assign ex_to_wb_u_rt          = u_rt_from_exec;

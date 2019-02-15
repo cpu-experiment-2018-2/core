@@ -39,6 +39,9 @@ module decode (
     // UART wdata
     output wire        [7:0]    uart_wdata,
 
+    // to sub cores
+    output reg         [31:0]   fetch_addr [0:SUBCORE_NUM],
+
     input  wire         clk,
     input  wire         rstn);
 
@@ -319,6 +322,8 @@ module decode (
             l_mem_in.din <= l_reg_s;
             l_mem_in.we <= (inst[31:26] == Store) ? 4'b1111 : 4'b0;
 
+            // to sub cores
+            for (int i = 0; i < SUBCORE_NUM; i++) fetch_addr[i] <= u_reg_b;
         end else if (branch_flag) begin
             branch_flag <= 0;
             pc_to_the_next <= 32'b0;

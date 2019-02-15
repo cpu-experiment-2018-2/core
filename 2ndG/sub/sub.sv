@@ -27,9 +27,11 @@ endinterface
 module sub (
     input  wire         exec_requested,
     input  wire  [31:0] requested_pc,
+    input  wire  [31:0] fetch_addr,
     input  data_in      u_n_in_from_main,
     input  data_in      l_n_in_from_main,
     output reg          ended,
+    output wire  [31:0] fetch_result,
 
     input  wire         clk,
     input  wire         rstn);
@@ -199,6 +201,7 @@ module sub (
                 .l_rt_to_the_next(l_rt_from_mem),
                 .mem_douta(mem_douta),
                 .mem_doutb(mem_doutb),
+                .fetch_result(fetch_result),
                 .u_n_in_from_main(u_n_in_from_main),
                 .l_n_in_from_main(l_n_in_from_main),
                 .clk(clk),

@@ -2,6 +2,7 @@ import inst_package::*;
 
 module writeback (
     input  wire         interlock,
+    input  wire        [31:0]   fetch_result [0:SUBCORE_NUM],
 
     (* mark_debug = "true" *) gpr_if              gpr,
 
@@ -23,6 +24,7 @@ module writeback (
     // From memory
     input  wire        [31:0]   pc_from_mem,
     input  wire        [63:0]   inst_from_mem,
+    input  wire        [3:0]    fetch_core_from_mem,
     // Upper
     input  wire        [4:0]    u_rt_from_mem,
     // Lower
@@ -94,6 +96,7 @@ module writeback (
         if (~rstn) begin
         end else if (~interlock) begin
             if (inst_from_mem[63:58] == Load) gpr.gpr[u_rt_from_mem] <= mem_douta;
+            else if (inst_from_mem[63:58] == Fetch) gpr.gpr[u_rt_from_mem] <= fetch_result[fetch_core_from_mem];
             if (u_rt_flag_from_exec) gpr.gpr[u_rt_from_exec] <= u_tdata_from_exec;
 
             if (inst_from_mem[31:26] == Load) gpr.gpr[l_rt_from_mem] <= mem_doutb;

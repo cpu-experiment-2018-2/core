@@ -8,6 +8,7 @@ module memory (
     //
     input  wire         [31:0]  pc,
     input  wire         [63:0]  inst,
+    input  wire         [3:0]   fetch_core,
     mem_in_if                   u_mem_in,
     mem_in_if                   l_mem_in,
 
@@ -22,6 +23,7 @@ module memory (
     //
     output reg          [31:0]  pc_to_the_next,
     output reg          [63:0]  inst_to_the_next,
+    output reg          [3:0]   fetch_core_to_the_next,
     output reg          [4:0]   u_rt_to_the_next,
     output reg          [4:0]   l_rt_to_the_next,
 
@@ -55,6 +57,7 @@ module memory (
             // to the next
             pc_to_the_next <= pc;
             inst_to_the_next <= inst;
+            fetch_core_to_the_next <= fetch_core;
 
             u_rt_to_the_next <= u_rt;
             l_rt_to_the_next <= l_rt;
