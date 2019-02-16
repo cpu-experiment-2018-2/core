@@ -71,8 +71,8 @@ module memory (
     
     always@(negedge clk) begin
         if (~rstn) begin
-            n_wea <= 0;
-            n_web <= 0;
+            u_n_in.we <= 0;
+            l_n_in.we <= 0;
         end else if (~interlock) begin
             u_n_in.addr <= {13'b0, u_mem_in.addr[16:0], 2'b0};
             u_n_in.din <= u_mem_in.din;
@@ -92,8 +92,6 @@ module memory (
 
     always@(negedge clk) begin
         if (~rstn) begin
-            u_n_in.dout <= 32'b0;
-            l_n_in.dout <= 32'b0;
         end else begin
             if (u_n_in_from_main.we) data_mem[u_n_in_from_main.addr] <= u_n_in_from_main.din;
             else if (u_n_in.we) data_mem[u_n_in.addr] <= u_n_in.din;

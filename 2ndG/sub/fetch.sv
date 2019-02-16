@@ -25,7 +25,7 @@ module fetch (
     reg  [1:0]      interval;
     wire [63:0]     douta;
 
-    blk_mem_gen_0 inst_rom(.addra({inst_addra[28:0], 3'b0}), .clka(clk), .douta(douta));
+    blk_mem_gen_1 inst_rom(.addra({inst_addra[28:0], 3'b0}), .clka(clk), .douta(douta));
 
     always@(posedge clk) begin
         if (~rstn) begin

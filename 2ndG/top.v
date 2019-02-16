@@ -2,6 +2,7 @@
 module top (
     input  wire         rx,
     output wire         tx,
+    output wire [7:0]   led,
 
     input  wire         clk,
     input  wire         rstn);

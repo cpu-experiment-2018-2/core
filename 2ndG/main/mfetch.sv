@@ -1,6 +1,6 @@
 import inst_package::*;
 
-module fetch (
+module mfetch (
     input  wire         interlock,
 
     input  wire         branch_flag,

@@ -23,17 +23,16 @@ interface mem_in_if;
     reg     [4:0]   we;
 endinterface
 
-
 module main (
-    input  wire         subcore_ended   [0:SUBCORE_NUM],
-    input  wire [31:0]  fetch_result    [0:SUBCORE_NUM],
+    input  wire         subcore_ended   [0:SUBCORE_NUM-1],
+    input  wire [31:0]  fetch_result    [0:SUBCORE_NUM-1],
 
-    output data_in      u_n_in_to_sub   [0:SUBCORE_NUM],
-    output data_in      l_n_in_to_sub   [0:SUBCORE_NUM],
+    output data_in      u_n_in_to_sub   [0:SUBCORE_NUM-1],
+    output data_in      l_n_in_to_sub   [0:SUBCORE_NUM-1],
 
-    output reg          exec_requested  [0:SUBCORE_NUM],
-    output reg  [31:0]  requested_pc    [0:SUBCORE_NUM],
-    output wire [31:0]  fetch_addr      [0:SUBCORE_NUM],
+    output reg          exec_requested  [0:SUBCORE_NUM-1],
+    output reg  [31:0]  requested_pc    [0:SUBCORE_NUM-1],
+    output wire [31:0]  fetch_addr      [0:SUBCORE_NUM-1],
 
     input  wire         rx,
     output wire         tx,
@@ -68,7 +67,7 @@ module main (
     wire                branch_flag;
     wire        [31:0]  branch_pc;
 
-    fetch fi(   .interlock(interlock),
+    mfetch fi(   .interlock(interlock),
                 .branch_flag(branch_flag),
                 .branch_pc(branch_pc),
                 .pc_to_the_next(decode_pc),
@@ -98,7 +97,7 @@ module main (
     mem_in_if   u_mem_in();
     mem_in_if   l_mem_in();
 
-    decode di(  .interlock(interlock),
+    mdecode di( .interlock(interlock),
                 .gpr(gpr),
                 .pc(decode_pc),
                 .inst(decode_inst),
@@ -153,7 +152,7 @@ module main (
 
     reg  [7:0]  uart_rdata;
 
-    exec ex(    .interlock(interlock),
+    mexec ex(   .interlock(interlock),
                 .pc(exec_pc),
                 .inst(exec_inst),
                 .u_srca(u_srca),
@@ -203,7 +202,7 @@ module main (
     wire        [31:0]  mem_douta;
     wire        [31:0]  mem_doutb;
     
-    memory mem( .interlock(interlock),
+    mmemory mem(.interlock(interlock),
                 .living_sub_count(living_sub_count),
                 .pc(pc_from_exec),
                 .inst(inst_from_exec),
@@ -401,7 +400,7 @@ module main (
     assign ex_to_wb_l_rt          = l_rt_from_exec;
     assign ex_to_wb_l_rt_flag     = l_rt_flag_from_exec;
     
-    writeback wb(.*);
+    mwriteback wb(.*);
 
 
 

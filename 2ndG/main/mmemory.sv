@@ -1,6 +1,6 @@
 import inst_package::*;
 
-module memory (
+module mmemory (
     input  wire         interlock,
     input  wire         [3:0]   living_sub_count,
 
@@ -31,8 +31,8 @@ module memory (
     output reg          [31:0]  mem_doutb,
 
     // to sub cores
-    output data_in              u_n_in_to_sub [0:SUBCORE_NUM],
-    output data_in              l_n_in_to_sub [0:SUBCORE_NUM],
+    output data_in              u_n_in_to_sub [0:SUBCORE_NUM-1],
+    output data_in              l_n_in_to_sub [0:SUBCORE_NUM-1],
 
     input  wire         clk,
     input  wire         rstn);
@@ -69,8 +69,8 @@ module memory (
     
     always@(negedge clk) begin
         if (~rstn) begin
-            n_wea <= 0;
-            n_web <= 0;
+            u_n_in.we <= 0;
+            l_n_in.we <= 0;
         end else if (~interlock) begin
             u_n_in.addr <= {13'b0, u_mem_in.addr[16:0], 2'b0};
             u_n_in.din <= u_mem_in.din;
@@ -80,7 +80,7 @@ module memory (
             l_n_in.we <= l_mem_in.we;
 
             for (int i = 0; i < SUBCORE_NUM; i++) begin
-                u_n_in_to_sub.addr <= {13'b0, u_mem_in.addr[16:0], 2'b0};
+                u_n_in_to_sub[i].addr <= {13'b0, u_mem_in.addr[16:0], 2'b0};
                 u_n_in_to_sub[i].din <= u_mem_in.din;
                 if (living_sub_count == 0) u_n_in_to_sub[i].we <= u_mem_in.we;
                 l_n_in_to_sub[i].addr <= {13'b0, l_mem_in.addr[16:0], 2'b0};
@@ -91,12 +91,10 @@ module memory (
     end
 
     // memory
-    reg  [31:0] data_mem [0:DATA_MEM_DEPTH];
+    reg  [31:0] data_mem [0:DATA_MEM_DEPTH-1];
 
     always@(negedge clk) begin
         if (~rstn) begin
-            u_n_in.dout <= 32'b0;
-            l_n_in.dout <= 32'b0;
         end else begin
             if (u_n_in.we) data_mem[u_n_in.addr] <= u_n_in.din;
             if (l_n_in.we) data_mem[l_n_in.addr] <= l_n_in.din;

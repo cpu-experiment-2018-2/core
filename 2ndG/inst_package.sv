@@ -69,6 +69,7 @@ package inst_package;
     parameter DATA_MEM_DEPTH = 131072;
     parameter SUBCORE_NUM = 4;
 
+
     typedef struct {
         logic [31:0] addr;
         logic [31:0] din;

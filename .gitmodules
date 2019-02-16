@@ -1,3 +1,6 @@
 [submodule "2nd/fpu"]
 	path = 2nd/fpu
 	url = https://github.com/cpu-experiment-2018-2/fpu.git
+[submodule "2ndG/fpu"]
+	path = 2ndG/fpu
+	url = https://github.com/cpu-experiment-2018-2/fpu.git

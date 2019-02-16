@@ -1,28 +1,5 @@
 import inst_package::*;
 
-interface gpr_if;
-    reg signed [31:0] gpr [0:31];
-endinterface
-
-interface fpu_in_if;
-    reg     [31:0]  srca;
-    reg     [31:0]  srcb;
-    reg     [4:0]   rt;
-    reg             rt_flag;
-endinterface
-
-interface fpu_out_if;
-    wire    [31:0]  tdata;
-    wire    [4:0]   rt;
-    wire            rt_flag;
-endinterface
-
-interface mem_in_if;
-    reg     [31:0]  addr;
-    reg     [31:0]  din;
-    reg     [4:0]   we;
-endinterface
-
 
 module sub (
     input  wire         exec_requested,
@@ -395,11 +372,8 @@ module sub (
 
     always@(posedge clk) begin
         if (~rstn) begin
-            interlock <= 0;
+            interlock <= 1;
             ended <= 0;
-
-            io_ren <= 0;
-            io_wen <= 0;
 
             state <= RUN_ST;
         end else begin

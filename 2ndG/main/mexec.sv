@@ -1,6 +1,6 @@
 import inst_package::*;
 
-module exec (
+module mexec (
     input  wire         interlock,
 
     // input

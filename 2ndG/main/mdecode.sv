@@ -1,6 +1,6 @@
 import inst_package::*;
 
-module decode (
+module mdecode (
     input  wire         interlock,
 
     // input
@@ -40,7 +40,7 @@ module decode (
     output wire        [7:0]    uart_wdata,
 
     // to sub cores
-    output reg         [31:0]   fetch_addr [0:SUBCORE_NUM],
+    output reg         [31:0]   fetch_addr [0:SUBCORE_NUM-1],
 
     input  wire         clk,
     input  wire         rstn);

@@ -1,10 +1,10 @@
 import inst_package::*;
 
-module writeback (
+module mwriteback (
     input  wire         interlock,
-    input  wire        [31:0]   fetch_result [0:SUBCORE_NUM],
+    input  wire        [31:0]   fetch_result [0:SUBCORE_NUM-1],
 
-    (* mark_debug = "true" *) gpr_if              gpr,
+    gpr_if              gpr,
 
     // input
     //
