@@ -200,13 +200,8 @@ module uart_io (
                     if (uart_rdata[0]) begin
                         uart_raddr <= RX_FIFO;
                         state <= READ_ST;
-                    end else if (ren || wen) begin
-                        state <= WAIT_ST;
-                    end
-                end else begin
-                    if (ren || wen) state <= WAIT_ST;
-                    uart_ren <= 0;
-                end
+                    end else state <= WAIT_ST;
+                end else uart_ren <= 0;
             end else if (state == READ_ST) begin
                 if (uart_rdone) begin
                     rfifo_din <= uart_rdata;
