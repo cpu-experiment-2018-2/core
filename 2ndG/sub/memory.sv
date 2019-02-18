@@ -40,25 +40,55 @@ module memory (
 
 
     // Memory Access Process
-    //           | id  | ex  | mem | wb  |
-    // addr      ______|^^^^^|____________
-    // n_addr    _________|^^^^^|_________
-    // LUTRAM                   |---->
-    // mem_doutb __________________|^^^^^|
-    
+    //           | id  | ex  | mem | mem | wb  |
+    // addr      ______|^^^^^|__________________
+    // n_addr    _________|^^^^^|_______________
+    // BRAM                     |---->
+    // n_doutb   _____________________|^^^^^|___
+    // mem_doutb ________________________|^^^^^|
+
 
     data_in u_n_in;
     data_in l_n_in;
+    wire [31:0] douta;
     reg  [31:0] n_douta;
+    wire [31:0] doutb;
     reg  [31:0] n_doutb;
+
+    reg  [31:0] middle_pc;
+    reg  [63:0] middle_inst;
+    reg  [4:0]  middle_u_rt;
+    reg  [4:0]  middle_l_rt;
+
+    wire [31:0] n_addra = ~u_n_in_from_main.we ? u_n_in.addr : u_n_in_from_main.din;
+    wire [31:0] n_dina = ~u_n_in_from_main.we ? u_n_in.din : u_n_in_from_main.din;
+    wire n_wea = ~u_n_in_from_main.we ? u_n_in.we : u_n_in_from_main.we;
+    wire [31:0] n_addrb = ~l_n_in_from_main.we ? l_n_in.addr : l_n_in_from_main.addr;
+    wire [31:0] n_dinb = ~l_n_in_from_main.we ? l_n_in.din : l_n_in_from_main.din;
+    wire n_web = ~l_n_in_from_main.we ? l_n_in.we : l_n_in_from_main.we;
+
+    blk_mem_gen_0 data_ram( .addra(n_addra),
+                            .clka(~clk),
+                            .dina(u_n_in.din),
+                            .douta(douta),
+                            .wea(n_wea),
+                            .addrb(l_n_in.addr),
+                            .clkb(~clk),
+                            .dinb(l_n_in.addr),
+                            .doutb(doutb),
+                            .web(n_web));
 
     always@(posedge clk) begin
         if (~rstn) begin
         end else if (~interlock) begin
             // to the next
-            pc_to_the_next <= pc;
-            inst_to_the_next <= inst;
+            middle_pc <= pc;
+            pc_to_the_next <= middle_pc;
+            middle_inst <= inst;
+            inst_to_the_next <= middle_inst;
 
+            middle_u_rt <= u_rt;
+            middle_l_rt <= l_rt;
             u_rt_to_the_next <= u_rt;
             l_rt_to_the_next <= l_rt;
 
@@ -71,8 +101,8 @@ module memory (
     
     always@(negedge clk) begin
         if (~rstn) begin
-            u_n_in.we <= 0;
-            l_n_in.we <= 0;
+            u_n_in.we <= 4'b0;
+            l_n_in.we <= 4'b0;
         end else if (~interlock) begin
             u_n_in.addr <= {13'b0, u_mem_in.addr[16:0], 2'b0};
             u_n_in.din <= u_mem_in.din;
@@ -80,26 +110,16 @@ module memory (
             l_n_in.addr <= {13'b0, l_mem_in.addr[16:0], 2'b0};
             l_n_in.din <= l_mem_in.din;
             l_n_in.we <= l_mem_in.we;
+
+            n_douta <= douta;
+            n_doutb <= doutb;
         end else begin
             u_n_in.addr <= fetch_addr;
             u_n_in.we <= 0;
             l_n_in.we <= 0;
-        end
-    end
 
-    // memory
-    reg  [31:0] data_mem [DATA_MEM_DEPTH];
-
-    always@(negedge clk) begin
-        if (~rstn) begin
-        end else begin
-            if (u_n_in_from_main.we) data_mem[u_n_in_from_main.addr] <= u_n_in_from_main.din;
-            else if (u_n_in.we) data_mem[u_n_in.addr] <= u_n_in.din;
-            if (l_n_in_from_main.we) data_mem[l_n_in_from_main.addr] <= l_n_in_from_main.din;
-            else if (l_n_in.we) data_mem[l_n_in.addr] <= l_n_in.din;
-
-            n_douta <= data_mem[u_n_in.addr];
-            n_doutb <= data_mem[l_n_in.addr];
+            n_douta <= douta;
+            n_doutb <= doutb;
         end
     end
 

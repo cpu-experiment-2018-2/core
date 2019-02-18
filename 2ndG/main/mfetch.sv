@@ -20,9 +20,8 @@ module mfetch (
     assign inst_addra = interlock ? middle_pc : (branch_flag ? branch_pc : pc);
 
     reg  [1:0]      interval;
-    wire [63:0]     douta;
+    reg  [63:0]     douta;
 
-    blk_mem_gen_0 inst_rom(.addra({inst_addra[28:0], 3'b0}), .clka(clk), .douta(douta));
 
     always@(posedge clk) begin
         if (~rstn) begin
@@ -42,6 +41,20 @@ module mfetch (
 			middle_pc <= inst_addra;
             pc_to_the_next <= (~branch_flag) ? middle_pc : 32'b0;
         end else begin
+        end
+    end
+
+
+    // Memory
+    (* ram_style = "distributed" *) reg  [63:0]     inst_rom [0:INST_MAIN_DEPTH-1];
+
+    initial $readmemb("/home/tongari/cpu/core/2ndG/parent.txt", inst_rom);
+
+    always@(posedge clk) begin
+        if (~rstn) begin
+            douta <= {Nop, 26'b0, Nop, 26'b0};
+        end else begin
+            douta <= inst_rom[inst_addra];
         end
     end
 

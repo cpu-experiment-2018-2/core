@@ -1,6 +1,8 @@
 import inst_package::*;
 
-module fetch (
+module fetch #(
+    parameter CORE_NUM = 0
+) (
     input  wire         interlock,
 
     input  wire         branch_flag,
@@ -23,9 +25,8 @@ module fetch (
     assign inst_addra = interlock ? middle_pc : (branch_flag ? branch_pc : pc);
 
     reg  [1:0]      interval;
-    wire [63:0]     douta;
+    reg  [63:0]     douta;
 
-    blk_mem_gen_1 inst_rom(.addra({inst_addra[28:0], 3'b0}), .clka(clk), .douta(douta));
 
     always@(posedge clk) begin
         if (~rstn) begin
@@ -49,6 +50,23 @@ module fetch (
                 interval <= 1;
                 pc <= requested_pc;
             end
+        end
+    end
+
+
+
+    // Memory
+    (* ram_style = "distributed" *) reg  [63:0]     inst_rom [0:INST_SUB_DEPTH-1];
+
+    initial begin
+        $readmemb($sformatf("/home/tongari/cpu/core/2ndG/child%0d.txt", CORE_NUM), inst_rom);
+    end
+
+    always@(posedge clk) begin
+        if (~rstn) begin
+            douta <= {Nop, 26'b0, Nop, 26'b0};
+        end else begin
+            douta <= inst_rom[inst_addra];
         end
     end
 

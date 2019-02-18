@@ -17,21 +17,37 @@ module uart_io (
     input  wire         clk,
     input  wire         rstn);
 
-    (* mark_debug = "true" *)reg  [7:0]  fifo_din;
-    (* mark_debug = "true" *)reg         fifo_wen;
-    (* mark_debug = "true" *)reg         fifo_ren;
-    (* mark_debug = "true" *)wire [7:0]  fifo_dout;
-    (* mark_debug = "true" *)wire        fifo_full;
-    (* mark_debug = "true" *)wire        fifo_empty;
+    reg  [7:0]  rfifo_din;
+    reg         rfifo_wen;
+    reg         rfifo_ren;
+    wire [7:0]  rfifo_dout;
+    wire        rfifo_full;
+    wire        rfifo_empty;
 
-    fifo_generator_0 fifo(  .clk(clk),
+    reg  [7:0]  wfifo_din;
+    reg         wfifo_wen;
+    reg         wfifo_ren;
+    wire [7:0]  wfifo_dout;
+    wire        wfifo_full;
+    wire        wfifo_empty;
+
+    fifo_generator_0 rfifo( .clk(clk),
                             .srst(~rstn),
-                            .din(fifo_din),
-                            .wr_en(fifo_wen),
-                            .rd_en(fifo_ren),
-                            .dout(fifo_dout),
-                            .full(fifo_full),
-                            .empty(fifo_empty));
+                            .din(rfifo_din),
+                            .wr_en(rfifo_wen),
+                            .rd_en(rfifo_ren),
+                            .dout(rfifo_dout),
+                            .full(rfifo_full),
+                            .empty(rfifo_empty));
+
+    fifo_generator_0 wfifo( .clk(clk),
+                            .srst(~rstn),
+                            .din(wfifo_din),
+                            .wr_en(wfifo_wen),
+                            .rd_en(wfifo_ren),
+                            .dout(wfifo_dout),
+                            .full(wfifo_full),
+                            .empty(wfifo_empty));
 
 	// AXI4-lite uart interface
 	// address read channel
@@ -119,8 +135,8 @@ module uart_io (
                 .busy(uart_wbusy),
                 .done(uart_wdone));
 
-    typedef enum logic [2:0] {
-        WAIT_ST, CHECK_RX_ST, READ_ST, READ_END_ST, CHECK_TX_ST, WRITE_ST, WRITE_FIFO_ST
+    typedef enum logic [3:0] {
+        WAIT_ST, CHECK_RX_ST, READ_ST, READ_END_ST, CHECK_TX_ST, WRITE_ST, WRITE_FIFO_ST, READ_FIFO_ST, READ_FIFO_RECIEVED_ST, READ_FIFO_END_ST
     } state_type;
 
     state_type state;
@@ -152,25 +168,30 @@ module uart_io (
             uart_wen <= 0;
             uart_waddr <= TX_FIFO;
 
-            fifo_ren <= 0;
-            fifo_wen <= 0;
+            wfifo_ren <= 0;
+            wfifo_wen <= 0;
+            rfifo_ren <= 0;
+            rfifo_wen <= 0;
 
             rdone <= 0;
             wdone <= 0;
         end else begin
             if (state == WAIT_ST) begin
                 uart_raddr <= STAT_REG;
-                fifo_wen <= 0;
-                if (rbusy) begin
-                    uart_ren <= 1;
-                    state <= CHECK_RX_ST;
-                end else if (wbusy && ~fifo_full) begin
+                wfifo_wen <= 0;
+                if (rbusy && ~rfifo_empty) begin
+                    rfifo_ren <= 1;
+                    state <= READ_FIFO_ST;
+                end else if (wbusy && ~wfifo_full) begin
                     wdone <= 1;
                     state <= WRITE_FIFO_ST;
-                end else if (~fifo_empty) begin
+                end else if (~wfifo_empty && ~uart_rbusy) begin
                     uart_ren <= 1;
-                    fifo_ren <= 1;
+                    wfifo_ren <= 1;
                     state <= CHECK_TX_ST;
+                end else if (~uart_rbusy) begin
+                    uart_ren <= 1;
+                    state <= CHECK_RX_ST;
                 end
             end else if (state == CHECK_RX_ST) begin
                 if (uart_rdone) begin
@@ -179,20 +200,25 @@ module uart_io (
                     if (uart_rdata[0]) begin
                         uart_raddr <= RX_FIFO;
                         state <= READ_ST;
+                    end else if (ren || wen) begin
+                        state <= WAIT_ST;
                     end
-                end else uart_ren <= 0;
+                end else begin
+                    if (ren || wen) state <= WAIT_ST;
+                    uart_ren <= 0;
+                end
             end else if (state == READ_ST) begin
                 if (uart_rdone) begin
-                    rdata <= uart_rdata;
-                    rdone <= 1;
+                    rfifo_din <= uart_rdata;
+                    rfifo_wen <= 1;
                     state <= READ_END_ST;
                 end else uart_ren <= 0;
             end else if (state == READ_END_ST) begin
-                rdone <= 0;
+                rfifo_wen <= 0;
                 state <= WAIT_ST;
             end else if (state == CHECK_TX_ST) begin
-                fifo_ren <= 0;
-                uart_wdata <= fifo_dout;
+                wfifo_ren <= 0;
+                uart_wdata <= wfifo_dout;
                 if (uart_rdone) begin
                     // Tx FIFO Full flag
                     if (uart_rdata[3] == 0) begin
@@ -208,8 +234,18 @@ module uart_io (
                 end
             end else if (state == WRITE_FIFO_ST) begin
                 wdone <= 0;
-                fifo_din <= wdata;
-                fifo_wen <= 1;
+                wfifo_din <= wdata;
+                wfifo_wen <= 1;
+                state <= WAIT_ST;
+            end else if (state == READ_FIFO_ST) begin
+                rfifo_ren <= 0;
+                state <= READ_FIFO_RECIEVED_ST;
+            end else if (state == READ_FIFO_RECIEVED_ST) begin
+                rdone <= 1;
+                rdata <= rfifo_dout;
+                state <= READ_FIFO_END_ST;
+            end else if (state == READ_FIFO_END_ST) begin
+                rdone <= 0;
                 state <= WAIT_ST;
             end
         end

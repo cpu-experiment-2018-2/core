@@ -66,13 +66,15 @@ package inst_package;
     parameter Fetch= 6'b111100;
 
 
-    parameter DATA_MEM_DEPTH = 131072;
+    parameter DATA_MEM_DEPTH = 120000;
+    parameter INST_MAIN_DEPTH = 32768;
+    parameter INST_SUB_DEPTH = 8192;
     parameter SUBCORE_NUM = 4;
 
 
     typedef struct {
         logic [31:0] addr;
         logic [31:0] din;
-        logic        we;
+        logic [3:0]  we;
     } data_in;
 endpackage

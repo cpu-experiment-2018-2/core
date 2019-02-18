@@ -84,6 +84,9 @@ module mdecode (
             eq <= 0;
             less <= 0;
             branch_flag <= 0;
+            
+            u_mem_in.we <= 0;
+            l_mem_in.we <= 0;
         end else if (~branch_flag && ~interlock) begin
             pc_to_the_next <= pc;
             inst_to_the_next[63:32] <= inst[63:32];
@@ -322,8 +325,6 @@ module mdecode (
             l_mem_in.din <= l_reg_s;
             l_mem_in.we <= (inst[31:26] == Store) ? 4'b1111 : 4'b0;
 
-            // to sub cores
-            for (int i = 0; i < SUBCORE_NUM; i++) fetch_addr[i] <= u_reg_b;
         end else if (branch_flag) begin
             branch_flag <= 0;
             pc_to_the_next <= 32'b0;
@@ -333,6 +334,14 @@ module mdecode (
             eq <= 0;
             less <= 0;
             branch_flag <= 0;
+        end
+    end
+
+    always@(negedge clk) begin
+        if (~rstn) begin
+        end else begin
+            // to sub cores
+            for (int i = 0; i < SUBCORE_NUM; i++) fetch_addr[i] <= u_reg_b;
         end
     end
 endmodule

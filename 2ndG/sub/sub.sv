@@ -1,7 +1,9 @@
 import inst_package::*;
 
 
-module sub (
+module sub #(
+    parameter CORE_NUM = 0
+) (
     input  wire         exec_requested,
     input  wire  [31:0] requested_pc,
     input  wire  [31:0] fetch_addr,
@@ -36,7 +38,8 @@ module sub (
     wire                branch_flag;
     wire        [31:0]  branch_pc;
 
-    fetch fi(   .interlock(interlock),
+    fetch #(.CORE_NUM(CORE_NUM))
+          fi(   .interlock(interlock),
                 .branch_flag(branch_flag),
                 .branch_pc(branch_pc),
                 .exec_requested(exec_requested),
@@ -172,6 +175,7 @@ module sub (
                 .l_mem_in(l_mem_in),
                 .u_rt(u_rt_from_exec),
                 .l_rt(l_rt_from_exec),
+                .fetch_addr(fetch_addr),
                 .pc_to_the_next(pc_from_mem),
                 .inst_to_the_next(inst_from_mem),
                 .u_rt_to_the_next(u_rt_from_mem),

@@ -20,19 +20,19 @@ endinterface
 interface mem_in_if;
     reg     [31:0]  addr;
     reg     [31:0]  din;
-    reg     [4:0]   we;
+    reg     [3:0]   we;
 endinterface
 
 module main (
-    input  wire         subcore_ended   [0:SUBCORE_NUM-1],
-    input  wire [31:0]  fetch_result    [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)input  wire         subcore_ended   [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)input  wire [31:0]  fetch_result    [0:SUBCORE_NUM-1],
 
-    output data_in      u_n_in_to_sub   [0:SUBCORE_NUM-1],
-    output data_in      l_n_in_to_sub   [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)output data_in      u_n_in_to_sub   [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)output data_in      l_n_in_to_sub   [0:SUBCORE_NUM-1],
 
-    output reg          exec_requested  [0:SUBCORE_NUM-1],
-    output reg  [31:0]  requested_pc    [0:SUBCORE_NUM-1],
-    output wire [31:0]  fetch_addr      [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)output reg          exec_requested  [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)output reg  [31:0]  requested_pc    [0:SUBCORE_NUM-1],
+    (* mark_debug = "true" *)output wire [31:0]  fetch_addr      [0:SUBCORE_NUM-1],
 
     input  wire         rx,
     output wire         tx,
@@ -40,19 +40,19 @@ module main (
     input  wire         clk,
     input  wire         rstn);
 
-    reg             interlock;
-    reg  [3:0]      join_target;
-    reg  [3:0]      living_sub_count;
+    (* mark_debug = "true" *)reg             interlock;
+    (* mark_debug = "true" *)reg  [3:0]      join_target;
+    (* mark_debug = "true" *)reg  [3:0]      living_sub_count;
 
-    gpr_if          gpr();
+    (* mark_debug = "true" *)gpr_if          gpr();
 
-    wire [31:0]     decode_pc;
+    (* mark_debug = "true" *)wire [31:0]     decode_pc;
     wire [31:0]     exec_pc;
     wire [31:0]     pc_from_exec;
     wire [31:0]     pc_from_mem;
 
 
-    wire [63:0]     decode_inst;
+    (* mark_debug = "true" *)wire [63:0]     decode_inst;
     wire [63:0]     exec_inst;
     wire [63:0]     inst_from_exec;
     wire [63:0]     inst_from_mem;
