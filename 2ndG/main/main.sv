@@ -85,7 +85,9 @@ module main (
     wire        [4:0]   u_rt_from_decode;
     wire                u_rt_flag_from_decode;
 
-    wire signed [31:0]  l_srcs_to_exec;
+    (* mark_debug = "true" *)wire signed [31:0]  l_srca;
+    (* mark_debug = "true" *)wire signed [31:0]  l_srcb;
+    (* mark_debug = "true" *)wire signed [31:0]  l_srcs_to_exec;
     wire        [3:0]   l_e_type;
     wire        [4:0]   l_rt_from_decode;
     wire                l_rt_flag_from_decode;
@@ -383,21 +385,6 @@ module main (
     //================
     //   Writeback
     //================
-    wire signed [31:0] ex_to_wb_u_tdata;
-    wire        [4:0]  ex_to_wb_u_rt;
-    wire               ex_to_wb_u_rt_flag;
-
-    wire signed [31:0] ex_to_wb_l_tdata;
-    wire        [4:0]  ex_to_wb_l_rt;
-    wire               ex_to_wb_l_rt_flag;
-
-    assign ex_to_wb_u_tdata       = u_tdata_from_exec;
-    assign ex_to_wb_u_rt          = u_rt_from_exec;
-    assign ex_to_wb_u_rt_flag     = u_rt_flag_from_exec;
-    assign ex_to_wb_l_tdata       = l_tdata_from_exec;
-    assign ex_to_wb_l_rt          = l_rt_from_exec;
-    assign ex_to_wb_l_rt_flag     = l_rt_flag_from_exec;
-    
     mwriteback wb(.*);
 
 
