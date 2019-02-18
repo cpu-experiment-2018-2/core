@@ -9,7 +9,7 @@ module sub #(
     input  wire  [31:0] fetch_addr,
     input  data_in      u_n_in_from_main,
     input  data_in      l_n_in_from_main,
-    output reg          ended,
+    (* mark_debug = "true" *)output reg          ended,
     output wire  [31:0] fetch_result,
 
     input  wire         clk,
@@ -20,13 +20,13 @@ module sub #(
     gpr_if          gpr();
     assign led = gpr.gpr[0][7:0];
 
-    wire [31:0]     decode_pc;
+    (* mark_debug = "true" *)wire [31:0]     decode_pc;
     wire [31:0]     exec_pc;
     wire [31:0]     pc_from_exec;
     wire [31:0]     pc_from_mem;
 
 
-    wire [63:0]     decode_inst;
+    (* mark_debug = "true" *)wire [63:0]     decode_inst;
     wire [63:0]     exec_inst;
     wire [63:0]     inst_from_exec;
     wire [63:0]     inst_from_mem;
@@ -52,15 +52,15 @@ module sub #(
     //================
     //     Decode
     //================
-    wire signed [31:0]  u_srca;
-    wire signed [31:0]  u_srcb;
+    (* mark_debug = "true" *)wire signed [31:0]  u_srca;
+    (* mark_debug = "true" *)wire signed [31:0]  u_srcb;
     wire signed [31:0]  u_srcs_to_exec;
     wire        [3:0]   u_e_type;
     wire        [4:0]   u_rt_from_decode;
     wire                u_rt_flag_from_decode;
 
-    wire signed [31:0]  l_srca;
-    wire signed [31:0]  l_srcb;
+    (* mark_debug = "true" *)wire signed [31:0]  l_srca;
+    (* mark_debug = "true" *)wire signed [31:0]  l_srcb;
     wire signed [31:0]  l_srcs_to_exec;
     wire        [3:0]   l_e_type;
     wire        [4:0]   l_rt_from_decode;
