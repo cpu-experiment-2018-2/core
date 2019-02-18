@@ -44,7 +44,7 @@ module main (
     (* mark_debug = "true" *)reg  [3:0]      join_target;
     (* mark_debug = "true" *)reg  [3:0]      living_sub_count;
 
-    (* mark_debug = "true" *)gpr_if          gpr();
+    gpr_if          gpr();
 
     (* mark_debug = "true" *)wire [31:0]     decode_pc;
     wire [31:0]     exec_pc;
@@ -78,15 +78,13 @@ module main (
     //================
     //     Decode
     //================
-    wire signed [31:0]  u_srca;
-    wire signed [31:0]  u_srcb;
-    wire signed [31:0]  u_srcs_to_exec;
+    (* mark_debug = "true" *)wire signed [31:0]  u_srca;
+    (* mark_debug = "true" *)wire signed [31:0]  u_srcb;
+    (* mark_debug = "true" *)wire signed [31:0]  u_srcs_to_exec;
     wire        [3:0]   u_e_type;
     wire        [4:0]   u_rt_from_decode;
     wire                u_rt_flag_from_decode;
 
-    wire signed [31:0]  l_srca;
-    wire signed [31:0]  l_srcb;
     wire signed [31:0]  l_srcs_to_exec;
     wire        [3:0]   l_e_type;
     wire        [4:0]   l_rt_from_decode;

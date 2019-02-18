@@ -17,19 +17,19 @@ module uart_io (
     input  wire         clk,
     input  wire         rstn);
 
-    reg  [7:0]  rfifo_din;
-    reg         rfifo_wen;
-    reg         rfifo_ren;
-    wire [7:0]  rfifo_dout;
-    wire        rfifo_full;
-    wire        rfifo_empty;
+    (* mark_debug = "true" *)reg  [7:0]  rfifo_din;
+    (* mark_debug = "true" *)reg         rfifo_wen;
+    (* mark_debug = "true" *)reg         rfifo_ren;
+    (* mark_debug = "true" *)wire [7:0]  rfifo_dout;
+    (* mark_debug = "true" *)wire        rfifo_full;
+    (* mark_debug = "true" *)wire        rfifo_empty;
 
-    reg  [7:0]  wfifo_din;
-    reg         wfifo_wen;
-    reg         wfifo_ren;
-    wire [7:0]  wfifo_dout;
-    wire        wfifo_full;
-    wire        wfifo_empty;
+    (* mark_debug = "true" *)reg  [7:0]  wfifo_din;
+    (* mark_debug = "true" *)reg         wfifo_wen;
+    (* mark_debug = "true" *)reg         wfifo_ren;
+    (* mark_debug = "true" *)wire [7:0]  wfifo_dout;
+    (* mark_debug = "true" *)wire        wfifo_full;
+    (* mark_debug = "true" *)wire        wfifo_empty;
 
     fifo_generator_0 rfifo( .clk(clk),
                             .srst(~rstn),
@@ -105,17 +105,17 @@ module uart_io (
 		CTRL_REG = 4'hC
 	} waddr_type;
 
-    wire [7:0]  uart_rdata;
-    raddr_type  uart_raddr;
-    reg         uart_ren;
-    wire        uart_rbusy;
-    wire        uart_rdone;
+    (* mark_debug = "true" *)wire [7:0]  uart_rdata;
+    (* mark_debug = "true" *)raddr_type  uart_raddr;
+    (* mark_debug = "true" *)reg         uart_ren;
+    (* mark_debug = "true" *)wire        uart_rbusy;
+    (* mark_debug = "true" *)wire        uart_rdone;
 
-    reg  [7:0]  uart_wdata;
-    waddr_type  uart_waddr;
-    reg         uart_wen;
-    wire        uart_wbusy;
-    wire        uart_wdone;
+    (* mark_debug = "true" *)reg  [7:0]  uart_wdata;
+    (* mark_debug = "true" *)waddr_type  uart_waddr;
+    (* mark_debug = "true" *)reg         uart_wen;
+    (* mark_debug = "true" *)wire        uart_wbusy;
+    (* mark_debug = "true" *)wire        uart_wdone;
 
     uart_rx u_rx( .*,
                 .addr(uart_raddr),

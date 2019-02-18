@@ -52,45 +52,45 @@ module mwriteback (
     input  wire         clk,
     input  wire         rstn);
 
-    (* mark_debug = "true" *) wire [4:0] u_fpu_rt_two    = (u_fadd_data.rt_flag ? u_fadd_data.rt
-                                    : (u_fsub_data.rt_flag ? u_fsub_data.rt
-                                        : (u_fmul_data.rt_flag ? u_fmul_data.rt
-                                            : (u_fsqrt_data.rt ? u_fsqrt_data.rt
-                                                : 5'b0 ))));
+    wire [4:0] u_fpu_rt_two    = (u_fadd_data.rt_flag ? u_fadd_data.rt
+          : (u_fsub_data.rt_flag ? u_fsub_data.rt
+              : (u_fmul_data.rt_flag ? u_fmul_data.rt
+                  : (u_fsqrt_data.rt ? u_fsqrt_data.rt
+                      : 5'b0 ))));
 
-    (* mark_debug = "true" *) wire [31:0] u_fpu_data_two = (u_fadd_data.rt_flag ? u_fadd_data.tdata
-                                    : (u_fsub_data.rt_flag ? u_fsub_data.tdata
-                                        : (u_fmul_data.rt_flag ? u_fmul_data.tdata
-                                            : (u_fsqrt_data.rt_flag ? u_fsqrt_data.tdata
-                                                : 32'b0 ))));
+    wire [31:0] u_fpu_data_two = (u_fadd_data.rt_flag ? u_fadd_data.tdata
+          : (u_fsub_data.rt_flag ? u_fsub_data.tdata
+              : (u_fmul_data.rt_flag ? u_fmul_data.tdata
+                  : (u_fsqrt_data.rt_flag ? u_fsqrt_data.tdata
+                      : 32'b0 ))));
 
-    (* mark_debug = "true" *) wire [4:0] l_fpu_rt_two    = (l_fadd_data.rt_flag ? l_fadd_data.rt
-                                    : (l_fsub_data.rt_flag ? l_fsub_data.rt
-                                        : (l_fmul_data.rt_flag ? l_fmul_data.rt
-                                            : (l_fsqrt_data.rt ? l_fsqrt_data.rt
-                                                : 5'b0 ))));
+    wire [4:0] l_fpu_rt_two    = (l_fadd_data.rt_flag ? l_fadd_data.rt
+          : (l_fsub_data.rt_flag ? l_fsub_data.rt
+              : (l_fmul_data.rt_flag ? l_fmul_data.rt
+                  : (l_fsqrt_data.rt ? l_fsqrt_data.rt
+                      : 5'b0 ))));
 
-    (* mark_debug = "true" *) wire [31:0] l_fpu_data_two = (l_fadd_data.rt_flag ? l_fadd_data.tdata
-                                    : (l_fsub_data.rt_flag ? l_fsub_data.tdata
-                                        : (l_fmul_data.rt_flag ? l_fmul_data.tdata
-                                            : (l_fsqrt_data.rt_flag ? l_fsqrt_data.tdata
-                                                : 32'b0 ))));
+    wire [31:0] l_fpu_data_two = (l_fadd_data.rt_flag ? l_fadd_data.tdata
+          : (l_fsub_data.rt_flag ? l_fsub_data.tdata
+              : (l_fmul_data.rt_flag ? l_fmul_data.tdata
+                  : (l_fsqrt_data.rt_flag ? l_fsqrt_data.tdata
+                      : 32'b0 ))));
 
-    (* mark_debug = "true" *) wire [4:0] u_fpu_rt_one    = (u_ftoi_data.rt_flag ? u_ftoi_data.rt
-                                    : (u_itof_data.rt_flag ? u_itof_data.rt
-                                        : 5'b0 ));
+    wire [4:0] u_fpu_rt_one    = (u_ftoi_data.rt_flag ? u_ftoi_data.rt
+          : (u_itof_data.rt_flag ? u_itof_data.rt
+              : 5'b0 ));
 
-    (* mark_debug = "true" *) wire [31:0] u_fpu_data_one = (u_ftoi_data.rt_flag ? u_ftoi_data.tdata
-                                    : (u_itof_data.rt_flag ? u_itof_data.tdata
-                                        : 32'b0 ));
+    wire [31:0] u_fpu_data_one = (u_ftoi_data.rt_flag ? u_ftoi_data.tdata
+          : (u_itof_data.rt_flag ? u_itof_data.tdata
+              : 32'b0 ));
 
-    (* mark_debug = "true" *) wire [4:0] l_fpu_rt_one    = (l_ftoi_data.rt_flag ? l_ftoi_data.rt
-                                    : (l_itof_data.rt_flag ? l_itof_data.rt
-                                        : 5'b0 ));
+    wire [4:0] l_fpu_rt_one    = (l_ftoi_data.rt_flag ? l_ftoi_data.rt
+          : (l_itof_data.rt_flag ? l_itof_data.rt
+              : 5'b0 ));
 
-    (* mark_debug = "true" *) wire [31:0] l_fpu_data_one = (l_ftoi_data.rt_flag ? l_ftoi_data.tdata
-                                    : (l_itof_data.rt_flag ? l_itof_data.tdata
-                                        : 32'b0 ));
+    wire [31:0] l_fpu_data_one = (l_ftoi_data.rt_flag ? l_ftoi_data.tdata
+          : (l_itof_data.rt_flag ? l_itof_data.tdata
+              : 32'b0 ));
 
     always_ff@(posedge clk) begin
         if (~rstn) begin

@@ -69,7 +69,7 @@ package inst_package;
     parameter DATA_MEM_DEPTH = 120000;
     parameter INST_MAIN_DEPTH = 32768;
     parameter INST_SUB_DEPTH = 8192;
-    parameter SUBCORE_NUM = 4;
+    parameter SUBCORE_NUM = 1;
 
 
     typedef struct {
