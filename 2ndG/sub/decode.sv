@@ -76,7 +76,7 @@ module decode (
             eq <= 0;
             less <= 0;
             branch_flag <= 0;
-        end else if (~branch_flag && ~interlock) begin
+        end else if (~branch_flag && ~interlock && (inst_to_the_next[63:58] != End)) begin
             pc_to_the_next <= pc;
             inst_to_the_next[63:32] <= inst[63:32];
             if (inst[63:58] == Liw
