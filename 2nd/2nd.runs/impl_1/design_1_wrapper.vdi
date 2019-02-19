@@ -1,0 +1,930 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Tue Feb 19 12:03:17 2019
+# Process ID: 24535
+# Current directory: /home/tongari/cpu/core/2nd/2nd.runs/impl_1
+# Command line: vivado -log design_1_wrapper.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source design_1_wrapper.tcl -notrace
+# Log file: /home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper.vdi
+# Journal file: /home/tongari/cpu/core/2nd/2nd.runs/impl_1/vivado.jou
+#-----------------------------------------------------------
+Sourcing tcl script '/home/tongari/.Xilinx/Vivado/Vivado_init.tcl'
+source design_1_wrapper.tcl -notrace
+Command: link_design -top design_1_wrapper -part xcku040-ffva1156-2-e
+Design is defaulting to srcset: sources_1
+Design is defaulting to constrset: constrs_1
+INFO: [Project 1-454] Reading design checkpoint '/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.dcp' for cell 'design_1_i/clk_wiz_0'
+INFO: [Project 1-454] Reading design checkpoint '/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_proc_sys_reset_0_0_1/design_1_proc_sys_reset_0_0.dcp' for cell 'design_1_i/proc_sys_reset_0'
+INFO: [Project 1-454] Reading design checkpoint '/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_top_0_0/design_1_top_0_0.dcp' for cell 'design_1_i/top_0'
+INFO: [Netlist 29-17] Analyzing 3823 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2017.4
+INFO: [Device 21-403] Loading part xcku040-ffva1156-2-e
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/axi_uartlite_0/axi_uartlite_0_board.xdc] for cell 'design_1_i/top_0/inst/c/io/uart/U0'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/axi_uartlite_0/axi_uartlite_0_board.xdc] for cell 'design_1_i/top_0/inst/c/io/uart/U0'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/axi_uartlite_0/axi_uartlite_0.xdc] for cell 'design_1_i/top_0/inst/c/io/uart/U0'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/axi_uartlite_0/axi_uartlite_0.xdc] for cell 'design_1_i/top_0/inst/c/io/uart/U0'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/fifo_generator_0/fifo_generator_0.xdc] for cell 'design_1_i/top_0/inst/c/io/fifo/U0'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/ip/fifo_generator_0/fifo_generator_0.xdc] for cell 'design_1_i/top_0/inst/c/io/fifo/U0'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0_board.xdc] for cell 'design_1_i/clk_wiz_0/inst'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0_board.xdc] for cell 'design_1_i/clk_wiz_0/inst'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xdc] for cell 'design_1_i/clk_wiz_0/inst'
+INFO: [Timing 38-35] Done setting XDC timing constraints. [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xdc:57]
+INFO: [Timing 38-2] Deriving generated clocks [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xdc:57]
+get_clocks: Time (s): cpu = 00:00:15 ; elapsed = 00:00:13 . Memory (MB): peak = 2188.820 ; gain = 365.664 ; free physical = 5906 ; free virtual = 25450
+WARNING: [Vivado 12-2489] -input_jitter contains time 0.033330 which will be rounded to 0.033 to ensure it is an integer multiple of 1 picosecond [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xdc:57]
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_clk_wiz_0_0/design_1_clk_wiz_0_0.xdc] for cell 'design_1_i/clk_wiz_0/inst'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_proc_sys_reset_0_0_1/design_1_proc_sys_reset_0_0_board.xdc] for cell 'design_1_i/proc_sys_reset_0/U0'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_proc_sys_reset_0_0_1/design_1_proc_sys_reset_0_0_board.xdc] for cell 'design_1_i/proc_sys_reset_0/U0'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_proc_sys_reset_0_0_1/design_1_proc_sys_reset_0_0.xdc] for cell 'design_1_i/proc_sys_reset_0/U0'
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.srcs/sources_1/bd/design_1/ip/design_1_proc_sys_reset_0_0_1/design_1_proc_sys_reset_0_0.xdc] for cell 'design_1_i/proc_sys_reset_0/U0'
+Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.xdc]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/wea[0]'. [/home/tongari/cpu/core/2nd/2nd.xdc:66]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/wea[4]'. [/home/tongari/cpu/core/2nd/2nd.xdc:66]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:66]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[0]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[1]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[2]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[3]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[4]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[5]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[6]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[7]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[8]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[9]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[10]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[11]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[12]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[13]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[14]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[15]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[16]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[17]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[18]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[19]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[20]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[21]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[22]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[23]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[24]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[25]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[26]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[27]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[28]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[29]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[30]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[31]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[32]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[33]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[34]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[35]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[36]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[37]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[38]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[39]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[40]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[41]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[42]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[43]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[44]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[45]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[46]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[47]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[48]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[49]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[50]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[51]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[52]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[53]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[54]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[55]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[56]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[57]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[58]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[59]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[60]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[61]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[62]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/dina[63]'. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:67]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[0]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[1]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[2]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[3]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[4]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[5]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[6]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[7]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[8]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[9]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[10]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[11]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[12]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[13]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[14]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[15]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[16]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[17]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[18]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[19]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[20]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[21]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[22]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[23]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[24]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[25]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[26]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[27]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[28]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[29]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[30]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/addr[31]'. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:68]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/uart_wdata[0]'. [/home/tongari/cpu/core/2nd/2nd.xdc:70]
+WARNING: [Vivado 12-507] No nets matched 'design_1_i/top_0/inst/c/uart_wdata[1]'. [/home/tongari/cpu/core/2nd/2nd.xdc:70]
+INFO: [Common 17-14] Message 'Vivado 12-507' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings. [/home/tongari/cpu/core/2nd/2nd.xdc:70]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:70]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:71]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:72]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:75]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:76]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:77]
+CRITICAL WARNING: [Vivado 12-1419] Debug core 'u_ila_0' was not found. [/home/tongari/cpu/core/2nd/2nd.xdc:78]
+Finished Parsing XDC File [/home/tongari/cpu/core/2nd/2nd.xdc]
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 19 instances were transformed.
+  DSP48E2 => DSP48E2 (DSP_ALU, DSP_A_B_DATA, DSP_C_DATA, DSP_MULTIPLIER, DSP_M_DATA, DSP_OUTPUT, DSP_PREADD_DATA, DSP_PREADD): 16 instances
+  IBUF => IBUF (IBUFCTRL, INBUF): 2 instances
+  IBUFDS => IBUFDS (DIFFINBUF, IBUFCTRL): 1 instances
+
+13 Infos, 101 Warnings, 10 Critical Warnings and 0 Errors encountered.
+link_design completed successfully
+link_design: Time (s): cpu = 00:00:27 ; elapsed = 00:00:31 . Memory (MB): peak = 2190.820 ; gain = 926.844 ; free physical = 5988 ; free virtual = 25488
+INFO: [Common 17-600] The following parameters have non-default value.
+tcl.collectionResultDisplayLimit
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-1540] The version limit for your license is '2018.07' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 2230.840 ; gain = 32.016 ; free physical = 5979 ; free virtual = 25478
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Starting Logic Optimization Task
+
+Phase 1 Generate And Synthesize Debug Cores
+INFO: [Chipscope 16-318] Generating core instance : dbg_hub
+INFO: [IP_Flow 19-3806] Processing IP xilinx.com:ip:xsdbm:3.0 for cell dbg_hub_CV.
+INFO: [Chipscope 16-220] Re-using generated and synthesized IP, "xilinx.com:ip:xsdbm:3.0", from Vivado IP cache entry "8ed33f94965cd55e".
+INFO: [Netlist 29-17] Analyzing 3812 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Chipscope 16-318] Generating core instance : u_ila_0
+INFO: [IP_Flow 19-3806] Processing IP xilinx.com:ip:ila:6.2 for cell u_ila_0_CV.
+INFO: [Chipscope 16-220] Re-using generated and synthesized IP, "xilinx.com:ip:ila:6.2", from Vivado IP cache entry "70afb4b5a8a562e1".
+INFO: [Netlist 29-17] Analyzing 4350 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+Netlist sorting complete. Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.06 . Memory (MB): peak = 2309.988 ; gain = 0.000 ; free physical = 5826 ; free virtual = 25359
+Phase 1 Generate And Synthesize Debug Cores | Checksum: 18bf324fe
+
+Time (s): cpu = 00:01:18 ; elapsed = 00:01:41 . Memory (MB): peak = 2309.988 ; gain = 69.148 ; free physical = 5826 ; free virtual = 25359
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 2 Retarget
+INFO: [Opt 31-138] Pushed 20 inverter(s) to 971 load pin(s).
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM18.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[10].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[11].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[12].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[13].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[14].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[2].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[3].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[5].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[6].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[7].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[8].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[0].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[9].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM18.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[10].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[11].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[12].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[13].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[14].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[1].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[2].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[3].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[4].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[5].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[6].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[7].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[8].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.BLK_MEM_GEN[1].trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[9].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM36.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-422] The CLOCK_DOMAINS attribute on the BRAM cell u_ila_0/inst/ila_core_inst/ila_trace_memory_inst/SUBCORE_RAM.trace_block_memory/inst_blk_mem_gen/gnbram.gnativebmg.native_blk_mem_gen/valid.cstr/ramloop[0].ram.r/prim_noinit.ram/DEVICE_8SERIES.NO_BMM_INFO.SDP.SIMPLE_PRIM18.ram has been changed from INDEPENDENT to COMMON to match the clocking topology used for the BRAM.
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 2 Retarget | Checksum: 108e52f29
+
+Time (s): cpu = 00:01:32 ; elapsed = 00:01:47 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5819 ; free virtual = 25352
+INFO: [Opt 31-389] Phase Retarget created 11 cells and removed 56 cells
+
+Phase 3 Constant propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Phase 3 Constant propagation | Checksum: 124773a96
+
+Time (s): cpu = 00:01:33 ; elapsed = 00:01:48 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5819 ; free virtual = 25352
+INFO: [Opt 31-389] Phase Constant propagation created 7 cells and removed 24 cells
+
+Phase 4 Sweep
+Phase 4 Sweep | Checksum: 18dcbf914
+
+Time (s): cpu = 00:01:34 ; elapsed = 00:01:50 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5814 ; free virtual = 25348
+INFO: [Opt 31-389] Phase Sweep created 8 cells and removed 117 cells
+
+Phase 5 BUFG optimization
+Phase 5 BUFG optimization | Checksum: 18dcbf914
+
+Time (s): cpu = 00:01:35 ; elapsed = 00:01:51 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5817 ; free virtual = 25350
+INFO: [Opt 31-389] Phase BUFG optimization created 0 cells and removed 0 cells
+
+Phase 6 Shift Register Optimization
+Phase 6 Shift Register Optimization | Checksum: 18dcbf914
+
+Time (s): cpu = 00:01:36 ; elapsed = 00:01:52 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5817 ; free virtual = 25350
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00.12 ; elapsed = 00:00:00.11 . Memory (MB): peak = 2374.988 ; gain = 0.000 ; free physical = 5816 ; free virtual = 25350
+Ending Logic Optimization Task | Checksum: 135ec36f2
+
+Time (s): cpu = 00:01:37 ; elapsed = 00:01:52 . Memory (MB): peak = 2374.988 ; gain = 134.148 ; free physical = 5816 ; free virtual = 25350
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Pwropt 34-9] Applying IDT optimizations ...
+INFO: [Pwropt 34-10] Applying ODC optimizations ...
+INFO: [Physopt 32-619] Estimated Timing Summary | WNS=0.167 | TNS=0.000 |
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+
+
+Starting PowerOpt Patch Enables Task
+INFO: [Pwropt 34-162] WRITE_MODE attribute of 0 BRAM(s) out of a total of 273 has been updated to save power. Run report_power_opt to get a complete listing of the BRAMs updated.
+INFO: [Pwropt 34-201] Structural ODC has moved 0 WE to EN ports
+Number of BRAM Ports augmented: 31 newly gated: 0 Total Ports: 546
+Ending PowerOpt Patch Enables Task | Checksum: c25140ec
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5207 ; free virtual = 24741
+Ending Power Optimization Task | Checksum: c25140ec
+
+Time (s): cpu = 00:01:18 ; elapsed = 00:01:03 . Memory (MB): peak = 3825.059 ; gain = 1450.070 ; free physical = 5255 ; free virtual = 24789
+INFO: [Common 17-83] Releasing license: Implementation
+84 Infos, 101 Warnings, 10 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+opt_design: Time (s): cpu = 00:03:06 ; elapsed = 00:03:01 . Memory (MB): peak = 3825.059 ; gain = 1634.238 ; free physical = 5255 ; free virtual = 24789
+INFO: [Common 17-600] The following parameters have non-default value.
+tcl.collectionResultDisplayLimit
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:00.10 ; elapsed = 00:00:00.04 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5256 ; free virtual = 24792
+INFO: [Common 17-1381] The checkpoint '/home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_opt.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:13 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5247 ; free virtual = 24790
+INFO: [runtcl-4] Executing : report_drc -file design_1_wrapper_drc_opted.rpt -pb design_1_wrapper_drc_opted.pb -rpx design_1_wrapper_drc_opted.rpx
+Command: report_drc -file design_1_wrapper_drc_opted.rpt -pb design_1_wrapper_drc_opted.pb -rpx design_1_wrapper_drc_opted.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Coretcl 2-168] The results of DRC are in file /home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_drc_opted.rpt.
+report_drc completed successfully
+INFO: [Chipscope 16-240] Debug cores have already been implemented
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-1540] The version limit for your license is '2018.07' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+Starting Placer Task
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 4 CPUs
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.06 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5243 ; free virtual = 24787
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: a72cc46d
+
+Time (s): cpu = 00:00:00.09 ; elapsed = 00:00:00.10 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5243 ; free virtual = 24787
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.07 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5250 ; free virtual = 24794
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: 93af8f5e
+
+Time (s): cpu = 00:00:23 ; elapsed = 00:00:12 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5190 ; free virtual = 24733
+
+Phase 1.3 Build Placer Netlist Model
+Phase 1.3 Build Placer Netlist Model | Checksum: b8e13a83
+
+Time (s): cpu = 00:00:41 ; elapsed = 00:00:22 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5109 ; free virtual = 24653
+
+Phase 1.4 Constrain Clocks/Macros
+Phase 1.4 Constrain Clocks/Macros | Checksum: b8e13a83
+
+Time (s): cpu = 00:00:42 ; elapsed = 00:00:22 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5109 ; free virtual = 24653
+Phase 1 Placer Initialization | Checksum: b8e13a83
+
+Time (s): cpu = 00:00:42 ; elapsed = 00:00:23 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5109 ; free virtual = 24653
+
+Phase 2 Global Placement
+Phase 2 Global Placement | Checksum: 218b0d804
+
+Time (s): cpu = 00:01:56 ; elapsed = 00:01:04 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5041 ; free virtual = 24585
+
+Phase 3 Detail Placement
+
+Phase 3.1 Commit Multi Column Macros
+Phase 3.1 Commit Multi Column Macros | Checksum: 218b0d804
+
+Time (s): cpu = 00:01:56 ; elapsed = 00:01:04 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5041 ; free virtual = 24585
+
+Phase 3.2 Commit Most Macros & LUTRAMs
+Phase 3.2 Commit Most Macros & LUTRAMs | Checksum: 1903deca2
+
+Time (s): cpu = 00:02:02 ; elapsed = 00:01:07 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5039 ; free virtual = 24583
+
+Phase 3.3 Area Swap Optimization
+Phase 3.3 Area Swap Optimization | Checksum: 171d488cc
+
+Time (s): cpu = 00:02:03 ; elapsed = 00:01:07 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5039 ; free virtual = 24583
+
+Phase 3.4 Pipeline Register Optimization
+Phase 3.4 Pipeline Register Optimization | Checksum: 98ef3ec5
+
+Time (s): cpu = 00:02:03 ; elapsed = 00:01:08 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5039 ; free virtual = 24583
+
+Phase 3.5 IO Cut Optimizer
+Phase 3.5 IO Cut Optimizer | Checksum: bb398776
+
+Time (s): cpu = 00:02:03 ; elapsed = 00:01:08 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5038 ; free virtual = 24582
+
+Phase 3.6 Timing Path Optimizer
+Phase 3.6 Timing Path Optimizer | Checksum: bb398776
+
+Time (s): cpu = 00:02:03 ; elapsed = 00:01:08 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5038 ; free virtual = 24582
+
+Phase 3.7 Fast Optimization
+Phase 3.7 Fast Optimization | Checksum: d87bb057
+
+Time (s): cpu = 00:02:06 ; elapsed = 00:01:11 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5040 ; free virtual = 24583
+
+Phase 3.8 Small Shape Clustering
+Phase 3.8 Small Shape Clustering | Checksum: 120cfef35
+
+Time (s): cpu = 00:02:12 ; elapsed = 00:01:16 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5003 ; free virtual = 24547
+
+Phase 3.9 DP Optimization
+Phase 3.9 DP Optimization | Checksum: 1182105ba
+
+Time (s): cpu = 00:02:36 ; elapsed = 00:01:27 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4996 ; free virtual = 24540
+
+Phase 3.10 Flow Legalize Slice Clusters
+Phase 3.10 Flow Legalize Slice Clusters | Checksum: 85738a8f
+
+Time (s): cpu = 00:02:37 ; elapsed = 00:01:27 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4997 ; free virtual = 24542
+
+Phase 3.11 Slice Area Swap
+Phase 3.11 Slice Area Swap | Checksum: d0666ca9
+
+Time (s): cpu = 00:02:41 ; elapsed = 00:01:31 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4975 ; free virtual = 24519
+
+Phase 3.12 Commit Slice Clusters
+Phase 3.12 Commit Slice Clusters | Checksum: 187f5eaa7
+
+Time (s): cpu = 00:02:52 ; elapsed = 00:01:34 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4971 ; free virtual = 24514
+
+Phase 3.13 Re-assign LUT pins
+Phase 3.13 Re-assign LUT pins | Checksum: afce8cd2
+
+Time (s): cpu = 00:02:54 ; elapsed = 00:01:36 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4975 ; free virtual = 24518
+
+Phase 3.14 Pipeline Register Optimization
+Phase 3.14 Pipeline Register Optimization | Checksum: afce8cd2
+
+Time (s): cpu = 00:02:55 ; elapsed = 00:01:36 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4984 ; free virtual = 24527
+
+Phase 3.15 Fast Optimization
+Phase 3.15 Fast Optimization | Checksum: 1fb7226a4
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:01:46 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4988 ; free virtual = 24532
+Phase 3 Detail Placement | Checksum: 1fb7226a4
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:01:46 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4988 ; free virtual = 24532
+
+Phase 4 Post Placement Optimization and Clean-Up
+
+Phase 4.1 Post Commit Optimization
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 4.1.1 Post Placement Optimization
+Post Placement Optimization Initialization | Checksum: 1b4c5f0ab
+
+Phase 4.1.1.1 BUFG Insertion
+INFO: [Physopt 32-721] Multithreading enabled for phys_opt_design using a maximum of 4 CPUs
+INFO: [Place 46-31] BUFG insertion identified 0 candidate nets, 0 success, 0 skipped for placement/routing, 0 skipped for timing, 0 skipped for netlist change reason.
+Phase 4.1.1.1 BUFG Insertion | Checksum: 1b4c5f0ab
+
+Time (s): cpu = 00:03:46 ; elapsed = 00:02:03 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4990 ; free virtual = 24534
+INFO: [Place 30-746] Post Placement Timing Summary WNS=-0.519. For the most accurate timing information please run report_timing.
+Phase 4.1.1 Post Placement Optimization | Checksum: 1f6b5db5a
+
+Time (s): cpu = 00:05:11 ; elapsed = 00:03:31 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4988 ; free virtual = 24532
+Phase 4.1 Post Commit Optimization | Checksum: 1f6b5db5a
+
+Time (s): cpu = 00:05:12 ; elapsed = 00:03:31 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4988 ; free virtual = 24532
+
+Phase 4.2 Post Placement Cleanup
+Phase 4.2 Post Placement Cleanup | Checksum: 1f6b5db5a
+
+Time (s): cpu = 00:05:17 ; elapsed = 00:03:36 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4996 ; free virtual = 24540
+
+Phase 4.3 Placer Reporting
+Phase 4.3 Placer Reporting | Checksum: 28a9457cb
+
+Time (s): cpu = 00:05:18 ; elapsed = 00:03:37 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4998 ; free virtual = 24542
+
+Phase 4.4 Final Placement Cleanup
+Phase 4.4 Final Placement Cleanup | Checksum: 2cc38c11e
+
+Time (s): cpu = 00:05:18 ; elapsed = 00:03:37 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4998 ; free virtual = 24542
+Phase 4 Post Placement Optimization and Clean-Up | Checksum: 2cc38c11e
+
+Time (s): cpu = 00:05:19 ; elapsed = 00:03:37 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4998 ; free virtual = 24542
+Ending Placer Task | Checksum: 1f254c884
+
+Time (s): cpu = 00:05:19 ; elapsed = 00:03:37 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5065 ; free virtual = 24609
+INFO: [Common 17-83] Releasing license: Implementation
+108 Infos, 101 Warnings, 10 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+place_design: Time (s): cpu = 00:05:25 ; elapsed = 00:03:41 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5065 ; free virtual = 24610
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:08 ; elapsed = 00:00:03 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5005 ; free virtual = 24601
+INFO: [Common 17-1381] The checkpoint '/home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_placed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5048 ; free virtual = 24607
+INFO: [runtcl-4] Executing : report_io -file design_1_wrapper_io_placed.rpt
+report_io: Time (s): cpu = 00:00:00.19 ; elapsed = 00:00:00.26 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5019 ; free virtual = 24578
+INFO: [runtcl-4] Executing : report_utilization -file design_1_wrapper_utilization_placed.rpt -pb design_1_wrapper_utilization_placed.pb
+report_utilization: Time (s): cpu = 00:00:00.41 ; elapsed = 00:00:00.47 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5045 ; free virtual = 24605
+INFO: [runtcl-4] Executing : report_control_sets -verbose -file design_1_wrapper_control_sets_placed.rpt
+report_control_sets: Time (s): cpu = 00:00:00.10 ; elapsed = 00:00:00.17 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 5045 ; free virtual = 24604
+Command: route_design
+Attempting to get a license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-1540] The version limit for your license is '2018.07' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+Running DRC as a precondition to command route_design
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 4 CPUs
+Checksum: PlaceDB: 8377442f ConstDB: 0 ShapeSum: daff07e4 RouteDB: 93de7c71
+
+Phase 1 Build RT Design
+Phase 1 Build RT Design | Checksum: 17b193c99
+
+Time (s): cpu = 00:00:53 ; elapsed = 00:00:33 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4786 ; free virtual = 24346
+Post Restoration Checksum: NetGraph: c18f70c1 NumContArr: ace614f8 Constraints: 1f1d7976 Timing: 0
+
+Phase 2 Router Initialization
+
+Phase 2.1 Create Timer
+Phase 2.1 Create Timer | Checksum: 18d92ff2f
+
+Time (s): cpu = 00:00:54 ; elapsed = 00:00:34 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4780 ; free virtual = 24340
+
+Phase 2.2 Fix Topology Constraints
+Phase 2.2 Fix Topology Constraints | Checksum: 18d92ff2f
+
+Time (s): cpu = 00:00:55 ; elapsed = 00:00:34 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4754 ; free virtual = 24313
+
+Phase 2.3 Pre Route Cleanup
+Phase 2.3 Pre Route Cleanup | Checksum: 18d92ff2f
+
+Time (s): cpu = 00:00:55 ; elapsed = 00:00:34 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4754 ; free virtual = 24313
+
+Phase 2.4 Global Clock Net Routing
+ Number of Nodes with overlaps = 0
+Phase 2.4 Global Clock Net Routing | Checksum: 6d837235
+
+Time (s): cpu = 00:00:58 ; elapsed = 00:00:37 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4650 ; free virtual = 24209
+
+Phase 2.5 Update Timing
+Phase 2.5 Update Timing | Checksum: 12a1a8db9
+
+Time (s): cpu = 00:01:28 ; elapsed = 00:00:50 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4651 ; free virtual = 24211
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.434 | TNS=-36.288| WHS=-0.086 | THS=-4.181 |
+
+Phase 2 Router Initialization | Checksum: 1b5fb0216
+
+Time (s): cpu = 00:01:43 ; elapsed = 00:00:55 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4648 ; free virtual = 24207
+
+Phase 3 Initial Routing
+Phase 3 Initial Routing | Checksum: 1ceddb07d
+
+Time (s): cpu = 00:02:22 ; elapsed = 00:01:08 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4611 ; free virtual = 24171
+
+INFO: [Route 35-449] Initial Estimated Congestion
+ ________________________________________________________________________
+|           | Global Congestion | Long Congestion   | Short Congestion  |
+|           |___________________|___________________|___________________|
+| Direction | Size   | % Tiles  | Size   | % Tiles  | Size   | % Tiles  |
+|___________|________|__________|________|__________|________|__________|
+|      NORTH|   16x16|      0.87|     4x4|      0.18|   32x32|      2.01|
+|___________|________|__________|________|__________|________|__________|
+|      SOUTH|     2x2|      0.02|     1x1|      0.02|     4x4|      0.57|
+|___________|________|__________|________|__________|________|__________|
+|       EAST|     4x4|      0.28|     2x2|      0.03|   16x16|      1.80|
+|___________|________|__________|________|__________|________|__________|
+|       WEST|     1x1|      0.01|     2x2|      0.09|     8x8|      0.65|
+|___________|________|__________|________|__________|________|__________|
+Congestion Report
+GLOBAL Congestion bounded by tiles (Lower Left Tile -> Upper Right Tile):
+NORTH
+	INT_X20Y208->INT_X27Y231 (CLE_M_X20Y208->DSP_X27Y230)
+	INT_X20Y228->INT_X23Y231 (CLE_M_X20Y228->DSP_X23Y230)
+	INT_X24Y228->INT_X27Y231 (CLE_M_X24Y228->DSP_X27Y230)
+	INT_X20Y224->INT_X23Y227 (CLE_M_X20Y224->DSP_X23Y225)
+	INT_X24Y224->INT_X27Y227 (CLE_M_X24Y224->DSP_X27Y225)
+SHORT Congestion bounded by tiles (Lower Left Tile -> Upper Right Tile):
+NORTH
+	INT_X16Y204->INT_X31Y235 (CLE_M_X16Y204->DSP_X31Y235)
+	INT_X16Y220->INT_X31Y235 (CLE_M_X16Y220->DSP_X31Y235)
+EAST
+	INT_X12Y200->INT_X27Y243 (CLE_M_X12Y200->DSP_X27Y240)
+	INT_X16Y236->INT_X23Y243 (CLE_M_X16Y236->DSP_X23Y240)
+	INT_X16Y228->INT_X23Y235 (CLE_M_X16Y228->DSP_X23Y235)
+	INT_X16Y220->INT_X23Y227 (CLE_M_X16Y220->DSP_X23Y225)
+	INT_X16Y212->INT_X23Y219 (CLE_M_X16Y212->DSP_X23Y215)
+
+INFO: [Route 35-448] Estimated routing congestion is level 5 (32x32). Congestion levels of 5 and greater can reduce routability and impact timing closure.
+
+Phase 4 Rip-up And Reroute
+
+Phase 4.1 Global Iteration 0
+ Number of Nodes with overlaps = 13501
+ Number of Nodes with overlaps = 1669
+ Number of Nodes with overlaps = 344
+ Number of Nodes with overlaps = 115
+ Number of Nodes with overlaps = 49
+ Number of Nodes with overlaps = 19
+ Number of Nodes with overlaps = 15
+ Number of Nodes with overlaps = 8
+ Number of Nodes with overlaps = 4
+ Number of Nodes with overlaps = 5
+ Number of Nodes with overlaps = 4
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.652 | TNS=-321.159| WHS=0.004  | THS=0.000  |
+
+Phase 4.1 Global Iteration 0 | Checksum: 273d7fcd7
+
+Time (s): cpu = 00:05:23 ; elapsed = 00:02:20 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4567 ; free virtual = 24178
+
+Phase 4.2 Global Iteration 1
+ Number of Nodes with overlaps = 114
+ Number of Nodes with overlaps = 53
+ Number of Nodes with overlaps = 35
+ Number of Nodes with overlaps = 14
+ Number of Nodes with overlaps = 11
+ Number of Nodes with overlaps = 10
+ Number of Nodes with overlaps = 7
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.473 | TNS=-316.967| WHS=N/A    | THS=N/A    |
+
+Phase 4.2 Global Iteration 1 | Checksum: 15a1c624a
+
+Time (s): cpu = 00:05:56 ; elapsed = 00:02:43 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4552 ; free virtual = 24166
+
+Phase 4.3 Global Iteration 2
+ Number of Nodes with overlaps = 44
+ Number of Nodes with overlaps = 23
+ Number of Nodes with overlaps = 16
+ Number of Nodes with overlaps = 10
+ Number of Nodes with overlaps = 4
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.459 | TNS=-253.141| WHS=N/A    | THS=N/A    |
+
+Phase 4.3 Global Iteration 2 | Checksum: 186c96a44
+
+Time (s): cpu = 00:06:17 ; elapsed = 00:03:02 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4560 ; free virtual = 24172
+
+Phase 4.4 Global Iteration 3
+ Number of Nodes with overlaps = 425
+ Number of Nodes with overlaps = 144
+ Number of Nodes with overlaps = 86
+ Number of Nodes with overlaps = 46
+ Number of Nodes with overlaps = 21
+ Number of Nodes with overlaps = 11
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.436 | TNS=-213.430| WHS=N/A    | THS=N/A    |
+
+Phase 4.4 Global Iteration 3 | Checksum: ff9fef45
+
+Time (s): cpu = 00:07:02 ; elapsed = 00:03:33 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4557 ; free virtual = 24175
+
+Phase 4.5 Global Iteration 4
+ Number of Nodes with overlaps = 227
+ Number of Nodes with overlaps = 98
+ Number of Nodes with overlaps = 56
+ Number of Nodes with overlaps = 27
+ Number of Nodes with overlaps = 19
+ Number of Nodes with overlaps = 6
+ Number of Nodes with overlaps = 4
+ Number of Nodes with overlaps = 5
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.358 | TNS=-168.915| WHS=N/A    | THS=N/A    |
+
+Phase 4.5 Global Iteration 4 | Checksum: 17489d90a
+
+Time (s): cpu = 00:07:56 ; elapsed = 00:04:15 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4558 ; free virtual = 24169
+
+Phase 4.6 Global Iteration 5
+ Number of Nodes with overlaps = 89
+ Number of Nodes with overlaps = 34
+ Number of Nodes with overlaps = 20
+ Number of Nodes with overlaps = 6
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.412 | TNS=-138.507| WHS=N/A    | THS=N/A    |
+
+Phase 4.6 Global Iteration 5 | Checksum: 234372fe6
+
+Time (s): cpu = 00:08:12 ; elapsed = 00:04:25 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4570 ; free virtual = 24181
+Phase 4 Rip-up And Reroute | Checksum: 234372fe6
+
+Time (s): cpu = 00:08:12 ; elapsed = 00:04:25 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4570 ; free virtual = 24181
+
+Phase 5 Delay and Skew Optimization
+
+Phase 5.1 Delay CleanUp
+
+Phase 5.1.1 Update Timing
+Phase 5.1.1 Update Timing | Checksum: 27f6f1194
+
+Time (s): cpu = 00:08:25 ; elapsed = 00:04:32 . Memory (MB): peak = 3825.059 ; gain = 0.000 ; free physical = 4574 ; free virtual = 24186
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.358 | TNS=-168.915| WHS=0.004  | THS=0.000  |
+
+ Number of Nodes with overlaps = 0
+ Number of Nodes with overlaps = 0
+Phase 5.1 Delay CleanUp | Checksum: 21fdf85f1
+
+Time (s): cpu = 00:11:22 ; elapsed = 00:05:18 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4544 ; free virtual = 24156
+
+Phase 5.2 Clock Skew Optimization
+Phase 5.2 Clock Skew Optimization | Checksum: 21fdf85f1
+
+Time (s): cpu = 00:11:22 ; elapsed = 00:05:19 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4544 ; free virtual = 24156
+Phase 5 Delay and Skew Optimization | Checksum: 21fdf85f1
+
+Time (s): cpu = 00:11:22 ; elapsed = 00:05:19 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4544 ; free virtual = 24156
+
+Phase 6 Post Hold Fix
+
+Phase 6.1 Hold Fix Iter
+
+Phase 6.1.1 Update Timing
+Phase 6.1.1 Update Timing | Checksum: 1f1855ae4
+
+Time (s): cpu = 00:11:34 ; elapsed = 00:05:26 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4553 ; free virtual = 24165
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.358 | TNS=-152.733| WHS=0.004  | THS=0.000  |
+
+Phase 6.1 Hold Fix Iter | Checksum: 1778565b4
+
+Time (s): cpu = 00:11:35 ; elapsed = 00:05:26 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4552 ; free virtual = 24163
+Phase 6 Post Hold Fix | Checksum: 1778565b4
+
+Time (s): cpu = 00:11:35 ; elapsed = 00:05:26 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4552 ; free virtual = 24163
+
+Phase 7 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 4.45691 %
+  Global Horizontal Routing Utilization  = 4.43718 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Utilization threshold used for congestion level computation: 0.85
+Congestion Report
+North Dir 1x1 Area, Max Cong = 89.8305%, Congestion bounded by tiles (Lower Left Tile -> Upper Right Tile):
+   INT_X20Y226 -> INT_X20Y226
+   INT_X26Y224 -> INT_X26Y224
+   INT_X26Y222 -> INT_X26Y222
+   INT_X25Y220 -> INT_X25Y220
+   INT_X20Y217 -> INT_X20Y217
+South Dir 1x1 Area, Max Cong = 75.1055%, No Congested Regions.
+East Dir 1x1 Area, Max Cong = 86.5385%, Congestion bounded by tiles (Lower Left Tile -> Upper Right Tile):
+   INT_X20Y233 -> INT_X20Y233
+West Dir 1x1 Area, Max Cong = 77.8846%, No Congested Regions.
+Phase 7 Route finalize | Checksum: 27eb3c41
+
+Time (s): cpu = 00:11:40 ; elapsed = 00:05:29 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4550 ; free virtual = 24161
+
+Phase 8 Verifying routed nets
+
+ Verification completed successfully
+Phase 8 Verifying routed nets | Checksum: 27eb3c41
+
+Time (s): cpu = 00:11:41 ; elapsed = 00:05:29 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4549 ; free virtual = 24160
+
+Phase 9 Depositing Routes
+Phase 9 Depositing Routes | Checksum: 27eb3c41
+
+Time (s): cpu = 00:11:43 ; elapsed = 00:05:32 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4544 ; free virtual = 24156
+
+Phase 10 Post Router Timing
+
+Phase 10.1 Update Timing
+Phase 10.1 Update Timing | Checksum: 88064999
+
+Time (s): cpu = 00:11:55 ; elapsed = 00:05:38 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4539 ; free virtual = 24151
+INFO: [Route 35-57] Estimated Timing Summary | WNS=-0.358 | TNS=-152.733| WHS=0.004  | THS=0.000  |
+
+WARNING: [Route 35-328] Router estimated timing not met.
+Resolution: For a complete and accurate timing signoff, report_timing_summary must be run after route_design. Alternatively, route_design can be run with the -timing_summary option to enable a complete timing signoff at the end of route_design.
+Phase 10 Post Router Timing | Checksum: 88064999
+
+Time (s): cpu = 00:11:55 ; elapsed = 00:05:39 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4539 ; free virtual = 24151
+INFO: [Route 35-16] Router Completed Successfully
+
+Time (s): cpu = 00:11:55 ; elapsed = 00:05:39 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4610 ; free virtual = 24222
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+132 Infos, 102 Warnings, 10 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:12:05 ; elapsed = 00:05:42 . Memory (MB): peak = 3932.035 ; gain = 106.977 ; free physical = 4610 ; free virtual = 24222
+Writing placer database...
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Write XDEF Complete: Time (s): cpu = 00:00:07 ; elapsed = 00:00:02 . Memory (MB): peak = 3940.039 ; gain = 0.000 ; free physical = 4537 ; free virtual = 24219
+INFO: [Common 17-1381] The checkpoint '/home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_routed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:16 ; elapsed = 00:00:15 . Memory (MB): peak = 3940.039 ; gain = 8.004 ; free physical = 4588 ; free virtual = 24220
+INFO: [runtcl-4] Executing : report_drc -file design_1_wrapper_drc_routed.rpt -pb design_1_wrapper_drc_routed.pb -rpx design_1_wrapper_drc_routed.rpx
+Command: report_drc -file design_1_wrapper_drc_routed.rpt -pb design_1_wrapper_drc_routed.pb -rpx design_1_wrapper_drc_routed.rpx
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 4 threads
+INFO: [Coretcl 2-168] The results of DRC are in file /home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_drc_routed.rpt.
+report_drc completed successfully
+report_drc: Time (s): cpu = 00:00:17 ; elapsed = 00:00:07 . Memory (MB): peak = 4004.070 ; gain = 64.031 ; free physical = 4565 ; free virtual = 24200
+INFO: [runtcl-4] Executing : report_methodology -file design_1_wrapper_methodology_drc_routed.rpt -pb design_1_wrapper_methodology_drc_routed.pb -rpx design_1_wrapper_methodology_drc_routed.rpx
+Command: report_methodology -file design_1_wrapper_methodology_drc_routed.rpt -pb design_1_wrapper_methodology_drc_routed.pb -rpx design_1_wrapper_methodology_drc_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-133] Running Methodology with 4 threads
+INFO: [Coretcl 2-1520] The results of Report Methodology are in file /home/tongari/cpu/core/2nd/2nd.runs/impl_1/design_1_wrapper_methodology_drc_routed.rpt.
+report_methodology completed successfully
+report_methodology: Time (s): cpu = 00:00:49 ; elapsed = 00:00:22 . Memory (MB): peak = 4004.070 ; gain = 0.000 ; free physical = 4426 ; free virtual = 24059
+INFO: [runtcl-4] Executing : report_power -file design_1_wrapper_power_routed.rpt -pb design_1_wrapper_power_summary_routed.pb -rpx design_1_wrapper_power_routed.rpx
+Command: report_power -file design_1_wrapper_power_routed.rpt -pb design_1_wrapper_power_summary_routed.pb -rpx design_1_wrapper_power_routed.rpx
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+WARNING: [Power 33-332] Found switching activity that implies high-fanout reset nets being asserted for excessive periods of time which may result in inaccurate power analysis.
+Resolution: To review and fix problems, please run Power Constraints Advisor in the GUI from Tools > Power Constraints Advisor or run report_power with the -advisory option to generate a text report.
+144 Infos, 103 Warnings, 10 Critical Warnings and 0 Errors encountered.
+report_power completed successfully
+report_power: Time (s): cpu = 00:00:39 ; elapsed = 00:00:25 . Memory (MB): peak = 4004.070 ; gain = 0.000 ; free physical = 4376 ; free virtual = 24019
+INFO: [runtcl-4] Executing : report_route_status -file design_1_wrapper_route_status.rpt -pb design_1_wrapper_route_status.pb
+INFO: [runtcl-4] Executing : report_timing_summary -max_paths 10 -file design_1_wrapper_timing_summary_routed.rpt -rpx design_1_wrapper_timing_summary_routed.rpx -warn_on_violation 
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -2, Temperature grade: E, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 4 CPUs
+CRITICAL WARNING: [Timing 38-282] The design failed to meet the timing requirements. Please see the timing summary report for details on the timing violations.
+INFO: [runtcl-4] Executing : report_incremental_reuse -file design_1_wrapper_incremental_reuse_routed.rpt
+INFO: [Vivado_Tcl 4-545] No incremental reuse to report, no incremental placement and routing data was found.
+INFO: [runtcl-4] Executing : report_clock_utilization -file design_1_wrapper_clock_utilization_routed.rpt
+report_clock_utilization: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 4004.070 ; gain = 0.000 ; free physical = 4365 ; free virtual = 24009
+CRITICAL WARNING: [filemgmt 56-176] Module references are not supported in manual compile order mode and will be ignored.
+Command: write_bitstream -force design_1_wrapper.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xcku040'
+INFO: [Common 17-1540] The version limit for your license is '2018.07' and has expired for new software. A version limit expiration means that, although you may be able to continue to use the current version of tools or IP with this license, you will not be eligible for any updates or new releases.
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 4 threads
+WARNING: [DRC CFGBVS-1] Missing CFGBVS and CONFIG_VOLTAGE Design Properties: Neither the CFGBVS nor CONFIG_VOLTAGE voltage property is set in the current_design.  Configuration bank voltage select (CFGBVS) must be set to VCCO or GND, and CONFIG_VOLTAGE must be set to the correct configuration voltage, in order to determine the I/O voltage support for the pins in bank 0.  It is suggested to specify these either using the 'Edit Device Properties' function in the GUI or directly in the XDC file using the following syntax:
+
+ set_property CFGBVS value1 [current_design]
+ #where value1 is either VCCO or GND
+
+ set_property CONFIG_VOLTAGE value2 [current_design]
+ #where value2 is the voltage provided to configuration bank 0
+
+Refer to the device configuration user guide for more information.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg input design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg input design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b0_reg input design_1_i/top_0/inst/c/l_fmul/a0b0_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b0_reg input design_1_i/top_0/inst/c/l_fmul/a0b0_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b1_reg input design_1_i/top_0/inst/c/l_fmul/a0b1_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b1_reg input design_1_i/top_0/inst/c/l_fmul/a0b1_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a1b0_reg input design_1_i/top_0/inst/c/l_fmul/a1b0_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a1b0_reg input design_1_i/top_0/inst/c/l_fmul/a1b0_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg input design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg input design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg input design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg input design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b0_reg input design_1_i/top_0/inst/c/u_fmul/a0b0_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b0_reg input design_1_i/top_0/inst/c/u_fmul/a0b0_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b1_reg input design_1_i/top_0/inst/c/u_fmul/a0b1_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b1_reg input design_1_i/top_0/inst/c/u_fmul/a0b1_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a1b0_reg input design_1_i/top_0/inst/c/u_fmul/a1b0_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a1b0_reg input design_1_i/top_0/inst/c/u_fmul/a1b0_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg input design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-2] Input pipelining: DSP design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg input design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg/B[17:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg output design_1_i/top_0/inst/c/l_fdiv/S_TA_1_reg_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/a0b0_reg output design_1_i/top_0/inst/c/l_fdiv/a0b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/a0b1_reg output design_1_i/top_0/inst/c/l_fdiv/a0b1_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fdiv/a1b0_reg output design_1_i/top_0/inst/c/l_fdiv/a1b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b0_reg output design_1_i/top_0/inst/c/l_fmul/a0b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a0b1_reg output design_1_i/top_0/inst/c/l_fmul/a0b1_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fmul/a1b0_reg output design_1_i/top_0/inst/c/l_fmul/a1b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg output design_1_i/top_0/inst/c/l_fsqrt/ta_reg_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg output design_1_i/top_0/inst/c/u_fdiv/S_TA_1_reg_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/a0b0_reg output design_1_i/top_0/inst/c/u_fdiv/a0b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/a0b1_reg output design_1_i/top_0/inst/c/u_fdiv/a0b1_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fdiv/a1b0_reg output design_1_i/top_0/inst/c/u_fdiv/a1b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b0_reg output design_1_i/top_0/inst/c/u_fmul/a0b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a0b1_reg output design_1_i/top_0/inst/c/u_fmul/a0b1_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fmul/a1b0_reg output design_1_i/top_0/inst/c/u_fmul/a1b0_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC DPOP-3] PREG Output pipelining: DSP design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg output design_1_i/top_0/inst/c/u_fsqrt/ta_reg_reg/P[47:0] is not pipelined (PREG=0). Pipelining the DSP48 output will improve performance and often saves power so it is suggested whenever possible to fully pipeline this function.  If this DSP48 function was inferred, it is suggested to describe an additional register stage after this function.  If the DSP48 was instantiated in the design, it is suggested to set the PREG attribute to 1.
+WARNING: [DRC RTSTAT-10] No routable loads: 21 net(s) have no routable loads. The problem bus(es) and/or net(s) are dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD6_RD/U_RD_FIFO/SUBCORE_FIFO.xsdbm_v3_0_0_rdfifo_inst/inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.gl0.rd/gr1.gr1_int.rfwft/aempty_fwft_i, dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD7_CTL/ctl_reg[2:0], dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD7_CTL/ctl_reg_en_2[1], dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD1/ctl_reg_en_2[1], dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_switch/m_bscan_capture[0], dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_switch/m_bscan_drck[0], dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_switch/m_bscan_runtest[0], dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD6_RD/U_RD_FIFO/SUBCORE_FIFO.xsdbm_v3_0_0_rdfifo_inst/inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.gl0.rd/gras.rsts/ram_empty_i, dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD6_WR/U_WR_FIFO/SUBCORE_FIFO.xsdbm_v3_0_0_wrfifo_inst/inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.gl0.wr/gwas.wsts/ram_full_i, dbg_hub/inst/BSCANID.u_xsdbm_id/CORE_XSDB.UUT_MASTER/U_ICON_INTERFACE/U_CMD6_WR/U_WR_FIFO/SUBCORE_FIFO.xsdbm_v3_0_0_wrfifo_inst/inst_fifo_gen/gconvfifo.rf/grf.rf/rstblk/rd_rst_reg[0], dbg_hub/inst/BSCANID.u_xsdbm_id/SWITCH_N_EXT_BSCAN.bscan_inst/s_bscan_tms, u_ila_0/inst/ila_core_inst/u_ila_regs/U_XSDB_SLAVE/s_daddr_o[13], u_ila_0/inst/ila_core_inst/u_ila_regs/U_XSDB_SLAVE/s_daddr_o[14], u_ila_0/inst/ila_core_inst/u_ila_regs/U_XSDB_SLAVE/s_daddr_o[15], u_ila_0/inst/ila_core_inst/u_ila_regs/U_XSDB_SLAVE/s_daddr_o[16]... and (the first 15 of 19 listed).
+INFO: [Vivado 12-3199] DRC finished with 0 Errors, 38 Warnings
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+INFO: [Project 1-821] Please set project.enableDesignId to be 'true'.
+INFO: [Designutils 20-2272] Running write_bitstream with 4 threads.
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ./design_1_wrapper.bit...
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Project 1-118] WebTalk data collection is enabled (User setting is ON. Install Setting is ON.).
+INFO: [Common 17-186] '/home/tongari/cpu/core/2nd/2nd.runs/impl_1/usage_statistics_webtalk.xml' has been successfully sent to Xilinx on Tue Feb 19 12:21:11 2019. For additional details about this file, please refer to the WebTalk help file at /opt/Xilinx/Vivado/2017.4/doc/webtalk_introduction.html.
+INFO: [Common 17-83] Releasing license: Implementation
+163 Infos, 141 Warnings, 12 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:01:03 ; elapsed = 00:02:51 . Memory (MB): peak = 4069.863 ; gain = 65.793 ; free physical = 4296 ; free virtual = 23955
+INFO: [Common 17-206] Exiting Vivado at Tue Feb 19 12:21:11 2019...
