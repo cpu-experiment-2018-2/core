@@ -1,7 +1,8 @@
 import inst_package::*;
 
 module fetch #(
-    parameter CORE_NUM = 0
+    parameter CORE_NUM = 0,
+    parameter DATA_FILE = "/home/tongari/cpu/core/2ndG/child0.txt"
 ) (
     input  wire         interlock,
 
@@ -49,6 +50,7 @@ module fetch #(
             if (exec_requested) begin
                 interval <= 1;
                 pc <= requested_pc;
+                middle_pc <= requested_pc;
             end
         end
     end
@@ -59,7 +61,7 @@ module fetch #(
     (* ram_style = "distributed" *) reg  [63:0]     inst_rom [0:INST_SUB_DEPTH-1];
 
     initial begin
-        $readmemb($sformatf("/home/tongari/cpu/core/2ndG/child%0d.txt", CORE_NUM), inst_rom);
+        $readmemb(DATA_FILE, inst_rom);
     end
 
     always@(posedge clk) begin

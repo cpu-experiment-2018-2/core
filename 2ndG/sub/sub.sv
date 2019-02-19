@@ -2,7 +2,8 @@ import inst_package::*;
 
 
 module sub #(
-    parameter CORE_NUM = 0
+    parameter CORE_NUM = 0,
+    parameter DATA_FILE = "/home/tongari/cpu/core/2ndG/child0.txt"
 ) (
     input  wire         exec_requested,
     input  wire  [31:0] requested_pc,
@@ -38,7 +39,7 @@ module sub #(
     wire                branch_flag;
     wire        [31:0]  branch_pc;
 
-    fetch #(.CORE_NUM(CORE_NUM))
+    fetch #(.CORE_NUM(CORE_NUM), .DATA_FILE(DATA_FILE))
           fi(   .interlock(interlock),
                 .branch_flag(branch_flag),
                 .branch_pc(branch_pc),
@@ -52,15 +53,15 @@ module sub #(
     //================
     //     Decode
     //================
-    (* mark_debug = "true" *)wire signed [31:0]  u_srca;
-    (* mark_debug = "true" *)wire signed [31:0]  u_srcb;
+    wire signed [31:0]  u_srca;
+    wire signed [31:0]  u_srcb;
     wire signed [31:0]  u_srcs_to_exec;
     wire        [3:0]   u_e_type;
     wire        [4:0]   u_rt_from_decode;
     wire                u_rt_flag_from_decode;
 
-    (* mark_debug = "true" *)wire signed [31:0]  l_srca;
-    (* mark_debug = "true" *)wire signed [31:0]  l_srcb;
+    wire signed [31:0]  l_srca;
+    wire signed [31:0]  l_srcb;
     wire signed [31:0]  l_srcs_to_exec;
     wire        [3:0]   l_e_type;
     wire        [4:0]   l_rt_from_decode;
@@ -377,7 +378,7 @@ module sub #(
     always@(posedge clk) begin
         if (~rstn) begin
             interlock <= 1;
-            ended <= 0;
+            ended <= 1;
 
             state <= RUN_ST;
         end else begin
