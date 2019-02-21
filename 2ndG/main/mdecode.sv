@@ -337,7 +337,7 @@ module mdecode (
         end
     end
 
-    always@(negedge clk) begin
+    always@(posedge clk) begin
         if (~rstn) begin
         end else begin
             // to sub cores

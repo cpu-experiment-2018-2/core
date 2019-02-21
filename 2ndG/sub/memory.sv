@@ -60,21 +60,21 @@ module memory (
     reg  [4:0]  middle_u_rt;
     reg  [4:0]  middle_l_rt;
 
-    wire [31:0] n_addra = ~u_n_in_from_main.we ? u_n_in.addr : u_n_in_from_main.din;
-    wire [31:0] n_dina = ~u_n_in_from_main.we ? u_n_in.din : u_n_in_from_main.din;
-    wire n_wea = ~u_n_in_from_main.we ? u_n_in.we : u_n_in_from_main.we;
-    wire [31:0] n_addrb = ~l_n_in_from_main.we ? l_n_in.addr : l_n_in_from_main.addr;
-    wire [31:0] n_dinb = ~l_n_in_from_main.we ? l_n_in.din : l_n_in_from_main.din;
-    wire n_web = ~l_n_in_from_main.we ? l_n_in.we : l_n_in_from_main.we;
+    wire [31:0] n_addra = (u_n_in_from_main.we == 4'b0) ? u_n_in.addr : u_n_in_from_main.addr;
+    wire [31:0] n_dina = (u_n_in_from_main.we == 4'b0) ? u_n_in.din : u_n_in_from_main.din;
+    wire [3:0] n_wea = (u_n_in_from_main.we == 4'b0) ? u_n_in.we : u_n_in_from_main.we;
+    wire [31:0] n_addrb = (l_n_in_from_main.we == 4'b0) ? l_n_in.addr : l_n_in_from_main.addr;
+    wire [31:0] n_dinb = (l_n_in_from_main.we == 4'b0) ? l_n_in.din : l_n_in_from_main.din;
+    wire [3:0] n_web = (l_n_in_from_main.we == 4'b0) ? l_n_in.we : l_n_in_from_main.we;
 
     blk_mem_gen_0 data_ram( .addra(n_addra),
                             .clka(~clk),
-                            .dina(u_n_in.din),
+                            .dina(n_dina),
                             .douta(douta),
                             .wea(n_wea),
-                            .addrb(l_n_in.addr),
+                            .addrb(n_addrb),
                             .clkb(~clk),
-                            .dinb(l_n_in.addr),
+                            .dinb(n_dinb),
                             .doutb(doutb),
                             .web(n_web));
 
@@ -89,8 +89,8 @@ module memory (
 
             middle_u_rt <= u_rt;
             middle_l_rt <= l_rt;
-            u_rt_to_the_next <= u_rt;
-            l_rt_to_the_next <= l_rt;
+            u_rt_to_the_next <= middle_u_rt;
+            l_rt_to_the_next <= middle_l_rt;
 
             mem_douta <= n_douta;
             mem_doutb <= n_doutb;
@@ -114,7 +114,7 @@ module memory (
             n_douta <= douta;
             n_doutb <= doutb;
         end else begin
-            u_n_in.addr <= fetch_addr;
+            u_n_in.addr <= {13'b0, fetch_addr[16:0], 2'b0};
             u_n_in.we <= 0;
             l_n_in.we <= 0;
 

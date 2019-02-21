@@ -298,7 +298,7 @@ module decode (
             l_mem_in.din <= l_reg_s;
             l_mem_in.we <= (inst[31:26] == Store) ? 4'b1111 : 4'b0;
 
-        end else if (branch_flag) begin
+        end else if (branch_flag || (inst_to_the_next[63:58] == End)) begin
             branch_flag <= 0;
             pc_to_the_next <= 32'b0;
             inst_to_the_next <= {Nop, 26'b0, Nop, 26'b0};

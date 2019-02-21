@@ -106,6 +106,7 @@ module shared_memory (
     // mem_reqed |^^^^^^^^^^^^^^^^^^^^^^^|______
     // addr      ______|^^^^^^^^^^^|____________
     //           __________________|^^^^^^^^^^^|
+    // cnt       ____________|33333|33333|22222|11111|00000|
     // n_addr    _______________|^^^^^|_____|^^^
     // BRAM                           |---->
     // n_doutb   ___________________________|^^^^^|
@@ -143,9 +144,7 @@ module shared_memory (
     reg  [1:0]  new_idx [0:3];
     reg  [3:0]  output_idx [0:3];
     reg  [3:0]  valid_idx [0:3];
-    reg  [1:0]  n_core;
-    reg         n_valid;
-    reg  [1:0]  bram_core;
+    reg  [1:0]  cnt [0:3] [0:1];
 
     blk_mem_gen_0 data_ram( .addra(n_u_data_in.addr),
                             .clka(~clk),
@@ -166,6 +165,9 @@ module shared_memory (
                 new_idx[i] <= 2'b0;
                 output_idx[i] <= 4'b0;
                 valid_idx[i] <= 4'b0;
+                for (int j = 0; j < 4; j++) begin
+                    cnt[i][j] <= 2'b0;
+                end
             end
             new_idx <= 2'b0;
             output_idx <= 2'b0;
@@ -173,27 +175,29 @@ module shared_memory (
             if (mem_requested[0]) begin
                 u_data_in = u_data_ins[0];
                 l_data_in = l_data_ins[0];
-                n_core <= 0;
-                n_valid <= 1;
+                new_idx[0] <= new_idx[0] + 1;
+                cnt[0][new_idx] <= 3;
+                for (int i = 0; i < 4; i++) begin
+                    if (0 < cnt[0][new_idx+i] && cnt[0][new_idx+i] < 4) cnt[0][new_idx+i] <= cnt[0][new_idx+i] - 1;
+                end
             end else if (mem_requested[1]) begin
                 u_data_in = u_data_ins[1];
                 l_data_in = l_data_ins[1];
-                n_core <= 1;
-                n_valid <= 1;
+                new_idx[1] <= new_idx[1] + 1;
+                cnt[1][new_idx] <= 3;
             end else if (mem_requested[2]) begin
                 u_data_in = u_data_ins[2];
                 l_data_in = l_data_ins[2];
-                n_core <= 2;
-                n_valid <= 1;
+                new_idx[2] <= new_idx[2] + 1;
+                cnt[2][new_idx] <= 3;
             end else if (mem_requested[3]) begin
                 u_data_in = u_data_ins[3];
                 l_data_in = l_data_ins[3];
-                n_core <= 3;
-                n_valid <= 1;
+                new_idx[3] <= new_idx[3] + 1;
+                cnt[3][new_idx] <= 3;
             end else begin
                 u_data_in.we <= 0;
                 l_data_in.we <= 0;
-                n_valid <= 0;
             end
         end
     end
@@ -204,7 +208,7 @@ module shared_memory (
             n_l_data_in.we <= 0;
         end else begin
             n_u_data_in <= u_data_in;
-            n_l_data_in <= n_data_in;
+            n_l_data_in <= l_data_in;
         end
     end
 
